@@ -1,0 +1,1465 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>일일 안전보건 현장관리_김해신문센트럴아이파크</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: 청사진(블루프린트) 그리드가 깔린 남색 현장 상황판 헤더 → 전경 배치도 → 작업 카드 목록. 고위험은 공사장 안전띠 줄무늬로 표시 */
+:root{
+  --band:#132050; --band-2:#1B2C6B; --band-ink:#F2F5FF; --band-muted:#A9B5DC; --grid-line:rgba(255,255,255,.06); --band-tile:rgba(255,255,255,.07); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
+  --bg:#EEF1F7; --surface:#FFFFFF; --surface-2:#F6F8FC; --ink:#141C33; --muted:#5E6984; --line:#DDE2EC;
+  --accent:#2756E8; --accent-soft:#E7EDFD; --on-accent:#FFFFFF;
+  --hazard:#F5B400; --hazard-ink:#1A1A1A; --hazard-soft:#FFF5D9; --hazard-text:#8A6400;
+  --danger:#D23B33; --danger-soft:#FCE9E7; --ok:#178A57; --ok-soft:#E1F4EA; --plan:#6E55D9; --plan-soft:#EEEAFC;
+  --shadow:0 1px 2px rgba(20,28,51,.06),0 4px 14px rgba(20,28,51,.06);
+  --f-display:"Do Hyeon","IBM Plex Sans KR","Apple SD Gothic Neo",sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --band:#0C1433; --band-2:#14205A; --band-ink:#EEF2FF; --band-muted:#8E9AC4; --grid-line:rgba(255,255,255,.05); --band-tile:rgba(255,255,255,.07); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
+  --bg:#0A0F1F; --surface:#141B32; --surface-2:#1A2340; --ink:#E8ECF7; --muted:#97A2BE; --line:#26304F;
+  --accent:#86A6FF; --accent-soft:#1D2A55; --on-accent:#0A0F1F;
+  --hazard:#F7C23A; --hazard-ink:#1A1A1A; --hazard-soft:#352B10; --hazard-text:#F7C23A;
+  --danger:#FF7D74; --danger-soft:#3B1E22; --ok:#5ED59E; --ok-soft:#14321F; --plan:#AD9CFF; --plan-soft:#28224B;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --band:#0C1433; --band-2:#14205A; --band-ink:#EEF2FF; --band-muted:#8E9AC4; --grid-line:rgba(255,255,255,.05); --band-tile:rgba(255,255,255,.07); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
+  --bg:#0A0F1F; --surface:#141B32; --surface-2:#1A2340; --ink:#E8ECF7; --muted:#97A2BE; --line:#26304F;
+  --accent:#86A6FF; --accent-soft:#1D2A55; --on-accent:#0A0F1F;
+  --hazard:#F7C23A; --hazard-ink:#1A1A1A; --hazard-soft:#352B10; --hazard-text:#F7C23A;
+  --danger:#FF7D74; --danger-soft:#3B1E22; --ok:#5ED59E; --ok-soft:#14321F; --plan:#AD9CFF; --plan-soft:#28224B;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}
+
+/* 화면 스타일: 밝게 / 상황판 (사용자가 고른 경우에만 적용) */
+:root[data-skin="bright"]{
+  --band:#DCE8FC; --band-2:#C9DBFA; --band-ink:#0F1F4A; --band-muted:#4A5C86; --grid-line:rgba(39,86,232,.10);
+  --band-tile:rgba(255,255,255,.7); --band-tile-line:#BCD0F3; --band-btn:#FFFFFF;
+  --bg:#EEF4FE; --surface:#FFFFFF; --surface-2:#F3F7FE; --ink:#141C33; --muted:#566484; --line:#D6E1F3;
+  --accent:#2756E8; --accent-soft:#E7EDFD; --on-accent:#FFFFFF;
+  --hazard:#F5B400; --hazard-ink:#1A1A1A; --hazard-soft:#FFF5D9; --hazard-text:#8A6400;
+  --danger:#D23B33; --danger-soft:#FCE9E7; --ok:#178A57; --ok-soft:#E1F4EA; --plan:#6E55D9; --plan-soft:#EEEAFC;
+  --shadow:0 1px 2px rgba(20,28,51,.05),0 6px 18px rgba(20,28,51,.06); color-scheme:light}
+:root[data-skin="bright"] header.band{border-bottom:1px solid var(--line)}
+:root[data-skin="bright"] .badge{background:var(--accent);color:#fff}
+:root[data-skin="bright"] .conn.bad{color:var(--danger)}
+:root[data-skin="board"]{
+  --band:#070C1E; --band-2:#0F1A44; --band-ink:#EEF2FF; --band-muted:#8E9AC4; --grid-line:rgba(120,160,255,.07);
+  --band-tile:rgba(255,255,255,.06); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
+  --bg:#070C1E; --surface:#0F1630; --surface-2:#16203F; --ink:#E8ECF7; --muted:#97A2BE; --line:#223056;
+  --accent:#86A6FF; --accent-soft:#1A2754; --on-accent:#0A0F1F;
+  --hazard:#F7C23A; --hazard-ink:#1A1A1A; --hazard-soft:#33290F; --hazard-text:#F7C23A;
+  --danger:#FF7D74; --danger-soft:#3B1E22; --ok:#5ED59E; --ok-soft:#14321F; --plan:#AD9CFF; --plan-soft:#28224B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35); color-scheme:dark}
+.skin{margin-left:auto;display:flex;gap:2px;background:var(--band-tile);border:1px solid var(--band-tile-line);border-radius:999px;padding:3px}
+.skin button{border:0;background:transparent;color:var(--band-muted);font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px}
+.skin button[aria-pressed="true"]{background:var(--band-ink);color:var(--band)}
+.brandrow{flex-wrap:wrap}
+html,body{background:var(--bg);color:var(--ink);margin:0}
+:root{padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5;padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* ---- 헤더 상황판 ---- */
+.band{background:
+  linear-gradient(var(--grid-line) 1px,transparent 1px) 0 0/24px 24px,
+  linear-gradient(90deg,var(--grid-line) 1px,transparent 1px) 0 0/24px 24px,
+  linear-gradient(160deg,var(--band-2),var(--band) 60%);
+  color:var(--band-ink)}
+.band .wrap{padding-block:18px 20px;display:flex;flex-direction:column;gap:14px}
+.brandrow{display:flex;align-items:center;gap:12px}
+.badge{font-family:var(--f-mono);font-weight:700;font-size:12px;letter-spacing:.12em;background:var(--hazard);color:var(--hazard-ink);padding:4px 8px;border-radius:6px}
+.brandrow .sub{font-size:12px;color:var(--band-muted);letter-spacing:.02em}
+.sitename{font-family:var(--f-display);font-size:30px;line-height:1.1;margin:0;font-weight:400;letter-spacing:-.01em;text-wrap:balance}
+.conn{font-size:12px;color:var(--band-muted);display:flex;align-items:center;gap:6px}
+.conn i{width:7px;height:7px;border-radius:50%;background:var(--band-muted);display:inline-block}
+.conn.live i{background:#43D18D;box-shadow:0 0 0 3px rgba(67,209,141,.2)}
+.conn.bad{color:#FFB4AE}.conn.bad i{background:#FF6B60}
+
+.datebar{display:flex;align-items:center;gap:6px;background:var(--band-tile);border:1px solid var(--band-tile-line);border-radius:12px;padding:4px}
+.datebar button{border:0;background:transparent;color:var(--band-ink);border-radius:8px;width:40px;height:40px;font-size:20px}
+.datebar button:hover{background:var(--band-btn)}
+.datebar .dlabel{flex:1;min-width:0;text-align:center;position:relative}
+.datebar .dlabel b{font-family:var(--f-display);font-weight:400;font-size:20px;display:block;line-height:1.1}
+.datebar .dlabel small{font-size:12px;color:var(--band-muted)}
+.datebar .dlabel input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.datebar .today{width:auto;padding:0 12px;font-size:13px;font-weight:600;background:var(--band-btn)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:var(--band-tile);border:1px solid var(--band-tile-line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column}
+.stat .n{font-family:var(--f-display);font-size:30px;line-height:1.05}
+.stat .n small{font-size:14px;margin-left:2px;color:var(--band-muted)}
+.stat .l{font-size:12px;color:var(--band-muted)}
+.stat.hz{background:var(--hazard);border-color:var(--hazard);color:var(--hazard-ink)}
+.stat.hz .l{color:rgba(26,26,26,.7)}
+@media (max-width:440px){.stats{grid-template-columns:repeat(2,1fr)}.sitename{font-size:26px}}
+
+main .wrap{padding-block:18px;display:flex;flex-direction:column;gap:18px}
+#v-dong,#v-admin{max-width:820px}
+#regForm .fcol{display:flex;flex-direction:column;gap:14px;min-width:0}
+#regForm .f > label,#regForm .f > .lab{font-size:14px;color:var(--ink)}
+#regForm .f > label .hint,#regForm .f > .lab .hint{font-size:12px;color:var(--muted)}
+@media (min-width:900px){
+  #regForm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+  #regForm .stickybar,#regForm #formMsg{grid-column:1 / -1}
+}
+.col-left,.col-right{display:flex;flex-direction:column;gap:18px;min-width:0}
+@media (min-width:900px){
+  #v-dash:not([hidden]){display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+  .col-left{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+  #v-dash .map .frame{aspect-ratio:4/3}
+  .col-right .list{max-height:none}
+}
+.sec-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--f-display);font-weight:400;font-size:21px;margin:0;flex:1;min-width:0}
+.sec-head .count{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+
+/* ---- 배치도 ---- */
+.map{overflow:hidden}
+.map .mhead{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.map .mhead h2{font-size:15px;font-weight:700;margin:0;flex:1}
+.map .mhead .tag{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.map .frame{position:relative;aspect-ratio:16/9;max-width:100%;background:var(--surface-2)}
+.map .frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+.ph{position:absolute;inset:12px;border:2px dashed var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:12px;
+  background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/20px 20px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/20px 20px;background-color:var(--surface-2);color:var(--muted)}
+.ph svg{width:44px;height:44px;stroke:var(--accent);fill:none;stroke-width:1.5}
+.ph b{color:var(--ink);font-size:15px}
+.ph span{font-size:13px;max-width:30ch}
+.dongstrip{display:flex;gap:6px;overflow-x:auto;padding:12px 14px;scrollbar-width:thin}
+.dchip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 10px 5px 12px;font-size:13px;display:flex;gap:6px;align-items:center}
+.dchip .c{font-family:var(--f-mono);font-size:12px;background:var(--surface-2);border-radius:999px;padding:0 7px;min-width:12px;text-align:center}
+.dchip.has{border-color:var(--accent);color:var(--accent)}.dchip.has .c{background:var(--accent);color:var(--on-accent)}
+.dchip.hr{border-color:var(--hazard);background:var(--hazard-soft);color:var(--hazard-text)}.dchip.hr .c{background:var(--hazard);color:var(--hazard-ink)}
+
+/* ---- 필터 ---- */
+.filters{display:flex;flex-direction:column;gap:10px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.select{flex:1;min-width:150px;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:0 10px}
+.chipset{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.chip.hzchip[aria-pressed="true"]{background:var(--hazard);color:var(--hazard-ink);border-color:var(--hazard)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 15px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ---- 작업 카드 ---- */
+.list{display:flex;flex-direction:column;gap:10px}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 14px 14px 20px;text-align:left;width:100%;display:grid;grid-template-columns:58px 1fr;gap:4px 14px;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--line)}
+.card.st-진행중::before{background:var(--accent)}
+.card.st-예정::before{background:var(--plan)}
+.card.st-완료::before{background:var(--ok)}
+.card.hr::before{background:repeating-linear-gradient(-45deg,var(--hazard) 0 7px,var(--hazard-ink) 7px 14px)}
+.card.cancel{opacity:.5}
+.card:hover{border-color:var(--muted)}
+.card .time{grid-row:span 3;display:flex;flex-direction:column;border-right:1px dashed var(--line);padding-right:10px}
+.card .time b{font-family:var(--f-mono);font-size:16px;font-weight:700}
+.card .time span{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.card .time em{font-style:normal;margin-top:auto;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.card .row1{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;min-width:0}
+.card .title{font-weight:700;flex:1 1 160px;min-width:0;word-break:keep-all;overflow-wrap:anywhere}
+.card .meta{font-size:13px;color:var(--muted);display:flex;gap:4px 10px;flex-wrap:wrap;min-width:0}
+.card .meta b{color:var(--ink);font-weight:600}
+.card .loc{font-size:13px;display:flex;gap:4px;flex-wrap:wrap}
+.loc-tag{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:0 6px;font-size:12px}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.p-예정{background:var(--plan-soft);color:var(--plan)}
+.p-진행중{background:var(--accent-soft);color:var(--accent)}
+.p-완료{background:var(--ok-soft);color:var(--ok)}
+.p-작업취소{background:var(--surface-2);color:var(--muted)}
+.p-hr{background:var(--hazard);color:var(--hazard-ink)}
+.p-up{background:var(--danger-soft);color:var(--danger)}
+
+.empty{border:2px dashed var(--line);border-radius:16px;padding:32px 16px;text-align:center;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px}
+.empty b{color:var(--ink);font-size:16px}
+.empty svg{width:40px;height:40px;stroke:var(--muted);fill:none;stroke-width:1.5}
+
+/* ---- 동별 ---- */
+.dong-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.dong{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;text-align:left;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.dong .d{font-weight:700;font-size:14px}
+.dong .c{font-family:var(--f-display);font-size:30px;line-height:1.1}
+.dong .s{font-size:12px;color:var(--muted)}
+.dong.has{border-color:var(--accent)}.dong.has .c{color:var(--accent)}
+.dong.hr{border-color:var(--hazard)}
+.dong.hr::after{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:repeating-linear-gradient(-45deg,var(--hazard) 0 7px,var(--hazard-ink) 7px 14px)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:16px;height:10px;border-radius:3px;display:inline-block}
+
+/* ---- 폼 ---- */
+form.reg{display:flex;flex-direction:column;gap:14px}
+fieldset{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:16px;margin:0;display:flex;flex-direction:column;gap:14px;min-width:0;box-shadow:var(--shadow)}
+legend{float:left;width:100%;padding:0;margin-bottom:2px;font-family:var(--f-display);font-size:18px;display:flex;align-items:center;gap:8px}
+legend::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--accent)}
+legend + *{clear:both}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f > label,.f > .lab{font-size:13px;color:var(--muted);font-weight:600}
+.req::after{content:" *";color:var(--danger)}
+.f input,.f select,.f textarea{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:10px 12px;min-height:44px;width:100%;box-sizing:border-box}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.f textarea{min-height:76px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:480px){.grid3{grid-template-columns:1fr 1fr}.grid2.st{grid-template-columns:1fr}}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{border:1px solid var(--line);border-radius:10px;padding:8px 13px;font-size:14px;background:var(--surface-2);cursor:pointer;font-weight:500}
+.seg input:checked + label{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.seg input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px}
+.seg.hz input:checked + label{background:var(--hazard);border-color:var(--hazard);color:var(--hazard-ink)}
+.seg.compact label{padding:6px 10px;font-size:13px;min-width:34px;text-align:center}
+.hint{font-size:12px;color:var(--muted);font-weight:400}
+.formbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.formbar label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.stickybar{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:var(--shadow);display:flex;gap:8px;flex-wrap:wrap}
+.stickybar .btn.primary{flex:1;min-height:46px;font-size:15px}
+.note{border-radius:12px;padding:12px 14px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.note.warn{background:var(--hazard-soft);color:var(--hazard-text);border:1px solid var(--hazard)}
+
+/* ---- 하단 탭 ---- */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));pointer-events:none}
+nav.tabs .wrap{pointer-events:auto}
+nav.tabs .bar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(20,28,51,.16);padding:6px}
+nav.tabs button{background:none;border:0;border-radius:12px;padding:7px 4px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:600}
+nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+
+/* ---- 시트 ---- */
+.sheet-bg{position:fixed;inset:0;background:rgba(8,12,28,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:660px;max-height:90%;overflow:auto;border-radius:20px 20px 0 0;padding:8px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px;box-sizing:border-box}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--line);align-self:center;margin:4px 0}
+@media (min-width:760px){.sheet-bg{align-items:center;padding:24px;box-sizing:border-box}.sheet{border-radius:20px;max-height:86vh}.sheet .grab{display:none}}
+.sheet h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0;line-height:1.2}
+.sheet.wide{max-width:1100px}
+.kv{display:grid;grid-template-columns:116px 1fr;gap:8px 12px;font-size:14px;margin:0;background:var(--surface-2);border-radius:12px;padding:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;min-width:0;word-break:keep-all;overflow-wrap:anywhere}
+.confirm{background:var(--danger-soft);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.zoom{overflow:auto;max-height:70vh;border-radius:12px;background:var(--surface-2)}
+.zoom img{display:block;max-width:none;width:180%}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:10px 18px;border-radius:999px;font-size:14px;z-index:30;max-width:90%;box-shadow:var(--shadow)}
+/* ---- 날씨 ---- */
+.wx{border-radius:18px;padding:18px 20px;color:#fff;background:radial-gradient(120% 140% at 100% 0%,#5B8CFF 0%,#2F5FE0 45%,#2449C4 100%);box-shadow:0 8px 24px rgba(39,86,232,.25);display:flex;flex-direction:column;gap:10px}
+.wx-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.wx-place{display:block;font-size:15px}
+.wx-sub{display:block;font-size:12px;opacity:.8}
+.wx-icon{font-size:38px;line-height:1}
+.wx-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wx-temp{font-family:var(--f-display);font-size:52px;line-height:1}
+.wx-main b{display:block;font-size:16px}
+.wx-detail{display:block;font-size:13px;opacity:.9}
+.wx-rules{background:rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
+.wx-rules div{display:flex;gap:8px;align-items:flex-start}
+.wx-rules i{width:10px;height:10px;border-radius:50%;margin-top:6px;flex:none;background:#FF8A3D;box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.wx-rules i.ok{background:#43D18D}
+.wx-rules i.warn{background:#FFD24A}
+.wx-foot{margin:0;font-size:11px;opacity:.75}
+.wx-rules:empty{display:none}
+/* ---- 대시보드 ---- */
+.h-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.h-wide{grid-column:1 / -1}
+#hHrList{max-height:520px;overflow:auto}
+@media (max-width:760px){.h-grid{grid-template-columns:minmax(0,1fr)}}
+.h-card{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.h-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.h-head h2{font-family:var(--f-display);font-weight:400;font-size:19px;margin:0;flex:1;min-width:0}
+.h-head .count{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.h-empty{color:var(--muted);font-size:13px;padding:6px 0}
+.hr-row{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--hazard-soft);border:1px solid var(--hazard);text-align:left;width:100%}
+.hr-row + .hr-row{margin-top:6px}
+.hr-row .t{font-weight:700;min-width:0;overflow-wrap:anywhere}
+.hr-row .s{grid-column:2 / 3;font-size:12px;color:var(--muted)}
+.hr-row .tm{grid-row:span 2;font-family:var(--f-mono);font-size:13px;font-weight:700}
+.hr-row .cdot{grid-row:span 2}
+.stbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--surface-2)}
+.stbar i{display:block;height:100%}
+.stlegend{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stlegend div{display:flex;flex-direction:column}
+.stlegend b{font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.1}
+.stlegend span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.stlegend span i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.hbars{display:flex;flex-direction:column;gap:9px}
+.hbar{display:grid;grid-template-columns:minmax(64px,30%) 1fr auto;gap:10px;align-items:center;font-size:13px}
+.hbar .k{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;display:flex;align-items:center;gap:6px}
+.hbar .tr{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+.hbar .tr i{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.hbar .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.hbar .v b{color:var(--ink)}
+.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.chk{background:var(--surface-2);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.chk b{font-family:var(--f-display);font-weight:400;font-size:24px;line-height:1.1}
+.chk span{font-size:12px;color:var(--muted)}
+.chk.warn{background:var(--danger-soft)}.chk.warn b{color:var(--danger)}
+.h-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:190px;padding-top:8px;border-bottom:1px solid var(--line)}
+.wcol{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0;cursor:pointer;background:none;border:0;padding:0}
+.wcol .num{font-family:var(--f-mono);font-size:12px;font-weight:700}
+.wcol .stack{width:min(38px,80%);display:flex;flex-direction:column-reverse;border-radius:6px 6px 0 0;overflow:hidden;background:var(--surface-2);min-height:2px}
+.wcol .stack i{display:block;width:100%}
+.wcol.sel .stack{outline:2px solid var(--ink);outline-offset:2px}
+.wlabels{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center;font-size:11px;color:var(--muted)}
+.wlabels b{display:block;color:var(--ink);font-size:12px}
+.wlabels .sel b{color:var(--accent)}
+/* ---- 작업 구간 ---- */
+#v-dash .map .frame.has-img{aspect-ratio:auto}
+.map .frame.has-img img{position:static;display:block;width:100%;height:auto;object-fit:fill}
+.zwrap{position:relative;border-radius:12px;overflow:hidden;background:var(--surface-2);user-select:none;-webkit-user-select:none}
+.zwrap img{display:block;width:100%;height:auto;-webkit-user-drag:none;pointer-events:none}
+.zlayer{position:absolute;inset:0}
+.zlayer.edit{touch-action:none;cursor:crosshair}
+.zlayer.view{cursor:zoom-in}
+.zone{position:absolute;box-sizing:border-box;border:2px solid #2F6BFF;background:rgba(47,107,255,.22);border-radius:4px}
+.zone.hr{border:3px solid #F5B400;background:repeating-linear-gradient(-45deg,rgba(245,180,0,.42) 0 8px,rgba(20,20,20,.18) 8px 16px)}
+.zone.pend{border:2px dashed #E8780C;background:rgba(232,120,12,.16)}
+.zone.done{border-color:#1F9D60;background:rgba(31,157,96,.18)}
+.zlayer.view .zone{cursor:pointer}
+.zl{position:absolute;left:0;top:0;background:#2F6BFF;color:#fff;font-size:11px;font-weight:700;padding:1px 6px;border-radius:0 0 5px 0;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;pointer-events:none}
+.zone.pend .zl{background:#E8780C}
+.zone.done .zl{background:#1F9D60}
+.zl.tag{top:auto;bottom:calc(100% + 2px);left:-2px;max-width:none;overflow:visible;border-radius:5px;padding:2px 7px;font-size:11px;line-height:1.35;box-shadow:0 1px 3px rgba(0,0,0,.35);z-index:2;pointer-events:auto;cursor:pointer}
+.zl.tag.below{bottom:auto;top:calc(100% + 2px)}
+.zl.tag.right{left:auto;right:-2px}
+.zone:hover{z-index:3}
+.zx{position:absolute;right:2px;top:2px;width:24px;height:24px;border-radius:50%;border:0;background:#D23B33;color:#fff;font-size:15px;line-height:24px;padding:0;text-align:center}
+.zstatus{font-size:13px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.zstatus.warn{background:#FFF1E2;border-color:#E8780C;color:#A4520A}
+.zstatus.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.zlegend{display:flex;gap:6px 14px;flex-wrap:wrap;padding:10px 14px 0;font-size:13px}
+.zlegend span{display:inline-flex;align-items:center;gap:6px}
+.cdot{width:11px;height:11px;border-radius:3px;display:inline-block;flex:none}
+.multibox{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:10px}
+#multiWrap{display:flex;flex-direction:column;gap:10px}
+#multiWrap[hidden]{display:none}
+.rtoggle{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer}
+.rtoggle input{width:18px;height:18px}
+.rows{display:flex;flex-direction:column;gap:10px}
+.rowc{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.rowc.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.rowh{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rnum{color:#fff;font-size:12px;font-weight:700;border-radius:6px;padding:3px 8px}
+.rowh .sp{flex:1}
+.rowf{display:grid;grid-template-columns:1.1fr 1fr .7fr auto;gap:8px;align-items:center}
+.rowf .full{grid-column:1 / -1}
+.rowf input:not([type=checkbox]),.rowf select{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:9px 10px;min-height:42px;width:100%;box-sizing:border-box;min-width:0}
+.rhr{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:600;white-space:nowrap}
+.rhr input{width:18px;height:18px}
+@media (max-width:520px){.rowf{grid-template-columns:1fr 1fr}}
+.zone.other{opacity:.55}
+.recent{padding:14px;display:flex;flex-direction:column;gap:10px}
+.recent .rhead{display:flex;flex-direction:column;gap:2px}
+.recent .rhead b{font-family:var(--f-display);font-weight:400;font-size:18px}
+.rlist{display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow:auto;padding-right:2px}
+.ritem{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:9px 12px;width:100%}
+.ritem:hover{border-color:var(--accent);background:var(--accent-soft)}
+.ritem .t{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.ritem .s{grid-column:2 / 3;font-size:12px;color:var(--muted)}
+.ritem .d{grid-row:span 2;font-family:var(--f-mono);font-size:12px;color:var(--muted);align-self:center}
+.ritem .cdot{grid-row:span 2}
+.ptwbox{background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;padding:10px 12px}
+.btn.okbtn{border-color:var(--ok);color:var(--ok)}
+.zoomin{position:relative;width:100%;transition:width .15s}
+.sheet.full{max-width:none;width:100%;height:100%;max-height:100%;border-radius:0;gap:10px;padding-top:max(12px,env(safe-area-inset-top,0px))}
+@media (min-width:760px){.sheet-bg .sheet.full{width:96vw;height:94vh;max-height:94vh;border-radius:16px}}
+.sheet.full .zoom{flex:1;max-height:none;min-height:0;cursor:grab}
+.sheet.full .zoom.dragging{cursor:grabbing}
+.zctl{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.zctl .chip{min-width:52px}
+.zoomin img{display:block;width:100%;max-width:none}
+@media (min-width:900px){#regForm .full{grid-column:1 / -1}}
+.sheetwrap{overflow:auto;max-height:52vh;border:1px solid var(--line);border-radius:10px}
+table.sheet{border-collapse:collapse;font-size:12px;min-width:980px;width:100%}
+table.sheet th,table.sheet td{border:1px solid var(--line);padding:6px 8px;vertical-align:middle;text-align:center;white-space:pre-line}
+table.sheet th{background:var(--band);color:var(--band-ink);font-weight:600;position:sticky;top:0}
+table.sheet td.l{text-align:left}
+table.sheet td.co{font-weight:700}
+table.sheet td.up{color:var(--danger);font-weight:700}
+textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);padding:12px;font-family:var(--f-mono);font-size:13px}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .2s ease-out}@keyframes up{from{transform:translateY(30px);opacity:.6}}}
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap">
+    <div class="brandrow"><span class="badge">S.O.S</span><span class="sub">일일 고위험 작업 안전관리 · Safety On System</span>
+      <div class="skin" role="group" aria-label="화면 스타일"><button type="button" data-skin="navy" aria-pressed="true">기본</button><button type="button" data-skin="bright" aria-pressed="false">밝은</button><button type="button" data-skin="board" aria-pressed="false">상황판</button></div></div>
+    <h1 class="sitename">김해신문센트럴아이파크</h1>
+    <div class="datebar">
+      <button type="button" id="prevDay" aria-label="전날">‹</button>
+      <div class="dlabel"><b id="dMain">–</b><small id="dSub">날짜를 눌러 선택</small><input type="date" id="viewDate" aria-label="조회 날짜"></div>
+      <button type="button" id="nextDay" aria-label="다음날">›</button>
+      <button type="button" id="goToday" class="today">오늘</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="n" id="sTotal">–</span><span class="l">등록 작업</span></div>
+      <div class="stat hz"><span class="n" id="sHr">–</span><span class="l">고위험 작업</span></div>
+      <div class="stat"><span class="n"><span id="sWorkers">–</span><small>명</small></span><span class="l">출역 인원</span></div>
+      <div class="stat"><span class="n" id="sCo">–</span><span class="l">협력업체</span></div>
+    </div>
+    <div class="conn" id="conn"><i></i><span>연결 중…</span></div>
+  </div>
+</header>
+
+<main>
+  <!-- 작업현황 -->
+  <section class="wrap" id="v-home">
+    <div class="h-grid">
+      <div class="wx h-wide" id="wxCard" aria-live="polite">
+        <div class="wx-top"><div><b class="wx-place">📍 김해신문센트럴아이파크</b><span class="wx-sub" id="wxSub">날씨 불러오는 중…</span></div><span class="wx-icon" id="wxIcon" aria-hidden="true"></span></div>
+        <div class="wx-main"><span class="wx-temp" id="wxTemp">–</span><div><b id="wxDesc">–</b><span id="wxDetail" class="wx-detail"></span></div></div>
+        <div class="wx-rules" id="wxRules"></div>
+        <p class="wx-foot">예보 모델 값입니다. 작업중지 판단은 현장 풍속계 실측값을 기준으로 하세요.</p>
+      </div>
+      <div class="panel h-card h-map">
+        <div class="h-head"><h2>전경 배치도</h2><button type="button" class="btn sm ghost" id="homeZoom" hidden>확대보기</button></div>
+        <div id="homeMap"></div>
+        <div class="zlegend" id="homeLegend" style="padding:0" hidden></div>
+      </div>
+      <div class="panel h-card">
+        <div class="h-head"><h2>고위험 작업</h2><span class="count" id="hHrCount"></span><button type="button" class="btn sm ghost" data-go="dash">작업현황 보기 ›</button></div>
+        <div id="hHrList"></div>
+      </div>
+      <div class="panel h-card">
+        <div class="h-head"><h2>작업 진행 상태</h2></div>
+        <div id="hStatus"></div>
+      </div>
+      <div class="panel h-card">
+        <div class="h-head"><h2>안전 점검 현황</h2></div>
+        <div id="hCheck"></div>
+      </div>
+      <div class="panel h-card">
+        <div class="h-head"><h2>공종별 작업</h2><span class="hint">건수 · 인원</span></div>
+        <div id="hTrade"></div>
+      </div>
+      <div class="panel h-card">
+        <div class="h-head"><h2>업체별 출역 인원</h2></div>
+        <div id="hComp"></div>
+      </div>
+      <div class="panel h-card h-wide">
+        <div class="h-head"><h2>최근 7일 추이</h2><span class="hint" id="hWeekSum"></span></div>
+        <div class="h-week" id="hWeek"></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>일반 작업</span><span><i style="background:var(--hazard)"></i>고위험 작업</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="v-dash" hidden>
+    <div class="col-left">
+    <div class="panel map">
+      <div class="mhead"><h2>전경 배치도</h2><span class="tag" id="mapTag">Site Plan</span><button type="button" class="btn sm ghost" id="mapZoom" hidden>확대보기</button></div>
+      <div class="frame" id="mapFrame"></div>
+      <div class="zlegend" id="mapLegend" hidden></div>
+      <div class="dongstrip" id="dongStrip" aria-label="동별 작업 수"></div>
+    </div>
+    </div>
+    <div class="col-right">
+
+    <div class="filters">
+      <div class="sec-head"><h2>주요 작업 목록</h2><span class="count" id="listCount"></span></div>
+      <div class="toolbar">
+        <select class="select" id="fCompany" aria-label="협력업체 필터"><option value="">전체 협력업체</option></select>
+        <button type="button" class="btn primary" id="sheetBtn">구글시트에 올리기</button>
+        <a class="btn" id="sheetOpen" target="_blank" rel="noopener" hidden>구글시트 열기 ↗</a>
+        <button type="button" class="btn" id="exportBtn">카톡용 텍스트</button>
+      </div>
+      <div class="chipset" id="fStatus" role="group" aria-label="상태 필터">
+        <button type="button" class="chip" data-s="" aria-pressed="true">전체</button>
+        <button type="button" class="chip" data-s="예정" aria-pressed="false">예정</button>
+        <button type="button" class="chip" data-s="진행중" aria-pressed="false">진행중</button>
+        <button type="button" class="chip" data-s="완료" aria-pressed="false">완료</button>
+        <button type="button" class="chip hzchip" data-s="hr" aria-pressed="false">고위험만</button>
+      </div>
+    </div>
+    <div class="list" id="list"></div>
+    </div>
+  </section>
+
+  <!-- 작업등록 -->
+  <section class="wrap" id="v-reg" hidden>
+    <div class="sec-head"><h2 id="regTitle">일일작업 등록</h2><button type="button" class="btn primary sm" id="openRecent">🕘 최근 작업 불러오기</button></div>
+    <div class="note warn" id="roNote" hidden>구글시트에 연결되지 않아 지금은 작업을 등록할 수 없습니다.</div>
+    <div class="note warn" id="editBanner" hidden><span>✎ 등록된 작업을 수정하는 중입니다</span><button type="button" class="btn sm" id="cancelEdit">수정 취소</button></div>
+    <form class="reg" id="regForm" novalidate>
+      <div class="fcol">
+      <fieldset>
+        <legend>기본 정보</legend>
+        <div class="grid2 st">
+          <div class="f"><label for="r_date" class="req">작업 일자</label><input type="date" id="r_date" required></div>
+          <div class="f"><label for="r_company" class="req">협력업체명</label><input id="r_company" list="coList" required autocomplete="off" placeholder="예: ○○건설"><datalist id="coList"></datalist></div>
+        </div>
+        <div class="multibox" id="multiToggle" hidden>
+          <label class="rtoggle"><input type="checkbox" id="r_multiOn"> 같은 업체 작업 여러 건 한 번에 등록</label>
+          <div id="multiWrap" hidden>
+            <p class="hint" style="margin:0">업체·상태·시간·책임자·안전점검은 공통으로 쓰고, 줄마다 작업명·공종·동·인원만 따로 적습니다. ‘구간 그리기’를 누른 줄의 구간이 아래 배치도에 그려집니다.</p>
+            <div class="rows" id="rowList"></div>
+            <div><button type="button" class="btn sm" id="rowAdd">+ 작업 추가</button></div>
+          </div>
+        </div>
+        <datalist id="tradeList"></datalist>
+        <div class="f" id="fTitle"><label for="r_title" class="req">작업명</label><input id="r_title" required placeholder="예: 105동 구간 PHC파일 항타"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>작업 개요</legend>
+        <div class="f" id="fTrade"><span class="lab req">공종</span>
+          <div class="seg" id="r_trade"></div>
+          <input id="r_trade_etc" placeholder="공종 직접입력" hidden aria-label="공종 직접입력">
+        </div>
+        <div class="f"><span class="lab req">작업 상태</span>
+          <div class="seg" id="r_status"></div>
+          <span class="hint">미래 날짜 작업은 자동으로 ‘예정’으로 등록됩니다.</span>
+        </div>
+        <div class="f" id="fDong"><span class="lab req">동 <span class="hint">복수 선택</span></span><div class="seg compact" id="r_dong"></div></div>
+        <div class="f" hidden><span class="lab">층</span><div class="seg compact" id="r_floor"></div></div>
+        <div class="f"><label for="r_loc">상세 위치</label><input id="r_loc" placeholder="예: 12F 코어부 엘리베이터 피트"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>인원 · 시간</legend>
+        <div class="grid3">
+          <div class="f" id="fWorkers"><label for="r_workers" class="req">출역 인원(명)</label><input id="r_workers" type="number" min="0" inputmode="numeric" required></div>
+          <div class="f"><label for="r_start" class="req">작업 시작</label><input id="r_start" type="time" value="07:00" required></div>
+          <div class="f"><label for="r_end" class="req">작업 종료</label><input id="r_end" type="time" value="17:00" required></div>
+        </div>
+        <div class="f"><label for="r_point">안전중점포인트 <span class="hint">작업내용 상세</span></label><textarea id="r_point" placeholder="예: 개구부 덮개 확인, 안전대 걸이시설 설치 후 작업"></textarea></div>
+        <div class="f"><label for="r_equip">사용 장비</label><input id="r_equip" placeholder="예: 항타기, 굴착기 2대 (없으면 비움)"></div>
+      </fieldset>
+      </div>
+      <div class="fcol">
+
+      <fieldset>
+        <legend>고위험 · 안전 점검</legend>
+        <div class="f"><span class="lab">고위험 작업 여부 <span class="hint">회의 후 선정</span></span><div class="seg hz" id="r_hr"></div></div>
+        <div class="grid2 st">
+          <div class="f"><span class="lab">PTW <span class="hint">사전작업허가서</span></span><div class="seg" id="r_ptw"></div></div>
+          <div class="f"><span class="lab">위험성평가 상등급</span><div class="seg" id="r_up"></div></div>
+          <div class="f"><span class="lab">유해위험물질 반입</span><div class="seg" id="r_hazmat"></div></div>
+          <div class="f"><span class="lab">감시단·안전전담자 배치</span><div class="seg" id="r_watch"></div></div>
+        </div>
+        <div class="f ptwbox" id="fPtwTypes" hidden><span class="lab">PTW 작업구분 <span class="hint">해당하는 작업을 모두 고르세요</span></span><div class="seg compact" id="r_ptwTypes"></div></div>
+        <div class="grid2">
+          <div class="f"><label for="r_stands">작업대 수량 <span class="hint">말비계·사다리 포함</span></label><input id="r_stands" type="number" min="0" inputmode="numeric"></div>
+          <div class="f"><label for="r_cutters">절단공구 수량 <span class="hint">그라인더 등</span></label><input id="r_cutters" type="number" min="0" inputmode="numeric"></div>
+        </div>
+        <div class="grid2 st">
+          <div class="f"><span class="lab">조출 / 야간</span><div class="seg" id="r_early"></div></div>
+          <div class="f"><span class="lab">OPC 대상 작업</span><div class="seg" id="r_opc"></div></div>
+        </div>
+        <div class="f"><label for="r_edu">고위험작업 특별교육</label><input id="r_edu" list="eduList" placeholder="해당없음"><datalist id="eduList"><option>해당없음</option><option>장비작업</option></datalist></div>
+        <div class="f"><label for="r_accident">재해유형</label><input id="r_accident" list="accList" placeholder="예: 추락"><datalist id="accList"><option>추락</option><option>낙하·비래</option><option>협착·끼임</option><option>붕괴·도괴</option><option>충돌·부딪힘</option><option>감전</option><option>화재·폭발</option><option>절단·베임</option><option>넘어짐</option></datalist></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>책임자</legend>
+        <div class="grid2 st">
+          <div class="f"><label for="r_leader">작업지휘자</label><input id="r_leader"></div>
+          <div class="f"><label for="r_supCo">관리감독자 (협력사)</label><input id="r_supCo"></div>
+          <div class="f"><label for="r_supHdc">관리감독자 (현대산업개발)</label><input id="r_supHdc" placeholder="이름 입력"></div>
+          <div class="f"><label for="r_safeHdc">안전관리자 (현대산업개발)</label><input id="r_safeHdc" placeholder="이름 입력"></div>
+        </div>
+        <div class="f"><label for="r_note">비고</label><textarea id="r_note"></textarea></div>
+      </fieldset>
+      </div>
+      <fieldset class="full">
+        <legend>작업 위치 표시</legend>
+        <p class="hint" style="margin:0">배치도 위를 드래그해서 작업 구간을 지정하고 ‘작업구간 확정’을 누르세요. 확정 후에도 계속 드래그하면 구간을 여러 개 추가할 수 있습니다. 각 구간 오른쪽 위 ×로 하나씩 지울 수 있습니다.</p>
+        <div class="formbar">
+          <span class="zstatus" id="zStatus" role="status">구간 미지정</span>
+          <button type="button" class="btn sm" id="zReset">초기화</button>
+          <button type="button" class="btn sm okbtn" id="zConfirm">작업구간 확정</button>
+        </div>
+        <div id="zoneBox"></div>
+      </fieldset>
+
+      <div class="stickybar">
+        <label class="hint" style="display:flex;gap:6px;align-items:center;width:100%"><input type="checkbox" id="keepFields" checked> 등록 후 업체명·책임자·시간 남겨두기</label>
+        <button type="submit" class="btn primary" id="submitBtn">작업 등록하기</button>
+      </div>
+      <p class="hint" id="formMsg" role="status" style="margin:0"></p>
+    </form>
+  </section>
+
+  <!-- 동별 -->
+  <section class="wrap" id="v-dong" hidden>
+    <div class="sec-head"><h2>동별 현황</h2></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>작업 있음</span><span><i style="background:repeating-linear-gradient(-45deg,var(--hazard) 0 4px,var(--hazard-ink) 4px 8px)"></i>고위험 작업 있음</span></div>
+    <div class="dong-grid" id="dongGrid"></div>
+  </section>
+
+  <!-- 관리 -->
+  <section class="wrap" id="v-admin" hidden>
+    <div class="sec-head"><h2>관리</h2></div>
+    <div class="note warn" id="adminRo" hidden>관리 비밀번호로 들어와야 바꿀 수 있습니다.</div>
+    <form id="cfgForm" class="reg" novalidate>
+      <fieldset>
+        <legend>전경 배치도</legend>
+        <p class="hint" style="margin:0">현장 전경 사진이나 배치도 이미지(JPG·PNG, 15MB 이하)를 올리면 대시보드와 작업현황에 표시됩니다. 이미지는 구글 드라이브 ‘SOS 배치도’ 폴더에 저장되고, 새로 올리면 이전 이미지를 바꿉니다.</p>
+        <div class="formbar">
+          <label class="btn" for="mapFile" id="mapFileLabel">이미지 선택</label>
+          <input type="file" id="mapFile" accept="image/png,image/jpeg,image/webp" hidden>
+          <button type="button" class="btn danger" id="mapRemove" hidden>배치도 내리기</button>
+          <span class="hint" id="mapMsg" role="status"></span>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>단지 구성</legend>
+        <div class="f"><label for="c_dongs">동 목록 <span class="hint">쉼표로 구분</span></label><input id="c_dongs"></div>
+        <div class="grid2" hidden>
+          <div class="f"><label for="c_bmin">최저층 (지하)</label><input id="c_bmin" type="number" min="0" max="9" inputmode="numeric"></div>
+          <div class="f"><label for="c_fmax">최고층 (지상)</label><input id="c_fmax" type="number" min="1" max="99" inputmode="numeric"></div>
+        </div>
+        <div class="f"><label for="c_trades">공종 목록 <span class="hint">쉼표로 구분</span></label><input id="c_trades"></div>
+      </fieldset>
+      <fieldset>
+        <legend>구글시트 연결</legend>
+        <div class="f"><label for="c_sheet">작업 현황 구글시트 주소</label><input id="c_sheet" type="url" placeholder="https://docs.google.com/spreadsheets/d/…"></div>
+        <p class="hint" style="margin:0">작업현황 탭에 이 시트를 바로 여는 버튼이 생깁니다.</p>
+        <div class="grid2">
+          <div class="f"><label for="c_lat">날씨 기준 위도</label><input id="c_lat" type="number" step="0.0001" inputmode="decimal"></div>
+          <div class="f"><label for="c_lon">날씨 기준 경도</label><input id="c_lon" type="number" step="0.0001" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+      <fieldset hidden>
+        <legend>현대산업개발 담당자</legend>
+        <div class="f"><label for="c_sup">관리감독자 (현대산업개발) <span class="hint">쉼표로 구분, 예: 홍길동(건축)</span></label><input id="c_sup"></div>
+        <div class="f"><label for="c_safe">안전관리자 (현대산업개발)</label><input id="c_safe"></div>
+      </fieldset>
+      <button type="submit" class="btn primary" id="cfgSave">설정 저장</button>
+      <p class="hint" id="cfgMsg" role="status" style="margin:0"></p>
+      <fieldset>
+        <legend>하루 마감</legend>
+        <p class="hint" style="margin:0">조회 중인 날짜의 ‘진행중’ 작업을 모두 ‘완료’로 바꿉니다. 예정·작업취소는 그대로 둡니다.</p>
+        <div><button type="button" class="btn" id="closeDay">진행중 → 완료 일괄 마감</button></div>
+      </fieldset>
+      <fieldset>
+        <legend>관리 비밀번호</legend>
+        <p class="hint" style="margin:0">관리 탭에 들어갈 때 묻는 비밀번호입니다. 바꾸면 다른 기기도 다음부터 새 비밀번호로 들어와야 합니다. 비밀번호를 잊으면 구글시트의 Apps Script에서 다시 정할 수 있습니다.</p>
+        <div class="grid2">
+          <div class="f"><label for="pwNew1">새 비밀번호</label><input type="password" id="pwNew1" autocomplete="new-password"></div>
+          <div class="f"><label for="pwNew2">새 비밀번호 확인</label><input type="password" id="pwNew2" autocomplete="new-password"></div>
+        </div>
+        <div class="formbar"><button type="button" class="btn" id="pwChange">비밀번호 바꾸기</button><button type="button" class="btn ghost" id="adminLock">🔒 관리 화면 잠그기</button><span class="hint" id="pwMsg" role="status"></span></div>
+      </fieldset>
+    </form>
+  </section>
+</main>
+
+<nav class="tabs" aria-label="화면 전환">
+  <div class="wrap"><div class="bar">
+    <button type="button" data-v="home" aria-current="page"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>대시보드</button>
+    <button type="button" data-v="dash"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>작업현황</button>
+    <button type="button" data-v="reg"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>작업등록</button>
+    <button type="button" data-v="dong" hidden><svg viewBox="0 0 24 24"><path d="M4 21V8l5-4 5 4v13M14 21V11h6v10M2 21h20M7 12h4M7 16h4"/></svg>동별보기</button>
+    <button type="button" data-v="admin"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>관리</button>
+  </div></div>
+</nav>
+
+<div id="sheetRoot"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad=n=>String(n).padStart(2,"0");
+const ymd=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const todayStr=()=>ymd(new Date());
+const shift=(s,n)=>{const d=new Date(s+"T00:00:00");d.setDate(d.getDate()+n);return ymd(d)};
+const WD="일월화수목금토";
+const PTW_TYPES=["고소작업","건설기계운영(중량물,하역등)","갱폼작업","화기작업","밀폐작업","굴착작업","터널굴착작업","교량작업","건물해체작업","전기활선작업","동바리설치/해체","조출/야간작업"];
+const STATUSES=["예정","진행중","완료","작업취소"];
+const DEFAULT_CFG={dongs:["101동","102동","103동","104동","105동","106동","107동","108동","109동","110동","111동","112동","113동"],bmin:2,fmax:25,trades:["토사반출","양수작업","토류판","파일하차","항타작업","JSP"],sup:[],safe:[],mapId:"",sheetUrl:"",lat:35.1885,lon:128.8125};
+const ICON_EMPTY='<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>';
+const ICON_MAP='<svg viewBox="0 0 48 48"><path d="M6 12l12-5 12 5 12-5v29l-12 5-12-5-12 5z"/><path d="M18 7v29M30 12v29"/><circle cx="35" cy="21" r="3"/></svg>';
+
+let db=null,user=null,assets=null,canWrite=true,canAdmin=false;
+const API=String(window.SOS_API||"").trim();
+let adminPw="";try{adminPw=sessionStorage.getItem("sos-admin-pw")||""}catch(_){}
+async function api(action,data){
+  const r=await fetch(API,{method:"POST",body:JSON.stringify(Object.assign({action},data||{}))});
+  let j;try{j=await r.json()}catch(_){const e=new Error("응답을 읽지 못했습니다");e.code="network";throw e}
+  if(!j.ok){const e=new Error(j.error||"요청 실패");e.code=j.code||"";throw e}
+  return j;
+}
+function makeDb(){
+  const subs=new Set(),setSubs=new Set();
+  const snap=list=>({docs:list.map(w=>({id:w.id,data:()=>{const o={...w};delete o.id;return o}})),metadata:{fromCache:false}});
+  function refresh(){subs.forEach(s=>s.run())}
+  function query(){
+    const q={from:"0000",to:"9999",lim:0,desc:false};
+    const o={
+      where(f,op,v){if(f==="date"){if(op===">="||op==="==")q.from=v;if(op==="<="||op==="==")q.to=v}return o},
+      orderBy(f,dir){q.desc=dir==="desc";return o},
+      limit(n){q.lim=n;return o},
+      async get(){const j=await api("list",{from:q.from,to:q.to});let l=j.works.sort((a,b)=>q.desc?String(b.date).localeCompare(a.date):String(a.date).localeCompare(b.date));if(q.lim)l=l.slice(0,q.lim);return snap(l)},
+      onSnapshot(cb,err){
+        let alive=true;
+        const s={run:async()=>{try{const j=await api("list",{from:q.from,to:q.to});if(alive)cb(snap(j.works))}catch(e){if(alive&&err)err(e)}}};
+        subs.add(s);s.run();const t=setInterval(s.run,30000);
+        return()=>{alive=false;clearInterval(t);subs.delete(s)};
+      },
+      async add(w){const j=await api("add",{work:w});refresh();return{id:j.id}},
+      doc(id){return{
+        async update(p){await api("update",{id,patch:p});refresh()},
+        async delete(){await api("remove",{id});refresh()}
+      }}
+    };
+    return o;
+  }
+  return{
+    collection:()=>query(),
+    doc:()=>({
+      async set(v){const j=await api("setSettings",{pw:adminPw,settings:v});setSubs.forEach(f=>f(j.settings))},
+      onSnapshot(cb,err){
+        const run=async()=>{try{const j=await api("getSettings");cb({exists:true,data:()=>j.settings})}catch(e){err&&err(e)}};
+        const f=v=>cb({exists:true,data:()=>v});setSubs.add(f);run();const t=setInterval(run,120000);
+        return()=>{clearInterval(t);setSubs.delete(f)};
+      }
+    }),
+    _push:v=>setSubs.forEach(f=>f(v))
+  };
+}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&db&&typeof subscribeWorks==="function")subscribeWorks()});
+let cfg={...DEFAULT_CFG};
+let works=[],weekWorks=[];
+let viewDate=todayStr();
+let unsubWorks=null,loadTimer=null;
+let fCompany="",fStatus="";
+let editingId=null;
+
+/* ---------- 공통 ---------- */
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2400)}
+function setConn(msg,state){const c=$("#conn");c.querySelector("span").textContent=msg;c.className="conn"+(state?" "+state:"")}
+function setSkin(k,save){
+  if(k&&k!=="navy")document.documentElement.setAttribute("data-skin",k);else document.documentElement.removeAttribute("data-skin");
+  document.querySelectorAll(".skin button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.skin===k?"true":"false"));
+  if(save){try{localStorage.setItem("sos-skin",k)}catch(_){}}
+}
+document.querySelector(".skin").addEventListener("click",e=>{const b=e.target.closest("[data-skin]");if(b)setSkin(b.dataset.skin,true)});
+{let k="navy";try{const v=localStorage.getItem("sos-skin");if(v==="bright"||v==="board")k=v}catch(_){}setSkin(k,false)}
+let adminUnlocked=false;
+try{adminUnlocked=sessionStorage.getItem("sos-admin")==="1"}catch(_){}
+async function pwHashOf(pw){
+  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("sos-kimhae-central:"+pw));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function unlockAdmin(){adminUnlocked=true;canAdmin=true;applyPerms();try{sessionStorage.setItem("sos-admin","1")}catch(_){}closeSheet();show("admin")}
+function openPwSheet(){
+  if(!db){toast("구글시트에 연결된 뒤에 들어갈 수 있습니다");return}
+  openSheet(`<div class="sec-head"><h2 style="flex:1">🔒 비밀번호를 입력하세요</h2><button type="button" class="btn sm" data-close>닫기</button></div>
+    <p class="hint" style="margin:0">관리 화면은 비밀번호 확인 후 들어갈 수 있습니다.</p>
+    <form id="pwForm" class="reg" novalidate style="gap:10px">
+      <div class="f"><label for="pwIn">비밀번호</label><input type="password" id="pwIn" autocomplete="current-password"></div>
+      <p class="hint" id="pwInMsg" role="status" style="margin:0;color:var(--danger)"></p>
+      <button type="submit" class="btn primary" id="pwOk">확인</button>
+    </form>`,r=>{
+      const inp=r.querySelector("#pwIn");inp.focus();
+      r.querySelector("#pwForm").addEventListener("submit",async e=>{e.preventDefault();
+        const b=r.querySelector("#pwOk");b.disabled=true;r.querySelector("#pwInMsg").textContent="확인 중…";
+        try{await api("checkAdmin",{pw:inp.value});adminPw=inp.value;try{sessionStorage.setItem("sos-admin-pw",adminPw)}catch(_){}unlockAdmin()}
+        catch(err){r.querySelector("#pwInMsg").textContent=err.code==="auth"?"비밀번호가 맞지 않습니다.":"확인하지 못했습니다. 잠시 후 다시 시도하세요.";inp.select()}
+        finally{b.disabled=false}
+      });
+    });
+}
+function show(v){
+  if(v==="admin"&&!adminUnlocked){openPwSheet();return}
+  ["home","dash","reg","dong","admin"].forEach(k=>$("#v-"+k).hidden=k!==v);
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.v===v?"page":"false"));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.v)));
+$("#adminLock").addEventListener("click",()=>{adminUnlocked=false;canAdmin=false;adminPw="";try{sessionStorage.removeItem("sos-admin");sessionStorage.removeItem("sos-admin-pw")}catch(_){}applyPerms();show("home");toast("관리 화면을 잠갔습니다")});
+$("#pwChange").addEventListener("click",async()=>{
+  const a=$("#pwNew1").value,b=$("#pwNew2").value,m=$("#pwMsg");
+  if(a.length<4){m.textContent="4자 이상으로 정해 주세요.";return}
+  if(a!==b){m.textContent="두 비밀번호가 다릅니다.";return}
+  try{await api("changePw",{pw:adminPw,newPw:a});adminPw=a;try{sessionStorage.setItem("sos-admin-pw",a)}catch(_){}$("#pwNew1").value="";$("#pwNew2").value="";m.textContent="";toast("관리 비밀번호를 바꿨습니다")}
+  catch(err){m.textContent=err.code==="auth"?"관리 비밀번호가 맞지 않아 바꾸지 못했습니다. 잠근 뒤 다시 들어와 주세요.":"바꾸지 못했습니다. 잠시 후 다시 시도하세요."}
+});
+
+function segRadio(el,name,opts,val){el.innerHTML=opts.map((o,i)=>{const id=name+"_"+i;return `<input type="radio" name="${name}" id="${id}" value="${esc(o)}"${o===val?" checked":""}><label for="${id}">${esc(o)}</label>`}).join("")}
+function segCheck(el,name,opts){el.innerHTML=opts.map((o,i)=>{const id=name+"_"+i;return `<input type="checkbox" name="${name}" id="${id}" value="${esc(o)}"><label for="${id}">${esc(o)}</label>`}).join("")}
+const radioVal=n=>{const e=document.querySelector(`input[name="${n}"]:checked`);return e?e.value:""};
+const setRadio=(n,v)=>document.querySelectorAll(`input[name="${n}"]`).forEach(e=>e.checked=e.value===v);
+const checkVals=n=>[...document.querySelectorAll(`input[name="${n}"]:checked`)].map(e=>e.value);
+const setChecks=(n,arr)=>document.querySelectorAll(`input[name="${n}"]`).forEach(e=>e.checked=(arr||[]).includes(e.value));
+function floorList(){const a=[];for(let i=cfg.bmin;i>=1;i--)a.push("B"+i);for(let i=1;i<=cfg.fmax;i++)a.push(i+"F");a.push("옥탑");return a}
+
+function buildFormOptions(){
+  const keep={trade:radioVal("trade"),dong:checkVals("dong"),floor:checkVals("floor")};
+  segRadio($("#r_trade"),"trade",[...cfg.trades,"직접입력"],keep.trade||cfg.trades[0]);
+  segCheck($("#r_dong"),"dong",[...cfg.dongs,"기타"]);setChecks("dong",keep.dong);
+  segCheck($("#r_floor"),"floor",floorList());setChecks("floor",keep.floor);
+  if(!$("#r_status").children.length){
+    segRadio($("#r_status"),"status",STATUSES,"진행중");
+    segRadio($("#r_hr"),"hr",["해당","미해당"],"미해당");
+    segRadio($("#r_ptw"),"ptw",["해당 (O)","미해당 (X)"],"미해당 (X)");
+    segCheck($("#r_ptwTypes"),"ptwType",PTW_TYPES);
+    segRadio($("#r_up"),"up",["해당 (O)","미해당 (X)"],"미해당 (X)");
+    segRadio($("#r_hazmat"),"hazmat",["반입 (O)","미반입 (X)"],"미반입 (X)");
+    segRadio($("#r_watch"),"watch",["배치","미배치"],"미배치");
+    segRadio($("#r_early"),"early",["없음","조출","야간","조출·야간"],"없음");
+    segRadio($("#r_opc"),"opc",["해당없음","해당"],"해당없음");
+  }
+  const opt=(arr,v)=>`<option value="">선택하세요</option>`+arr.map(n=>`<option${n===v?" selected":""}>${esc(n)}</option>`).join("");
+  $("#r_trade_etc").hidden=radioVal("trade")!=="직접입력";
+  $("#tradeList").innerHTML=cfg.trades.map(t=>`<option value="${esc(t)}">`).join("");
+  if(typeof renderRows==="function"&&multi)renderRows();
+  applyPerms();
+}
+function syncPtw(){const on=radioVal("ptw").startsWith("해당");$("#fPtwTypes").hidden=!on}
+$("#r_ptw").addEventListener("change",syncPtw);
+$("#r_trade").addEventListener("change",()=>{$("#r_trade_etc").hidden=radioVal("trade")!=="직접입력"});
+function fillCfgForm(){
+  $("#c_dongs").value=cfg.dongs.join(", ");$("#c_bmin").value=cfg.bmin;$("#c_fmax").value=cfg.fmax;
+  $("#c_trades").value=cfg.trades.join(", ");$("#c_sheet").value=cfg.sheetUrl||"";$("#c_lat").value=cfg.lat??"";$("#c_lon").value=cfg.lon??"";
+  const so=$("#sheetOpen"),okUrl=/^https:\/\/docs\.google\.com\//.test(cfg.sheetUrl||"");so.hidden=!okUrl;if(okUrl)so.href=cfg.sheetUrl;$("#c_sup").value=cfg.sup.join(", ");$("#c_safe").value=cfg.safe.join(", ");
+  $("#mapRemove").hidden=!cfg.mapId||!canAdmin;
+}
+
+/* ---------- 배치도 ---------- */
+const mapSrc=()=>cfg.mapId?"https://lh3.googleusercontent.com/d/"+encodeURIComponent(cfg.mapId)+"=w2400":"";
+const mapSrc2=()=>"https://drive.google.com/thumbnail?id="+encodeURIComponent(cfg.mapId)+"&sz=w2400";
+function renderMap(){
+  const f=$("#mapFrame");const src=mapSrc();
+  $("#mapZoom").hidden=!src;
+  f.classList.toggle("has-img",!!src);
+  if(src){
+    f.innerHTML=`<img src="${esc(src)}" alt="김해신문센트럴아이파크 전경 배치도" id="mapImg"><div class="zlayer view" id="mapLayer"></div>`;
+    $("#mapImg").addEventListener("error",e=>{if(!e.target.dataset.alt){e.target.dataset.alt="1";e.target.src=mapSrc2();return}f.classList.remove("has-img");f.innerHTML=phHTML("배치도 이미지를 불러오지 못했습니다","관리 탭에서 이미지를 다시 올려 주세요.")});
+    $("#mapLayer").addEventListener("click",e=>{const z=e.target.closest(".zone");if(z)openDetail(z.dataset.id);else openZoom()});
+    renderMapZones();
+  }else{
+    f.innerHTML=phHTML("전경 배치도 자리",assets?"관리 탭에서 현장 전경 사진이나 배치도를 올리면 여기에 표시됩니다.":"관리자가 배치도를 올리면 여기에 표시됩니다.",!!assets);
+    const b=f.querySelector("#phUpload");b&&b.addEventListener("click",()=>{show("admin")});
+  }
+  renderZoneEditor();
+  renderHomeMap();
+}
+const pct=v=>(v*100).toFixed(3)+"%";
+const PALETTE=["#2F6BFF","#E5484D","#12A594","#8E4EC6","#F76B15","#3E9B4F","#D6409F","#0090FF","#A0644A","#5B5BD6","#00A2C7","#C2410C"];
+function compColor(name){let h=0;for(const ch of String(name||""))h=(h*31+ch.codePointAt(0))>>>0;return PALETTE[h%PALETTE.length]}
+function zoneColorStyle(w){const c=compColor(w.company);
+  return w.highRisk?`border:3px solid ${c};background:repeating-linear-gradient(-45deg,rgba(245,180,0,.6) 0 6px,transparent 6px 14px),${c}40;outline:2px solid #F5B400;outline-offset:-1px`
+    :`border-color:${c};background:${c}38`}
+const zStyle=z=>`left:${pct(z.x)};top:${pct(z.y)};width:${pct(z.w)};height:${pct(z.h)}`;
+function dayZonesHTML(src){
+  return sortWorks((src||filtered()).filter(w=>w.status!=="작업취소")).reverse().flatMap(w=>(w.zones||[]).map(z=>
+    `<div class="zone" data-id="${esc(w.id)}" style="${zStyle(z)};${zoneColorStyle(w)}" title="${esc(w.company+" · "+w.title)}"><span class="zl tag${z.y<.08?" below":""}${z.x+z.w/2>.6?" right":""}" style="background:${compColor(w.company)}">${w.highRisk?"⚠ ":""}${esc(w.title)}</span></div>`)).join("");
+}
+function renderHomeMap(){
+  const box=$("#homeMap");if(!box)return;const src=mapSrc();
+  $("#homeZoom").hidden=!src;
+  if(!src){box.dataset.src="";box.innerHTML=`<div class="zwrap" style="aspect-ratio:16/9">${phHTML("전경 배치도 자리",assets?"관리 탭에서 현장 배치도를 올리면 여기에 작업 구간과 함께 표시됩니다.":"관리자가 배치도를 올리면 여기에 표시됩니다.")}</div>`;$("#homeLegend").hidden=true;return}
+  if(box.dataset.src!==src){
+    box.dataset.src=src;
+    box.innerHTML=`<div class="zwrap"><img src="${esc(src)}" alt="김해신문센트럴아이파크 전경 배치도"><div class="zlayer view" id="homeLayer"></div></div>`;
+    $("#homeLayer").addEventListener("click",e=>{const z=e.target.closest(".zone");if(z)openDetail(z.dataset.id);else openZoomAll()});
+  }
+  const live=works.filter(w=>w.status!=="작업취소");
+  $("#homeLayer").innerHTML=dayZonesHTML(works);
+  const cnt={};live.filter(w=>(w.zones||[]).length).forEach(w=>cnt[w.company]=(cnt[w.company]||0)+1);
+  const cos=Object.keys(cnt).sort((a,b)=>a.localeCompare(b,"ko"));
+  const lg=$("#homeLegend");lg.hidden=!cos.length;
+  lg.innerHTML=cos.map(c=>`<span><i class="cdot" style="background:${compColor(c)}"></i>${esc(c)} <span class="hint mono">${cnt[c]}</span></span>`).join("")+(cos.length?'<span class="hint">⚠ 줄무늬 = 고위험</span>':"");
+}
+function openZoomAll(){const f=fCompany,st=fStatus;fCompany="";fStatus="";openZoom();fCompany=f;fStatus=st}
+$("#homeZoom").addEventListener("click",openZoomAll);
+function renderMapZones(){
+  const l=$("#mapLayer");if(l)l.innerHTML=dayZonesHTML();
+  const lg=$("#mapLegend");if(!lg)return;
+  const cnt={};filtered().filter(w=>w.status!=="작업취소"&&(w.zones||[]).length).forEach(w=>cnt[w.company]=(cnt[w.company]||0)+1);
+  const cos=Object.keys(cnt).sort((a,b)=>a.localeCompare(b,"ko"));
+  lg.hidden=!l||!cos.length;
+  lg.innerHTML=cos.map(c=>`<span><i class="cdot" style="background:${compColor(c)}"></i>${esc(c)} <span class="hint mono">${cnt[c]}</span></span>`).join("")+(cos.length?'<span class="hint">⚠ 줄무늬 = 고위험</span>':"");
+}
+
+/* 등록 폼 구간 편집 */
+let zones=[],pending=null,drag=null;
+const ROWC=["#2F6BFF","#E5484D","#12A594","#8E4EC6","#F76B15","#3E9B4F","#D6409F","#0090FF","#A0644A","#5B5BD6"];
+let multi=false,rows=[],activeRow=0;
+const newRow=()=>({title:"",trade:"",dong:"",workers:"",hr:false,zones:[]});
+function applyMultiUI(){["#fTitle","#fTrade","#fDong","#fWorkers"].forEach(id=>$(id).hidden=multi);$("#multiWrap").hidden=!multi}
+function renderRows(){
+  const box=$("#rowList");if(!multi){box.innerHTML="";return}
+  const dongOpt=d=>`<option value="">동 선택</option>`+[...cfg.dongs,"기타"].map(x=>`<option${x===d?" selected":""}>${esc(x)}</option>`).join("");
+  box.innerHTML=rows.map((r,i)=>{const c=ROWC[i%ROWC.length];return `<div class="rowc${i===activeRow?" active":""}" data-i="${i}">
+    <div class="rowh"><span class="rnum" style="background:${c}">작업 ${i+1}</span><span class="sp"></span>
+      <button type="button" class="btn sm${i===activeRow?" primary":""}" data-act="draw">${i===activeRow?"✏ 구간 그리는 중":"구간 그리기"} <span class="rcount">${r.zones.length?"("+r.zones.length+")":""}</span></button>
+      ${rows.length>1?`<button type="button" class="btn sm ghost" data-act="del" aria-label="작업 ${i+1} 삭제">삭제</button>`:""}</div>
+    <div class="rowf">
+      <input class="full" data-k="title" value="${esc(r.title)}" placeholder="작업명 예: 101동 주위 주차장 항타작업(1호기)" aria-label="작업 ${i+1} 작업명">
+      <input data-k="trade" list="tradeList" value="${esc(r.trade)}" placeholder="공종" aria-label="작업 ${i+1} 공종">
+      <select data-k="dong" aria-label="작업 ${i+1} 동">${dongOpt(r.dong)}</select>
+      <input data-k="workers" type="number" min="0" inputmode="numeric" value="${esc(r.workers)}" placeholder="인원" aria-label="작업 ${i+1} 인원">
+      <label class="rhr"><input type="checkbox" data-k="hr"${r.hr?" checked":""}> 고위험</label>
+    </div></div>`}).join("");
+}
+function setActiveRow(i){confirmPending();activeRow=i;zones=rows[i].zones;renderRows();drawZones()}
+function setMulti(on){
+  confirmPending();
+  if(on&&!multi){
+    let tr=radioVal("trade");if(tr==="직접입력")tr=$("#r_trade_etc").value.trim();
+    rows=[{title:$("#r_title").value,trade:tr,dong:checkVals("dong")[0]||"",workers:$("#r_workers").value,hr:radioVal("hr")==="해당",zones:zones.slice()},newRow()];
+    activeRow=0;multi=true;zones=rows[0].zones;
+  }else if(!on&&multi){
+    const first=rows[0];multi=false;zones=first?first.zones.slice():[];rows=[];
+  }
+  $("#r_multiOn").checked=multi;applyMultiUI();renderRows();drawZones();
+}
+$("#r_multiOn").addEventListener("change",e=>setMulti(e.target.checked));
+$("#rowAdd").addEventListener("click",()=>{rows.push(newRow());setActiveRow(rows.length-1)});
+$("#rowList").addEventListener("input",e=>{const el=e.target;const k=el.dataset.k;if(!k)return;const i=Number(el.closest(".rowc").dataset.i);rows[i][k]=el.type==="checkbox"?el.checked:el.value});
+$("#rowList").addEventListener("change",e=>{const el=e.target;const k=el.dataset.k;if(!k)return;const i=Number(el.closest(".rowc").dataset.i);rows[i][k]=el.type==="checkbox"?el.checked:el.value});
+$("#rowList").addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const i=Number(b.closest(".rowc").dataset.i);
+  if(b.dataset.act==="draw"){setActiveRow(i);$("#zoneBox").scrollIntoView({behavior:"smooth",block:"center"})}
+  else if(b.dataset.act==="del"&&rows.length>1){rows.splice(i,1);setActiveRow(Math.min(activeRow>i?activeRow-1:activeRow,rows.length-1))}});
+function renderZoneEditor(){
+  const box=$("#zoneBox");const src=mapSrc();
+  if(!src){box.dataset.src="";box.innerHTML=`<div class="zwrap" style="aspect-ratio:16/9">${phHTML("배치도가 아직 없습니다","관리 탭에서 현장 배치도를 올리면 여기서 작업 구간을 그릴 수 있습니다. 배치도 없이도 작업은 등록됩니다.")}</div>`;drawZones();return}
+  if(box.dataset.src!==src){
+    box.dataset.src=src;
+    box.innerHTML=`<div class="zwrap"><img src="${esc(src)}" alt="작업 구간 지정용 배치도" draggable="false"><div class="zlayer edit" id="zLayer"></div></div>`;
+    const L=$("#zLayer");
+    const pt=e=>{const r=L.getBoundingClientRect();return{x:Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),y:Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))}};
+    L.addEventListener("pointerdown",e=>{
+      if(!canWrite||e.target.closest(".zx"))return;
+      e.preventDefault();try{L.setPointerCapture(e.pointerId)}catch(_){}
+      drag=pt(e);pending={x:drag.x,y:drag.y,w:0,h:0};drawZones();
+    });
+    L.addEventListener("pointermove",e=>{
+      if(!drag)return;const p=pt(e);
+      pending={x:Math.min(drag.x,p.x),y:Math.min(drag.y,p.y),w:Math.abs(p.x-drag.x),h:Math.abs(p.y-drag.y)};drawZones();
+    });
+    const end=()=>{if(!drag)return;drag=null;if(pending&&(pending.w<.012||pending.h<.012))pending=null;drawZones()};
+    L.addEventListener("pointerup",end);L.addEventListener("pointercancel",end);
+    L.addEventListener("click",e=>{const x=e.target.closest(".zx");if(!x)return;zones.splice(Number(x.dataset.i),1);drawZones()});
+  }
+  drawZones();
+}
+function drawZones(){
+  const L=$("#zLayer");
+  const ac=multi?ROWC[activeRow%ROWC.length]:"";
+  const pre=multi?`작업 ${activeRow+1} · `:"";
+  if(L)L.innerHTML=(multi?rows.flatMap((r,k)=>k===activeRow?[]:r.zones.map(z=>{const c=ROWC[k%ROWC.length];return `<div class="zone other" style="${zStyle(z)};border-color:${c};background:${c}30"><span class="zl" style="background:${c}">작업 ${k+1}</span></div>`})).join(""):"")
+    +zones.map((z,i)=>`<div class="zone done" style="${zStyle(z)}${ac?`;border-color:${ac};background:${ac}38`:""}"><span class="zl"${ac?` style="background:${ac}"`:""}>${pre}구간 ${i+1}</span><button type="button" class="zx" data-i="${i}" aria-label="구간 ${i+1} 삭제">×</button></div>`).join("")
+    +(pending?`<div class="zone pend" style="${zStyle(pending)}"><span class="zl">미확정</span></div>`:"");
+  const st=$("#zStatus");
+  if(pending&&!drag){st.textContent=pre+"구간이 지정되었습니다 (확정 필요)";st.className="zstatus warn"}
+  else if(zones.length){st.textContent=`${pre}작업구간 ${zones.length}개 확정`;st.className="zstatus ok"}
+  else{st.textContent=pre+"구간 미지정";st.className="zstatus"}
+  if(multi){const rc=document.querySelectorAll("#rowList .rcount");rows.forEach((r,k)=>{if(rc[k])rc[k].textContent=r.zones.length?"("+r.zones.length+")":""})}
+}
+const r4=v=>Math.round(v*10000)/10000;
+function confirmPending(){if(pending){zones.push({x:r4(pending.x),y:r4(pending.y),w:r4(pending.w),h:r4(pending.h)});pending=null}}
+$("#zConfirm").addEventListener("click",()=>{if(!pending){toast("먼저 배치도 위를 드래그해서 구간을 지정하세요");return}confirmPending();drawZones();toast("작업구간을 확정했습니다")});
+$("#zReset").addEventListener("click",()=>{zones.length=0;pending=null;drawZones()});
+function phHTML(t,s,btn){return `<div class="ph">${ICON_MAP}<b>${esc(t)}</b><span>${esc(s)}</span>${btn?'<button type="button" class="btn sm primary" id="phUpload">배치도 올리러 가기</button>':""}</div>`}
+function openZoom(){
+  const d=new Date(viewDate+"T00:00:00");
+  openSheet(`<div class="sec-head"><h2 style="flex:1">전경 배치도 <span class="hint">${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})</span></h2>
+      <div class="zctl" role="group" aria-label="확대 배율">${[100,150,200,300].map(z=>`<button type="button" class="chip" data-z="${z}" aria-pressed="${z===100}">${z===100?"전체":z+"%"}</button>`).join("")}</div>
+      <button type="button" class="btn sm" data-close>닫기</button></div>
+    <div class="zoom" id="zoomBox"><div class="zoomin" id="zoomIn"><img src="${esc(mapSrc())}" alt="전경 배치도 확대" draggable="false"><div class="zlayer" id="zoomLayer">${dayZonesHTML()}</div></div></div>
+    <p class="hint" style="margin:0">배율을 고르고 끌어서 이동하세요. 작업명이나 구간을 누르면 작업 상세가 열립니다.</p>`,
+  r=>{
+    const box=r.querySelector("#zoomBox"),inn=r.querySelector("#zoomIn");
+    r.querySelector(".zctl").addEventListener("click",e=>{const b=e.target.closest("[data-z]");if(!b)return;
+      const cx=(box.scrollLeft+box.clientWidth/2)/box.scrollWidth,cy=(box.scrollTop+box.clientHeight/2)/box.scrollHeight;
+      inn.style.width=b.dataset.z+"%";r.querySelectorAll(".zctl .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));
+      requestAnimationFrame(()=>setTimeout(()=>{box.scrollLeft=cx*box.scrollWidth-box.clientWidth/2;box.scrollTop=cy*box.scrollHeight-box.clientHeight/2},170));
+    });
+    let pan=null,moved=false;
+    box.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;pan={x:e.clientX,y:e.clientY,l:box.scrollLeft,t:box.scrollTop};moved=false;box.classList.add("dragging")});
+    window.addEventListener("pointermove",e=>{if(!pan)return;const dx=e.clientX-pan.x,dy=e.clientY-pan.y;if(Math.abs(dx)+Math.abs(dy)>4)moved=true;box.scrollLeft=pan.l-dx;box.scrollTop=pan.t-dy});
+    window.addEventListener("pointerup",()=>{pan=null;box.classList.remove("dragging")});
+    r.querySelector("#zoomLayer").addEventListener("click",e=>{if(moved){moved=false;return}const z=e.target.closest(".zone");if(z)openDetail(z.dataset.id)});
+  },"full");
+}
+$("#mapZoom").addEventListener("click",openZoom);
+$("#mapFile").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];e.target.value="";
+  if(!file)return;
+  if(!canAdmin||!db){$("#mapMsg").textContent="관리 비밀번호로 들어온 뒤 올릴 수 있습니다.";return}
+  if(!/^image\/(png|jpe?g|webp)$/.test(file.type)){$("#mapMsg").textContent="JPG·PNG·WEBP 이미지만 올릴 수 있습니다.";return}
+  if(file.size>15*1024*1024){$("#mapMsg").textContent="15MB 이하 이미지만 올릴 수 있습니다.";return}
+  $("#mapMsg").textContent="올리는 중… (사진 크기에 따라 10~30초)";
+  try{
+    const b64=await new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(",")[1]);fr.onerror=no;fr.readAsDataURL(file)});
+    const j=await api("uploadMap",{pw:adminPw,b64,mime:file.type,name:file.name});
+    cfg={...cfg,...j.settings};fillCfgForm();renderMap();renderAll();
+    $("#mapMsg").textContent="";toast("배치도를 바꿨습니다");
+  }catch(err){$("#mapMsg").textContent=err.code==="auth"?"관리 비밀번호가 맞지 않습니다. 잠근 뒤 다시 들어와 주세요.":"올리지 못했습니다. 잠시 후 다시 시도하세요."}
+});
+$("#mapRemove").addEventListener("click",async()=>{
+  if(!db||!cfg.mapId)return;
+  try{await db.doc("settings/site").set({...cfg,mapId:""});cfg.mapId="";renderMap();fillCfgForm();toast("배치도를 내렸습니다")}catch(err){toast("바꾸지 못했습니다. 관리 비밀번호를 확인하세요")}
+});
+
+/* ---------- 현황 ---------- */
+function filtered(){return works.filter(w=>(!fCompany||w.company===fCompany)&&(!fStatus||(fStatus==="hr"?w.highRisk:w.status===fStatus)))}
+const sortWorks=a=>a.slice().sort((x,y)=>(!!y.highRisk-!!x.highRisk)||(STATUSES.indexOf(x.status)-STATUSES.indexOf(y.status))||String(x.start).localeCompare(String(y.start))||String(x.company).localeCompare(String(y.company),"ko"));
+
+function cardHTML(w){
+  const tags=[...(w.dongs||[]),...(w.floors||[])].map(t=>`<span class="loc-tag">${esc(t)}</span>`).join("");
+  return `<button type="button" class="card st-${esc(w.status)}${w.highRisk?" hr":""}${w.status==="작업취소"?" cancel":""}" data-id="${esc(w.id)}">
+    <div class="time"><b>${esc(w.start||"--:--")}</b><span>~${esc(w.end||"--:--")}</span><em>${Number(w.workers)||0}명</em></div>
+    <div class="row1"><span class="title">${esc(w.title)}</span>
+      ${w.highRisk?'<span class="pill p-hr">고위험</span>':""}${w.riskUp?'<span class="pill p-up">상등급</span>':""}<span class="pill p-${esc(w.status)}">${esc(w.status)}</span></div>
+    <div class="meta"><b style="display:inline-flex;align-items:center;gap:5px"><i class="cdot" style="background:${compColor(w.company)}"></i>${esc(w.company)}</b><span>${esc(w.trade)}</span>${w.leader?`<span>지휘 ${esc(w.leader)}</span>`:""}</div>
+    ${tags||w.loc||(w.zones||[]).length?`<div class="loc">${tags}${w.loc?`<span class="hint">${esc(w.loc)}</span>`:""}${(w.zones||[]).length?`<span class="loc-tag">📍 구간 ${w.zones.length}</span>`:""}</div>`:""}
+  </button>`;
+}
+function dongStats(){
+  const live=works.filter(w=>w.status!=="작업취소");
+  return [...cfg.dongs,"기타"].map(d=>{const ws=live.filter(w=>(w.dongs||[]).includes(d));return{d,n:ws.length,hr:ws.some(w=>w.highRisk),ppl:ws.reduce((s,w)=>s+(Number(w.workers)||0),0)}});
+}
+function renderHeader(){
+  const d=new Date(viewDate+"T00:00:00");
+  $("#dMain").textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})`;
+  const diff=Math.round((d-new Date(todayStr()+"T00:00:00"))/864e5);
+  $("#dSub").textContent=diff===0?"오늘":diff===-1?"어제":diff===1?"내일":diff<0?`${-diff}일 전`:`${diff}일 후`;
+  const live=works.filter(w=>w.status!=="작업취소");
+  $("#sTotal").textContent=live.length;
+  $("#sHr").textContent=live.filter(w=>w.highRisk).length;
+  $("#sWorkers").textContent=live.reduce((s,w)=>s+(Number(w.workers)||0),0);
+  $("#sCo").textContent=new Set(live.map(w=>w.company)).size;
+}
+function renderDash(){
+  renderMapZones();
+  const cos=[...new Set(works.map(w=>w.company))].sort((a,b)=>a.localeCompare(b,"ko"));
+  if(fCompany&&!cos.includes(fCompany))fCompany="";
+  $("#fCompany").innerHTML=`<option value="">전체 협력업체</option>`+cos.map(c=>`<option${c===fCompany?" selected":""}>${esc(c)}</option>`).join("");
+  $("#dongStrip").innerHTML=dongStats().map(s=>`<button type="button" class="dchip${s.n?" has":""}${s.hr?" hr":""}" data-d="${esc(s.d)}">${esc(s.d)}<span class="c">${s.n}</span></button>`).join("");
+  const list=sortWorks(filtered());
+  $("#listCount").textContent=works.length?`${list.length} / ${works.length}건`:"";
+  $("#list").innerHTML=list.length?list.map(cardHTML).join(""):
+    (works.length?`<div class="empty">${ICON_EMPTY}<b>조건에 맞는 작업이 없습니다</b><span>필터를 ‘전체’로 바꿔 보세요.</span></div>`
+      :`<div class="empty">${ICON_EMPTY}<b>${esc($("#dMain").textContent)} 등록된 작업이 없습니다</b><span>‘작업등록’ 탭에서 작업을 추가하면 이곳에 모입니다.</span>${canWrite?'<button type="button" class="btn primary sm" id="emptyAdd">작업 등록하기</button>':""}</div>`);
+  const ea=$("#emptyAdd");ea&&ea.addEventListener("click",()=>show("reg"));
+}
+function renderDong(){
+  $("#dongGrid").innerHTML=dongStats().map(s=>`<button type="button" class="dong${s.n?" has":""}${s.hr?" hr":""}" data-d="${esc(s.d)}"><span class="d">${esc(s.d)}</span><span class="c">${s.n}</span><span class="s">작업 · ${s.ppl}명</span></button>`).join("");
+}
+function renderAll(){renderHeader();renderDash();renderDong();renderHome()}
+const STC={"예정":"var(--plan)","진행중":"var(--accent)","완료":"var(--ok)","작업취소":"var(--muted)"};
+function hbarsHTML(items,max,colorFn){
+  return items.length?`<div class="hbars">${items.map(it=>`<div class="hbar"><span class="k" title="${esc(it.k)}">${colorFn?`<i class="cdot" style="background:${colorFn(it.k)}"></i>`:""}${esc(it.k)}</span><span class="tr"><i style="width:${max?Math.max(4,it.v/max*100):0}%${colorFn?`;background:${colorFn(it.k)}`:""}"></i></span><span class="v">${it.label}</span></div>`).join("")}</div>`:'<div class="h-empty">등록된 작업이 없습니다.</div>';
+}
+const WX={0:["맑음","☀️"],1:["대체로 맑음","🌤️"],2:["구름 조금","⛅"],3:["흐림","☁️"],45:["안개","🌫️"],48:["안개","🌫️"],51:["약한 이슬비","🌦️"],53:["이슬비","🌦️"],55:["강한 이슬비","🌧️"],56:["어는 이슬비","🌧️"],57:["어는 이슬비","🌧️"],61:["약한 비","🌧️"],63:["비","🌧️"],65:["강한 비","🌧️"],66:["어는 비","🌧️"],67:["어는 비","🌧️"],71:["약한 눈","🌨️"],73:["눈","🌨️"],75:["강한 눈","❄️"],77:["싸락눈","🌨️"],80:["약한 소나기","🌦️"],81:["소나기","🌧️"],82:["강한 소나기","⛈️"],85:["소낙눈","🌨️"],86:["강한 소낙눈","❄️"],95:["뇌우","⛈️"],96:["뇌우·우박","⛈️"],99:["뇌우·우박","⛈️"]};
+let wxTimer=null,wxBusy=false,wxLast={k:"",t:0};
+async function loadWeather(force){
+  const lat=Number(cfg.lat)||DEFAULT_CFG.lat,lon=Number(cfg.lon)||DEFAULT_CFG.lon,k=lat+","+lon;
+  if(wxBusy||(!force&&wxLast.k===k&&Date.now()-wxLast.t<5*60*1000))return;
+  wxBusy=true;wxLast={k,t:Date.now()};clearTimeout(wxTimer);wxTimer=setTimeout(()=>loadWeather(true),10*60*1000);
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_gusts_10m,precipitation,snowfall&daily=wind_gusts_10m_max,precipitation_sum&wind_speed_unit=ms&timezone=Asia%2FSeoul&forecast_days=1`;
+  try{
+    const j=await (await fetch(url)).json();const c=j.current,d=j.daily||{};
+    const [desc,icon]=WX[c.weather_code]||["–","🌡️"];
+    const t=String(c.time||"").slice(11,16);
+    $("#wxSub").textContent=`${t} 기준 · Open-Meteo 제공`;$("#wxIcon").textContent=icon;
+    $("#wxTemp").textContent=Math.round(c.temperature_2m)+"°";$("#wxDesc").textContent=desc;
+    $("#wxDetail").textContent=`체감 ${Math.round(c.apparent_temperature)}° · 습도 ${c.relative_humidity_2m}% · 풍속 ${c.wind_speed_10m.toFixed(1)}m/s · 순간풍속 ${c.wind_gusts_10m.toFixed(1)}m/s`;
+    const R=[],g=c.wind_gusts_10m,w=c.wind_speed_10m,p=c.precipitation||0,sn=c.snowfall||0;
+    if(g>20)R.push(["","순간풍속 20m/s 초과 — 타워크레인 운전작업 중지 (규칙 제37조)"]);
+    if(g>10)R.push(["","순간풍속 10m/s 초과 — 타워크레인 설치·수리·점검·해체 작업 중지 (규칙 제37조)"]);
+    if(w>=10)R.push(["","풍속 10m/s 이상 — 철골작업 중지 (규칙 제383조)"]);
+    if(p>=1)R.push(["",`강우량 ${p}mm/h — 철골작업 중지 (규칙 제383조)`]);
+    if(sn>=1)R.push(["",`강설량 ${sn}cm/h — 철골작업 중지 (규칙 제383조)`]);
+    const gm=(d.wind_gusts_10m_max||[])[0],ps=(d.precipitation_sum||[])[0];
+    if(!R.length)R.push(["ok","현재 강풍·강우로 인한 작업중지 기준에 해당하지 않습니다"]);
+    if(gm>10)R.push(["warn",`오늘 최대 순간풍속 예보 ${gm.toFixed(1)}m/s — 타워크레인·고소 작업 계획을 미리 확인하세요`]);
+    if(ps>=5)R.push(["warn",`오늘 예상 강수량 ${ps.toFixed(1)}mm — 토사·굴착면 관리에 유의하세요`]);
+    $("#wxRules").innerHTML=R.map(([k,txt])=>`<div><i class="${k}"></i><span>${esc(txt)}</span></div>`).join("");
+  }catch(e){$("#wxSub").textContent="날씨를 불러오지 못했습니다. 잠시 후 다시 시도합니다";$("#wxRules").innerHTML=""}
+  finally{wxBusy=false}
+}
+function renderHome(){
+  renderHomeMap();
+  const live=works.filter(w=>w.status!=="작업취소");
+  // 고위험
+  const hr=sortWorks(live.filter(w=>w.highRisk));
+  $("#hHrCount").textContent=hr.length?hr.length+"건":"";
+  $("#hHrList").innerHTML=hr.length?hr.map(w=>`<button type="button" class="hr-row" data-id="${esc(w.id)}"><i class="cdot" style="background:${compColor(w.company)}"></i><span class="t">${esc(w.trade?w.trade+" - ":"")}${esc(w.company)} · ${esc(w.title)}</span><span class="tm">${esc(w.start)}~${esc(w.end)}</span><span class="s">${esc([(w.dongs||[]).join("·"),(Number(w.workers)||0)+"명",w.status,w.leader?"지휘 "+w.leader:"",w.watch==="배치"?"감시단 배치":"감시단 미배치"].filter(Boolean).join(" · "))}</span></button>`).join("")
+    :'<div class="h-empty">이 날짜에 선정된 고위험 작업이 없습니다.</div>';
+  // 상태
+  const total=works.length;const cnt=s=>works.filter(w=>w.status===s).length;
+  $("#hStatus").innerHTML=`<div class="stbar">${STATUSES.map(s=>{const n=cnt(s);return n?`<i style="width:${n/total*100}%;background:${STC[s]}" title="${s} ${n}건"></i>`:""}).join("")}</div>
+    <div class="stlegend">${STATUSES.map(s=>`<div><b>${cnt(s)}</b><span><i style="background:${STC[s]}"></i>${s}</span></div>`).join("")}</div>`;
+  // 안전 점검
+  const c=(f)=>live.filter(f).length;
+  const hrNoWatch=live.filter(w=>w.highRisk&&w.watch!=="배치").length;
+  $("#hCheck").innerHTML=`<div class="checks">
+    <div class="chk"><b>${c(w=>String(w.ptw).startsWith("해당"))}</b><span>작업계획서 / PTW 해당</span></div>
+    <div class="chk"><b>${c(w=>w.riskUp)}</b><span>위험성평가 상등급</span></div>
+    <div class="chk"><b>${c(w=>String(w.hazmat).startsWith("반입"))}</b><span>유해위험물질 반입</span></div>
+    <div class="chk${hrNoWatch?" warn":""}"><b>${hrNoWatch}</b><span>고위험인데 감시단 미배치</span></div>
+  </div>`;
+  // 공종별
+  const tg={};live.forEach(w=>{const k=w.trade||"미지정";tg[k]=tg[k]||{n:0,p:0};tg[k].n++;tg[k].p+=Number(w.workers)||0});
+  const ti=Object.entries(tg).sort((a,b)=>b[1].n-a[1].n||b[1].p-a[1].p).map(([k,v])=>({k,v:v.n,label:`<b>${v.n}</b>건 · ${v.p}명`}));
+  $("#hTrade").innerHTML=hbarsHTML(ti,Math.max(0,...ti.map(x=>x.v)));
+  // 업체별 인원
+  const cg={};live.forEach(w=>{cg[w.company]=(cg[w.company]||0)+(Number(w.workers)||0)});
+  const ci=Object.entries(cg).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,v,label:`<b>${v}</b>명`}));
+  $("#hComp").innerHTML=hbarsHTML(ci,Math.max(0,...ci.map(x=>x.v)),compColor);
+  // 7일 추이
+  const days=[];for(let i=6;i>=0;i--)days.push(shift(viewDate,-i));
+  const stat=days.map(d=>{const ws=weekWorks.filter(w=>w.date===d&&w.status!=="작업취소");return{d,n:ws.length,h:ws.filter(w=>w.highRisk).length,p:ws.reduce((s,w)=>s+(Number(w.workers)||0),0)}});
+  const mx=Math.max(1,...stat.map(x=>x.n));
+  $("#hWeek").innerHTML=stat.map(x=>`<button type="button" class="wcol${x.d===viewDate?" sel":""}" data-d="${x.d}" aria-label="${x.d} 작업 ${x.n}건, 고위험 ${x.h}건, ${x.p}명"><span class="num">${x.n}</span><span class="stack" style="height:${x.n/mx*140}px"><i style="height:${x.n?(x.n-x.h)/x.n*100:0}%;background:var(--accent)"></i><i style="height:${x.n?x.h/x.n*100:0}%;background:var(--hazard)"></i></span></button>`).join("");
+  let lab=$("#hWeek").nextElementSibling;
+  if(!lab||!lab.classList.contains("wlabels")){lab=document.createElement("div");lab.className="wlabels";$("#hWeek").after(lab)}
+  lab.innerHTML=stat.map(x=>{const dt=new Date(x.d+"T00:00:00");return `<div class="${x.d===viewDate?"sel":""}"><b>${dt.getMonth()+1}/${dt.getDate()}</b>${WD[dt.getDay()]} · ${x.p}명</div>`}).join("");
+  const tot=stat.reduce((s,x)=>s+x.n,0),toth=stat.reduce((s,x)=>s+x.h,0),totp=stat.reduce((s,x)=>s+x.p,0);
+  $("#hWeekSum").textContent=`7일 합계 작업 ${tot}건 · 고위험 ${toth}건 · 연인원 ${totp}명`;
+}
+$("#hHrList").addEventListener("click",e=>{const b=e.target.closest(".hr-row");if(b)openDetail(b.dataset.id)});
+$("#hWeek").addEventListener("click",e=>{const b=e.target.closest(".wcol");if(b&&b.dataset.d!==viewDate)setDate(b.dataset.d)});
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.go)));
+
+$("#fCompany").addEventListener("change",e=>{fCompany=e.target.value;renderDash()});
+$("#fStatus").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;fStatus=b.dataset.s;document.querySelectorAll("#fStatus .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));renderDash()});
+$("#list").addEventListener("click",e=>{const c=e.target.closest(".card");if(c)openDetail(c.dataset.id)});
+const dongOpen=e=>{const c=e.target.closest("[data-d]");if(!c)return;const d=c.dataset.d;openList(d,sortWorks(works.filter(w=>(w.dongs||[]).includes(d))))};
+$("#dongGrid").addEventListener("click",dongOpen);
+$("#dongStrip").addEventListener("click",dongOpen);
+
+/* ---------- 시트 ---------- */
+function openSheet(html,onBind,wide){
+  const root=$("#sheetRoot");
+  root.innerHTML=`<div class="sheet-bg" id="sheetBg"><div class="sheet${wide==="full"?" full":wide?" wide":""}" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div></div>`;
+  $("#sheetBg").addEventListener("click",e=>{if(e.target.id==="sheetBg")closeSheet()});
+  root.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",closeSheet));
+  onBind&&onBind(root);
+}
+function closeSheet(){$("#sheetRoot").innerHTML=""}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+
+function openList(d,ws){
+  openSheet(`<div class="sec-head"><h2 style="flex:1">${esc(d)} · 작업 ${ws.length}건</h2><button type="button" class="btn sm" data-close>닫기</button></div>
+    <div class="list">${ws.length?ws.map(cardHTML).join(""):`<div class="empty">${ICON_EMPTY}<b>이 동에 등록된 작업이 없습니다</b></div>`}</div>`,
+    r=>r.querySelector(".list").addEventListener("click",e=>{const c=e.target.closest(".card");if(c)openDetail(c.dataset.id)}));
+}
+function openDetail(id){
+  const w=works.find(x=>x.id===id);if(!w)return;
+  const row=(k,v)=>v||v===0?`<dt>${k}</dt><dd>${esc(v)}</dd>`:"";
+  openSheet(`
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${w.highRisk?'<span class="pill p-hr">고위험</span>':""}${w.riskUp?'<span class="pill p-up">상등급</span>':""}<span class="pill p-${esc(w.status)}">${esc(w.status)}</span></div>
+    <h2>${esc(w.title)}</h2>
+    <dl class="kv">
+      ${row("작업일자",w.date)}${row("협력업체",w.company)}${row("공종",w.trade)}
+      ${row("위치",[(w.dongs||[]).join(", "),(w.floors||[]).join(", "),w.loc].filter(Boolean).join(" / "))}
+      ${row("시간",w.start+" – "+w.end)}${row("출역 인원",(Number(w.workers)||0)+"명")}
+      ${row("안전중점",w.point)}${row("사용 장비",w.equip)}
+      ${row("PTW",String(w.ptw).startsWith("해당")?"해당"+((w.ptwTypes||[]).length?" · "+w.ptwTypes.join(", "):""):"미해당")}${row("위험성 상등급",w.riskUp?"해당 (O)":"미해당 (X)")}${row("유해물질",w.hazmat)}
+      ${row("감시단 배치",w.watch)}${row("조출/야간",w.early)}${row("특별교육",w.edu)}${row("OPC 대상",w.opc?"해당":"")}${row("작업대",w.stands)}${row("절단공구",w.cutters)}${row("재해유형",w.accident)}
+      ${row("작업지휘자",w.leader)}${row("관리감독자(협력)",w.supCo)}${row("관리감독자(현대산업개발)",w.supHdc)}${row("안전관리자(현대산업개발)",w.safeHdc)}
+      ${row("비고",w.note)}
+    </dl>
+    ${canWrite?`<div style="display:flex;flex-direction:column;gap:6px"><span class="hint">상태 바꾸기</span><div class="chipset" id="stBtns">${STATUSES.map(s=>`<button type="button" class="chip" data-s="${s}" aria-pressed="${s===w.status}">${s}</button>`).join("")}</div></div>
+    <div class="formbar"><button type="button" class="btn" id="dEdit">수정</button><button type="button" class="btn" id="dCopy">다음 날로 복사</button><button type="button" class="btn danger" id="dDel">삭제</button><span style="flex:1"></span><button type="button" class="btn" data-close>닫기</button></div>
+    <div class="confirm" id="delConfirm" hidden><b>이 작업을 삭제할까요?</b><span class="hint">삭제하면 되돌릴 수 없습니다.</span><div class="formbar"><button type="button" class="btn danger" id="dDelYes">삭제</button><button type="button" class="btn" id="dDelNo">취소</button></div></div>`
+    :`<div class="formbar"><span style="flex:1"></span><button type="button" class="btn" data-close>닫기</button></div>`}
+  `,r=>{
+    if(!canWrite)return;
+    r.querySelector("#stBtns").addEventListener("click",async e=>{const b=e.target.closest(".chip");if(!b||b.dataset.s===w.status)return;
+      try{await db.collection("works").doc(id).update({status:b.dataset.s,updatedAt:Date.now()});toast("‘"+b.dataset.s+"’(으)로 바꿨습니다");closeSheet()}catch(err){writeErr(err)}});
+    r.querySelector("#dEdit").addEventListener("click",()=>{closeSheet();startEdit(w)});
+    r.querySelector("#dCopy").addEventListener("click",()=>{closeSheet();startCopy(w,shift(w.date,1))});
+    r.querySelector("#dDel").addEventListener("click",()=>r.querySelector("#delConfirm").hidden=false);
+    r.querySelector("#dDelNo").addEventListener("click",()=>r.querySelector("#delConfirm").hidden=true);
+    r.querySelector("#dDelYes").addEventListener("click",async()=>{try{await db.collection("works").doc(id).delete();toast("삭제했습니다");closeSheet()}catch(err){writeErr(err)}});
+  });
+}
+
+/* ---------- 등록 폼 ---------- */
+function formToWork(){
+  let trade=radioVal("trade");if(trade==="직접입력")trade=$("#r_trade_etc").value.trim();
+  const date=$("#r_date").value;let status=radioVal("status")||"진행중";
+  if(date>todayStr()&&status!=="작업취소")status="예정";
+  return{date,company:$("#r_company").value.trim(),title:$("#r_title").value.trim(),trade,status,
+    dongs:checkVals("dong"),floors:checkVals("floor"),loc:$("#r_loc").value.trim(),
+    workers:Number($("#r_workers").value)||0,start:$("#r_start").value,end:$("#r_end").value,
+    point:$("#r_point").value.trim(),equip:$("#r_equip").value.trim(),
+    highRisk:radioVal("hr")==="해당",ptw:radioVal("ptw"),ptwTypes:radioVal("ptw").startsWith("해당")?checkVals("ptwType"):[],riskUp:radioVal("up").startsWith("해당"),hazmat:radioVal("hazmat"),watch:radioVal("watch"),
+    early:radioVal("early")==="없음"?"":radioVal("early"),opc:radioVal("opc")==="해당",edu:$("#r_edu").value.trim(),
+    stands:$("#r_stands").value===""?"":Number($("#r_stands").value),cutters:$("#r_cutters").value===""?"":Number($("#r_cutters").value),
+    accident:$("#r_accident").value.trim(),leader:$("#r_leader").value.trim(),supCo:$("#r_supCo").value.trim(),
+    supHdc:$("#r_supHdc").value.trim(),safeHdc:$("#r_safeHdc").value.trim(),note:$("#r_note").value.trim(),zones:zones.slice()};
+}
+function workToForm(w){
+  $("#r_date").value=w.date;$("#r_company").value=w.company||"";$("#r_title").value=w.title||"";
+  if(cfg.trades.includes(w.trade))setRadio("trade",w.trade);else{setRadio("trade","직접입력");$("#r_trade_etc").value=w.trade||""}
+  $("#r_trade_etc").hidden=radioVal("trade")!=="직접입력";
+  setRadio("status",w.status);setChecks("dong",w.dongs);setChecks("floor",w.floors);$("#r_loc").value=w.loc||"";
+  $("#r_workers").value=w.workers??"";$("#r_start").value=w.start||"07:00";$("#r_end").value=w.end||"17:00";
+  $("#r_point").value=w.point||"";$("#r_equip").value=w.equip||"";setRadio("hr",w.highRisk?"해당":"미해당");
+  setRadio("ptw",w.ptw||"미해당 (X)");setChecks("ptwType",w.ptwTypes||[]);syncPtw();setRadio("up",w.riskUp?"해당 (O)":"미해당 (X)");setRadio("hazmat",w.hazmat||"미반입 (X)");setRadio("watch",w.watch||"미배치");
+  setRadio("early",w.early||"없음");setRadio("opc",w.opc?"해당":"해당없음");$("#r_edu").value=w.edu||"";
+  $("#r_stands").value=w.stands??"";$("#r_cutters").value=w.cutters??"";$("#r_accident").value=w.accident||"";
+  $("#r_leader").value=w.leader||"";$("#r_supCo").value=w.supCo||"";$("#r_supHdc").value=w.supHdc||"";$("#r_safeHdc").value=w.safeHdc||"";$("#r_note").value=w.note||"";
+  multi=false;rows=[];$("#r_multiOn").checked=false;applyMultiUI();renderRows();
+  zones=(w.zones||[]).map(z=>({...z}));pending=null;drawZones();
+}
+function resetForm(keep){
+  const k=keep?{company:$("#r_company").value,leader:$("#r_leader").value,supCo:$("#r_supCo").value,supHdc:$("#r_supHdc").value,safeHdc:$("#r_safeHdc").value,start:$("#r_start").value,end:$("#r_end").value}:null;
+  $("#regForm").reset();setChecks("dong",[]);setChecks("floor",[]);
+  setRadio("status","진행중");setRadio("hr","미해당");setRadio("ptw","미해당 (X)");setChecks("ptwType",[]);syncPtw();setRadio("up","미해당 (X)");setRadio("hazmat","미반입 (X)");setRadio("watch","미배치");setRadio("early","없음");setRadio("opc","해당없음");setRadio("trade",cfg.trades[0]);
+  $("#r_trade_etc").hidden=true;$("#r_date").value=viewDate;zones=[];pending=null;
+  if(multi){rows=[newRow(),newRow()];activeRow=0;zones=rows[0].zones;$("#r_multiOn").checked=true}
+  applyMultiUI();renderRows();drawZones();
+  if(k){$("#r_company").value=k.company;$("#r_leader").value=k.leader;$("#r_supCo").value=k.supCo;$("#r_supHdc").value=k.supHdc;$("#r_safeHdc").value=k.safeHdc;$("#r_start").value=k.start;$("#r_end").value=k.end}
+}
+function startEdit(w){editingId=w.id;workToForm(w);$("#editBanner").hidden=false;$("#submitBtn").textContent="수정 저장하기";$("#regTitle").textContent="작업 수정";$("#multiToggle").hidden=true;show("reg")}
+function startCopy(w,date){stopEdit();workToForm({...w,date,status:date>todayStr()?"예정":"진행중",highRisk:false});show("reg");toast("내용을 채웠습니다. 고위험 여부는 다시 선택하세요")}
+function stopEdit(){editingId=null;$("#editBanner").hidden=true;$("#submitBtn").textContent="작업 등록하기";$("#regTitle").textContent="일일작업 등록"}
+$("#cancelEdit").addEventListener("click",()=>{stopEdit();resetForm(false)});
+
+$("#regForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  confirmPending();drawZones();
+  const w=formToWork();const miss=[];
+  if(multi&&!editingId){
+    if(!w.date)miss.push("작업 일자");if(!w.company)miss.push("협력업체명");
+    rows.forEach((r,i)=>{const m=[];if(!r.title.trim())m.push("작업명");if(!r.trade.trim())m.push("공종");if(!r.dong)m.push("동");if(r.workers==="")m.push("인원");if(m.length)miss.push(`작업 ${i+1}(${m.join("·")})`)});
+    if(miss.length){$("#formMsg").textContent="입력하지 않은 항목: "+miss.join(", ");toast("필수 항목을 채워 주세요");return}
+    if(!db){$("#formMsg").textContent="저장소에 연결되지 않아 등록할 수 없습니다.";return}
+    $("#submitBtn").disabled=true;
+    try{
+      let n=0;
+      for(const r of rows){
+        await db.collection("works").add({...w,title:r.title.trim(),trade:r.trade.trim(),dongs:[r.dong],workers:Number(r.workers)||0,highRisk:!!r.hr,zones:r.zones.map(z=>({...z})),createdAt:Date.now()});
+        n++;$("#formMsg").textContent=`등록 중… ${n}/${rows.length}`;
+      }
+      $("#formMsg").textContent="";toast(`${w.company} 작업 ${n}건을 등록했습니다`);
+      resetForm($("#keepFields").checked);
+      if(w.date!==viewDate)setDate(w.date);
+    }catch(err){writeErr(err)}finally{$("#submitBtn").disabled=!canWrite}
+    return;
+  }
+  if(!w.date)miss.push("작업 일자");if(!w.company)miss.push("협력업체명");if(!w.title)miss.push("작업명");if(!w.trade)miss.push("공종");
+  if(!w.dongs.length)miss.push("동");if($("#r_workers").value==="")miss.push("출역 인원");
+  if(miss.length){$("#formMsg").textContent="입력하지 않은 항목: "+miss.join(", ");toast("필수 항목을 채워 주세요");return}
+  if(!db){$("#formMsg").textContent="저장소에 연결되지 않아 등록할 수 없습니다. 잠시 후 다시 시도하세요.";return}
+  $("#submitBtn").disabled=true;$("#formMsg").textContent="";
+  try{
+    if(editingId){await db.collection("works").doc(editingId).update({...w,updatedAt:Date.now()});toast("수정했습니다");stopEdit();resetForm(false)}
+    else{await db.collection("works").add({...w,createdAt:Date.now()});toast(w.date+" 작업을 등록했습니다");resetForm($("#keepFields").checked)}
+    if(w.date!==viewDate)setDate(w.date);
+  }catch(err){writeErr(err)}finally{$("#submitBtn").disabled=!canWrite}
+});
+
+let recents=[],recentLoading=false;
+function openRecent(){
+  const d=new Date(viewDate+"T00:00:00");
+  const dh=viewDate===todayStr()?"오늘":`${d.getMonth()+1}월 ${d.getDate()}일`;
+  openSheet(`<div class="sec-head"><h2 style="flex:1">최근 등록한 작업</h2><button type="button" class="btn sm" data-close>닫기</button></div>
+    <p class="hint" style="margin:0">고르면 입력칸이 ${esc(dh)} 날짜로 채워집니다. 고위험 여부는 다시 선택하세요.</p>
+    <div class="toolbar">
+      <input class="select" id="recentSearch" type="search" placeholder="업체명·작업명으로 찾기" aria-label="최근 작업 검색">
+      <select class="select" id="recentRange" aria-label="불러올 기간" style="flex:0 0 auto;min-width:120px"><option value="7">최근 7일</option><option value="14" selected>최근 14일</option><option value="30">최근 30일</option></select>
+    </div>
+    <div class="rlist" id="recentList"><p class="hint" style="margin:0">불러오는 중…</p></div>`,
+  r=>{
+    r.querySelector("#recentSearch").addEventListener("input",renderRecent);
+    r.querySelector("#recentRange").addEventListener("change",loadRecent);
+    r.querySelector("#recentList").addEventListener("click",e=>{const b=e.target.closest(".ritem");if(!b)return;const w=recents.find(x=>x.id===b.dataset.id);if(!w)return;closeSheet();startCopy(w,viewDate)});
+    loadRecent();
+  });
+}
+async function loadRecent(){
+  if(!db||recentLoading)return;recentLoading=true;
+  const days=Number(($("#recentRange")||{}).value)||14;
+  try{
+    const since=shift(todayStr(),-days);
+    const snap=await db.collection("works").where("date",">=",since).orderBy("date","desc").limit(400).get();
+    const all=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)||String(b.date).localeCompare(String(a.date)));
+    const seen=new Set();recents=[];
+    all.forEach(w=>{const key=w.company+"|"+w.title;if(!seen.has(key)){seen.add(key);recents.push(w)}});
+    renderRecent();
+  }catch(err){const l=$("#recentList");if(l)l.innerHTML='<p class="hint" style="margin:0">불러오지 못했습니다. 잠시 후 다시 열어 주세요.</p>'}
+  finally{recentLoading=false}
+}
+function renderRecent(){
+  const l=$("#recentList");if(!l)return;
+  const q=($("#recentSearch").value||"").trim().toLowerCase();
+  const list=recents.filter(w=>!q||(w.company+" "+w.title+" "+w.trade).toLowerCase().includes(q)).slice(0,60);
+  l.innerHTML=list.length?list.map(w=>`<button type="button" class="ritem" data-id="${esc(w.id)}">
+    <i class="cdot" style="background:${compColor(w.company)}"></i><span class="t">${esc(w.company)} · ${esc(w.title)}</span><span class="d">${esc(String(w.date).slice(5).replace("-","/"))}</span>
+    <span class="s">${esc([w.trade,(w.dongs||[]).join("·"),(Number(w.workers)||0)+"명",w.highRisk?"고위험":"",(w.zones||[]).length?"구간 "+w.zones.length:""].filter(Boolean).join(" · "))}</span></button>`).join("")
+    :`<p class="hint" style="margin:0">${recents.length?"검색 결과가 없습니다.":"이 기간에 등록된 작업이 없습니다."}</p>`;
+}
+$("#openRecent").addEventListener("click",openRecent);
+
+
+function writeErr(err){
+  const c=err&&err.code;
+  if(c==="not_found")toast("이미 삭제된 작업입니다. 목록을 새로 불러옵니다");
+  else if(c==="network"||err instanceof TypeError)toast("구글시트에 연결하지 못했습니다. 인터넷 연결을 확인하세요");
+  else toast("저장하지 못했습니다: "+(err&&err.message||"잠시 후 다시 시도하세요"));
+}
+
+/* ---------- 카톡 텍스트 ---------- */
+/* ---------- 구글시트용 복사 ---------- */
+const SHEET_COLS=["1열","위치","작업내용","인원","건설기계 작업계획서","위험성평가 상등급","PTW 대상","조출/야간","관리감독자","안전감시단 상주","고위험작업 특별교육","OPC 대상 작업","비고"];
+function sheetRow(w){
+  return [w.company,w.loc||(w.dongs||[]).join("\n"),w.title,Number(w.workers)||0,w.equip||"",
+    w.riskUp?"상등급":"해당없음",String(w.ptw).startsWith("해당")?"PTW 대상":"해당없음",w.early||"",
+    w.supHdc||w.supCo||"",w.watch==="배치"?"상주":"",w.edu||"해당없음",w.opc?"해당":"해당없음",w.note||""];
+}
+function sheetWorks(){
+  const live=works.filter(w=>w.status!=="작업취소");
+  const order=[];live.slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)).forEach(w=>{if(!order.includes(w.company))order.push(w.company)});
+  return live.slice().sort((a,b)=>order.indexOf(a.company)-order.indexOf(b.company)||(a.createdAt||0)-(b.createdAt||0));
+}
+const tsvCell=v=>{v=String(v??"");return /[\t\n"]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+$("#sheetBtn").addEventListener("click",()=>{
+  const ws=sheetWorks();const rows=ws.map(sheetRow);
+  const d=new Date(viewDate+"T00:00:00");
+  const ttl=`${viewDate.slice(2).replace(/-/g,"")}(${WD[d.getDay()]}) 김해 신문센트럴 아이파크 작업 현황`;
+  openSheet(`<div class="sec-head"><h2 style="flex:1">구글시트용 복사</h2><button type="button" class="btn sm" data-close>닫기</button></div>
+    <p class="hint" style="margin:0">${esc(ttl)} · ${rows.length}건. 시트 열 순서(업체 → 위치 → 작업내용 → … → 비고)에 맞춰 복사합니다. 시트에서 붙여넣을 칸의 첫 셀(업체 열)을 누르고 붙여넣으세요. 서식을 그대로 두려면 Ctrl+Shift+V(값만 붙여넣기)를 쓰세요.</p>
+    <label class="rtoggle" style="font-weight:500"><input type="checkbox" id="shHead"> 제목줄도 함께 복사</label>
+    <div class="sheetwrap"><table class="sheet"><thead><tr>${SHEET_COLS.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead>
+      <tbody>${rows.length?rows.map(r=>`<tr>${r.map((v,i)=>`<td class="${i===0?"co":""}${i===2||i===12?" l":""}${v==="상등급"?" up":""}">${esc(v)}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="13">이 날짜에 등록된 작업이 없습니다.</td></tr>`}</tbody></table></div>
+    <div class="note" style="background:var(--accent-soft);flex-direction:column;align-items:flex-start;gap:6px">
+      <b>시트 양식에 바로 채우기</b>
+      <span class="hint">구글시트의 <b>${esc(viewDate.slice(2).replace(/-/g,"."))}</b> 탭에서 A열에 업체명이 적힌 줄에 값만 채웁니다. 글씨 크기·색·드롭다운 서식은 그대로 둡니다. 업체 줄이 모자라면 같은 서식으로 줄을 추가합니다. 다시 누르면 지난번에 채운 칸만 지우고 새로 채웁니다.</span>
+      <button type="button" class="btn primary" id="shFill"${rows.length?"":" disabled"}>시트 양식에 채우기 (${rows.length}건)</button>
+      <span class="hint" id="shFillMsg" role="status"></span>
+    </div>
+    <div class="formbar"><button type="button" class="btn" id="shCopy" style="flex:1"${rows.length?"":" disabled"}>복사만 하기</button>${/^https:\/\/docs\.google\.com\//.test(cfg.sheetUrl||"")?`<a class="btn" href="${esc(cfg.sheetUrl)}" target="_blank" rel="noopener">구글시트 열기 ↗</a>`:""}</div>`,
+  r=>{r.querySelector("#shFill").addEventListener("click",async e=>{
+    const b=e.currentTarget,m=r.querySelector("#shFillMsg");b.disabled=true;m.textContent="채우는 중… (10~20초)";
+    try{const j=await api("fillSheet",{date:viewDate});m.textContent=`‘${j.tab}’ 탭에 ${j.count}건을 채웠습니다.`+(j.added?` 줄 ${j.added}개를 추가했습니다.`:"");toast("구글시트에 채웠습니다")}
+    catch(err){m.textContent=err.code==="no_tab"?err.message:"채우지 못했습니다: "+(err.message||"잠시 후 다시 시도하세요")}
+    finally{b.disabled=false}
+  });
+  r.querySelector("#shCopy").addEventListener("click",()=>{
+    const all=(r.querySelector("#shHead").checked?[SHEET_COLS]:[]).concat(rows);
+    const tsv=all.map(x=>x.map(tsvCell).join("\t")).join("\n");
+    const html="<table>"+all.map(x=>"<tr>"+x.map(v=>"<td>"+esc(v).replace(/\n/g,"<br>")+"</td>").join("")+"</tr>").join("")+"</table>";
+    const ok=()=>toast(`${rows.length}건을 복사했습니다. 구글시트에 붙여넣으세요`);
+    const fallback=()=>{try{navigator.clipboard.writeText(tsv).then(ok,()=>toast("복사하지 못했습니다. 표를 드래그해서 복사하세요"))}catch(_){toast("복사하지 못했습니다. 표를 드래그해서 복사하세요")}};
+    try{
+      if(window.ClipboardItem&&navigator.clipboard.write){
+        navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([tsv],{type:"text/plain"})})]).then(ok,fallback);
+      }else fallback();
+    }catch(_){fallback()}
+  })},true);
+});
+$("#exportBtn").addEventListener("click",()=>{
+  const live=sortWorks(works.filter(w=>w.status!=="작업취소"));
+  const d=new Date(viewDate+"T00:00:00");
+  let t=`[김해신문센트럴아이파크] ${viewDate}(${WD[d.getDay()]}) 일일 작업 현황\n`;
+  t+=`총 ${live.length}건 · 고위험 ${live.filter(w=>w.highRisk).length}건 · 출역 ${live.reduce((s,w)=>s+(Number(w.workers)||0),0)}명\n`;
+  const hr=live.filter(w=>w.highRisk),nr=live.filter(w=>!w.highRisk);
+  const line=(w,i)=>`${i+1}. ${w.company} | ${w.title}\n   ${(w.dongs||[]).join("·")} ${(w.floors||[]).join("·")} | ${w.start}~${w.end} | ${w.workers}명${w.leader?" | 지휘 "+w.leader:""}`;
+  if(hr.length)t+=`\n■ 고위험 작업\n`+hr.map(line).join("\n")+"\n";
+  if(nr.length)t+=`\n■ 일반 작업\n`+nr.map(line).join("\n")+"\n";
+  if(!live.length)t+="\n등록된 작업 없음\n";
+  openSheet(`<div class="sec-head"><h2 style="flex:1">카톡 전송용 텍스트</h2><button type="button" class="btn sm" data-close>닫기</button></div>
+    <textarea class="out" id="outTxt" readonly aria-label="현황 텍스트">${esc(t)}</textarea>
+    <button type="button" class="btn primary" id="copyTxt">복사하기</button>`,
+    r=>r.querySelector("#copyTxt").addEventListener("click",()=>{const ta=r.querySelector("#outTxt");
+      const fb=()=>{ta.select();toast("텍스트를 선택했습니다. 길게 눌러 복사하세요")};
+      try{navigator.clipboard.writeText(t).then(()=>toast("복사했습니다. 카톡에 붙여넣으세요"),fb)}catch(_){fb()}}));
+});
+
+/* ---------- 날짜 ---------- */
+function setDate(d){viewDate=d;$("#viewDate").value=d;if(!editingId)$("#r_date").value=d;renderHeader();subscribeWorks()}
+$("#viewDate").addEventListener("change",e=>e.target.value&&setDate(e.target.value));
+$("#prevDay").addEventListener("click",()=>setDate(shift(viewDate,-1)));
+$("#nextDay").addEventListener("click",()=>setDate(shift(viewDate,1)));
+$("#goToday").addEventListener("click",()=>setDate(todayStr()));
+
+/* ---------- 관리 ---------- */
+const splitList=s=>s.split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
+$("#cfgForm").addEventListener("submit",async e=>{
+  e.preventDefault();if(!db)return;
+  const next={...cfg,dongs:splitList($("#c_dongs").value),bmin:Math.max(0,Math.min(9,Number($("#c_bmin").value)||0)),fmax:Math.max(1,Math.min(99,Number($("#c_fmax").value)||1)),
+    trades:splitList($("#c_trades").value),sheetUrl:/^https:\/\/docs\.google\.com\//.test($("#c_sheet").value.trim())?$("#c_sheet").value.trim():"",sup:splitList($("#c_sup").value),safe:splitList($("#c_safe").value),
+    lat:Number($("#c_lat").value)||DEFAULT_CFG.lat,lon:Number($("#c_lon").value)||DEFAULT_CFG.lon};
+  if(!next.dongs.length||!next.trades.length){$("#cfgMsg").textContent="동 목록과 공종 목록은 하나 이상 있어야 합니다.";return}
+  try{await db.doc("settings/site").set(next);$("#cfgMsg").textContent="";toast("설정을 저장했습니다")}catch(err){$("#cfgMsg").textContent="저장하지 못했습니다. 관리 설정은 편집자 이상만 바꿀 수 있습니다."}
+});
+$("#closeDay").addEventListener("click",async()=>{
+  if(!db)return;const ing=works.filter(w=>w.status==="진행중");
+  if(!ing.length){toast("진행중 작업이 없습니다");return}
+  try{for(const w of ing){await db.collection("works").doc(w.id).update({status:"완료",updatedAt:Date.now()})}toast(ing.length+"건을 완료로 마감했습니다")}catch(err){writeErr(err)}
+});
+
+function applyPerms(){
+  $("#roNote").hidden=canWrite;
+  $("#regForm").querySelectorAll("input,select,textarea,button").forEach(el=>el.disabled=!canWrite);
+  $("#openRecent").disabled=!canWrite;
+  $("#adminRo").hidden=canAdmin;
+  $("#cfgForm").querySelectorAll("#c_dongs,#c_bmin,#c_fmax,#c_trades,#c_sup,#c_safe,#c_sheet,#c_lat,#c_lon,#cfgSave").forEach(el=>el.disabled=!canAdmin);
+  $("#mapFile").disabled=!canAdmin;
+  $("#mapFileLabel").style.opacity=canAdmin?"":".45";$("#mapFileLabel").style.pointerEvents=canAdmin?"":"none";
+  ["#pwNew1","#pwNew2","#pwChange","#c_lat","#c_lon"].forEach(id=>{const el=$(id);if(el)el.disabled=!canAdmin});
+  $("#mapRemove").hidden=!cfg.mapId||!canAdmin;
+  $("#closeDay").disabled=!canWrite;
+}
+
+/* ---------- 데이터 ---------- */
+function subscribeWorks(){
+  if(!db){renderAll();return}
+  unsubWorks&&unsubWorks();clearTimeout(loadTimer);
+  works=[];weekWorks=[];renderAll();setConn("불러오는 중…");
+  loadTimer=setTimeout(()=>setConn("구글시트 응답이 늦습니다. 잠시만 기다려 주세요","bad"),15000);
+  const d=viewDate,from=shift(d,-6);
+  unsubWorks=db.collection("works").where("date",">=",from).where("date","<=",d).onSnapshot(snap=>{
+    if(d!==viewDate)return;
+    weekWorks=snap.docs.map(x=>({id:x.id,...x.data()}));
+    works=weekWorks.filter(w=>w.date===d);
+    if(!snap.metadata.fromCache){clearTimeout(loadTimer);setConn("구글시트와 연동 중 · 30초마다 자동 갱신","live")}
+    const cos=new Set([...document.querySelectorAll("#coList option")].map(o=>o.value));works.forEach(w=>w.company&&cos.add(w.company));
+    $("#coList").innerHTML=[...cos].sort((a,b)=>a.localeCompare(b,"ko")).map(c=>`<option value="${esc(c)}">`).join("");
+    renderAll();
+  },()=>{clearTimeout(loadTimer);setConn("구글시트에서 불러오지 못했습니다. 잠시 후 자동으로 다시 시도합니다","bad")});
+}
+
+$("#viewDate").value=viewDate;
+buildFormOptions();fillCfgForm();resetForm(false);renderMap();renderAll();
+
+(()=>{
+  loadWeather();
+  if(!API){
+    setConn("구글시트가 아직 연결되지 않았습니다 (config.js에 Apps Script 주소를 넣어 주세요)","bad");canWrite=false;canAdmin=false;applyPerms();renderMap();
+    $("#list").innerHTML=`<div class="empty">${ICON_EMPTY}<b>구글시트가 연결되지 않았습니다</b><span>config.js 파일에 Apps Script 배포 주소를 넣으면 작업을 등록하고 볼 수 있습니다.</span></div>`;return;
+  }
+  db=makeDb();canWrite=true;
+  if(adminUnlocked&&adminPw)canAdmin=true;else{adminUnlocked=false;try{sessionStorage.removeItem("sos-admin")}catch(_){}}
+  applyPerms();renderMap();
+  db.doc("settings/site").onSnapshot(s=>{
+    if(s.exists){cfg={...DEFAULT_CFG,...s.data()};buildFormOptions();fillCfgForm();renderMap();renderAll();if(typeof loadWeather==="function")loadWeather()}
+  },()=>{});
+  subscribeWorks();
+})();
+})();
+</script>
+</body>
+</html>
