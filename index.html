@@ -1806,6 +1806,22 @@ document.addEventListener("mousemove",()=>{if(!document.body.classList.contains(
 if(document.documentElement.classList.contains("tv"))setTimeout(()=>show("tv"),0);
 
 /* ---------- 데이터 ---------- */
+/* 예정 → 진행중 자동 전환 (오늘 작업, 시작 시간이 지나면) */
+const autoStarted=new Set();
+function autoStartWorks(){
+  if(!db||!canWrite)return 0;
+  const t=todayStr(),n=new Date(),hm=pad(n.getHours())+":"+pad(n.getMinutes());let c=0;
+  works.forEach(w=>{
+    const st=String(w.start||"").trim();
+    if(w.date!==t||w.status!=="예정"||!/^\d{1,2}:\d{2}$/.test(st)||st.padStart(5,"0")>hm)return;
+    w.status="진행중";c++;
+    const ww=weekWorks.find(x=>x.id===w.id);if(ww)ww.status="진행중";
+    if(autoStarted.has(w.id))return;autoStarted.add(w.id);
+    api("update",{id:w.id,patch:{status:"진행중",updatedAt:Date.now()}}).catch(()=>autoStarted.delete(w.id));
+  });
+  return c;
+}
+setInterval(()=>{if(autoStartWorks())renderAll()},30000);
 function subscribeWorks(){
   if(!db){renderAll();return}
   unsubWorks&&unsubWorks();clearTimeout(loadTimer);
@@ -1815,7 +1831,7 @@ function subscribeWorks(){
   unsubWorks=db.collection("works").where("date",">=",from).where("date","<=",d).onSnapshot(snap=>{
     if(d!==viewDate)return;
     weekWorks=snap.docs.map(x=>({id:x.id,...x.data()}));
-    works=weekWorks.filter(w=>w.date===d);colorMap={};rebuildColors(weekWorks);
+    works=weekWorks.filter(w=>w.date===d);autoStartWorks();colorMap={};rebuildColors(weekWorks);
     if(!snap.metadata.fromCache){clearTimeout(loadTimer);setConn("구글시트와 연동 중 · 30초마다 자동 갱신","live")}
     const cos=new Set([...document.querySelectorAll("#coList option")].map(o=>o.value));works.forEach(w=>w.company&&cos.add(w.company));
     $("#coList").innerHTML=[...cos].sort((a,b)=>a.localeCompare(b,"ko")).map(c=>`<option value="${esc(c)}">`).join("");
