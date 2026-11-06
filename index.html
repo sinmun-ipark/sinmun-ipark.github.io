@@ -280,6 +280,7 @@ nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent
 .h-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .h-wide{grid-column:1 / -1}
 #hHrList{max-height:520px;overflow:auto}
+@media (min-width:761px){.h-hr{grid-row:span 2;contain:size;min-height:420px}.h-hr #hHrList{flex:1;min-height:0;max-height:none}}
 @media (max-width:760px){.h-grid{grid-template-columns:minmax(0,1fr)}}
 .h-card{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .h-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -430,17 +431,17 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
         <div id="homeMap"></div>
         <div class="zlegend" id="homeLegend" style="padding:0" hidden></div>
       </div>
-      <div class="panel h-card">
+      <div class="panel h-card h-hr">
         <div class="h-head"><h2>고위험 작업</h2><span class="count" id="hHrCount"></span><button type="button" class="btn sm ghost" data-go="dash">작업현황 보기 ›</button></div>
         <div id="hHrList"></div>
       </div>
       <div class="wx" id="wxCard" aria-live="polite">
         <div class="wx-top"><div><b class="wx-place">📍 김해신문센트럴아이파크</b><span class="wx-sub" id="wxSub">날씨 불러오는 중…</span></div><span class="wx-icon" id="wxIcon" aria-hidden="true"></span></div>
         <div class="wx-main"><span class="wx-temp" id="wxTemp">–</span><div><b id="wxDesc">–</b><span id="wxDetail" class="wx-detail"></span></div></div>
-        <div class="wx-rules" id="wxRules"></div>
+        <div class="wx-rules" id="wxRules" hidden></div>
         <p class="wx-foot">예보 모델 값입니다. 작업중지 판단은 현장 풍속계 실측값을 기준으로 하세요.</p>
       </div>
-      <div class="panel h-card">
+      <div class="panel h-card" hidden>
         <div class="h-head"><h2>작업 진행 상태</h2></div>
         <div id="hStatus"></div>
       </div>
