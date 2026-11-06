@@ -240,7 +240,7 @@ legend + *{clear:both}
 /* ---- 하단 탭 ---- */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));pointer-events:none}
 nav.tabs .wrap{pointer-events:auto}
-nav.tabs .bar{display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(20,28,51,.16);padding:6px}
+nav.tabs .bar{display:grid;grid-template-columns:repeat(6,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(20,28,51,.16);padding:6px}
 nav.tabs button{background:none;border:0;border-radius:12px;padding:7px 4px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:600}
 nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
 nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
@@ -374,6 +374,64 @@ nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent
 .ph-pick .th button{position:absolute;right:2px;top:2px;width:22px;height:22px;border-radius:50%;border:0;background:#D23B33;color:#fff;font-size:14px;line-height:22px;padding:0}
 .ph-pick label.add{width:88px;height:66px;border-radius:8px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--muted);cursor:pointer;gap:2px}
 .ph-pick label.add b{font-size:20px;line-height:1;color:var(--accent)}
+/* ---- TV 송출 ---- */
+body.tvmode{padding-bottom:0;overflow:hidden}
+body.tvmode header.band,body.tvmode nav.tabs{display:none}
+body.tvmode:not(.tv-mouse){cursor:none}
+#v-tv{position:fixed;inset:0;z-index:5;max-width:none;padding:0;gap:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--bg);color:var(--ink)}
+#v-tv[hidden]{display:none}
+.tv-top{display:flex;align-items:center;gap:clamp(10px,1.3vw,28px);padding:clamp(8px,1.1vh,16px) clamp(12px,1.3vw,28px);background:linear-gradient(160deg,var(--band-2),var(--band) 60%);color:var(--band-ink);min-width:0}
+.tv-top .badge{flex:none}
+.tv-brand{display:flex;flex-direction:column;min-width:0}
+.tv-brand b{font-family:var(--f-display);font-weight:400;font-size:clamp(20px,2.1vw,42px);line-height:1.1;white-space:nowrap}
+.tv-brand span{font-size:clamp(11px,.85vw,16px);color:var(--band-muted);white-space:nowrap}
+.tv-clock{display:flex;flex-direction:column;flex:none}
+.tv-clock b{font-family:var(--f-mono);font-size:clamp(22px,2.3vw,46px);line-height:1}
+.tv-clock span{font-size:clamp(11px,.9vw,17px);color:var(--band-muted);white-space:nowrap}
+.tv-wx{display:flex;align-items:center;gap:8px;font-size:clamp(11px,.8vw,16px);color:var(--band-muted);min-width:0;line-height:1.3}
+.tv-wx .ic{font-size:clamp(22px,2vw,40px)}
+.tv-wx b{font-family:var(--f-mono);font-size:clamp(18px,1.7vw,34px);color:var(--band-ink);margin-right:4px}
+.tv-wx em{font-style:normal;color:var(--band-ink)}
+.tv-kpis{display:flex;gap:clamp(6px,.6vw,14px);margin-left:auto;flex:none}
+.tv-kpi{background:var(--band-tile);border:1px solid var(--band-tile-line);border-radius:12px;padding:clamp(4px,.6vh,10px) clamp(8px,.9vw,18px);display:flex;flex-direction:column;align-items:center;min-width:clamp(64px,5.6vw,124px)}
+.tv-kpi b{font-family:var(--f-mono);font-size:clamp(20px,2vw,40px);line-height:1.1}
+.tv-kpi b small{font-size:.5em;margin-left:2px;color:var(--band-muted)}
+.tv-kpi>span{font-size:clamp(10px,.78vw,15px);color:var(--band-muted);white-space:nowrap}
+.tv-kpi.hz{background:var(--hazard);border-color:var(--hazard);color:var(--hazard-ink)}
+.tv-kpi.hz>span,.tv-kpi.hz b small{color:inherit;opacity:.8}
+.tv-kpi.dg b{color:#FF7A73}
+.tv-ctl{display:flex;flex-direction:column;gap:4px;opacity:0;transition:opacity .2s;flex:none}
+body.tv-mouse .tv-ctl,.tv-ctl:focus-within{opacity:1}
+.tv-ctl button{border:1px solid var(--band-tile-line);background:var(--band-btn);color:var(--band-ink);border-radius:8px;font-size:12px;padding:3px 10px;white-space:nowrap}
+.tv-body{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-rows:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(8px,.8vw,16px);padding:clamp(8px,.8vw,16px);min-height:0}
+.tv-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.tv-panel>h2{margin:0;padding:clamp(6px,.8vh,12px) clamp(10px,.9vw,18px);font-size:clamp(14px,1.15vw,23px);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);flex:none}
+.tv-panel>h2 .c{font-family:var(--f-mono);color:var(--muted);font-size:.85em;font-weight:600}
+.tv-panel>h2 .c.dg{color:var(--danger)}
+.tv-map{grid-row:1 / 3}
+.tv-mapbox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px}
+.tv-mapbox .zwrap{flex:none;max-width:100%;max-height:100%}
+.tv-mapbox .zwrap img{width:100%;height:100%;object-fit:fill}
+.tv-mapbox>.ph{width:100%;height:100%}
+#v-tv .zlayer .zn{min-width:clamp(16px,1.25vw,28px);height:clamp(16px,1.25vw,28px);border-radius:999px;font-size:clamp(10px,.78vw,16px);line-height:clamp(12px,1.05vw,24px);border-width:2px}
+.tv-scroll{flex:1;min-height:0;overflow:hidden}
+.tv-list{display:flex;flex-direction:column}
+.tv-w{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:1px 10px;align-items:center;padding:clamp(5px,.65vh,11px) clamp(10px,.9vw,18px);border-bottom:1px solid var(--line);font-size:clamp(12px,.95vw,19px)}
+.tv-w .zn{position:static;transform:none;min-width:1.6em;height:1.6em;border-radius:999px;font-size:.8em;line-height:calc(1.6em - 4px);border-width:2px;grid-row:1 / 3}
+.tv-w .t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv-w .r{font-family:var(--f-mono);color:var(--muted);font-size:.85em;white-space:nowrap}
+.tv-w .m{grid-column:2 / 4;color:var(--muted);font-size:.84em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv-w.hr{background:var(--hazard-soft)}
+.tv-w.hr .t::before{content:"고위험";font-size:.72em;background:var(--hazard);color:var(--hazard-ink);padding:1px 7px;border-radius:999px;margin-right:6px;vertical-align:.12em}
+.tv-n{display:grid;grid-template-columns:clamp(64px,5.4vw,112px) minmax(0,1fr);gap:4px 12px;align-items:center;padding:clamp(5px,.65vh,11px) clamp(10px,.9vw,18px);border-bottom:1px solid var(--line);font-size:clamp(12px,.92vw,18px)}
+.tv-th{aspect-ratio:4/3;border-radius:8px;overflow:hidden;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.75em}
+.tv-th img{width:100%;height:100%;object-fit:cover;display:block}
+.tv-n .h{display:flex;gap:8px;align-items:center;min-width:0}
+.tv-n .h b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv-n .h .d{margin-left:auto;font-family:var(--f-mono);font-weight:700;color:var(--danger);white-space:nowrap}
+.tv-n .i{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;word-break:keep-all}
+.tv-n .s{color:var(--muted);font-size:.84em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv-empty{padding:clamp(12px,1.4vh,24px) clamp(10px,.9vw,18px);color:var(--muted);font-size:clamp(13px,1vw,20px)}
 /* ---- 작업 구간 ---- */
 #v-dash .map .frame.has-img{aspect-ratio:auto}
 .map .frame.has-img img{position:static;display:block;width:100%;height:auto;object-fit:fill}
@@ -687,6 +745,29 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
     <div class="nc-list" id="ncList"><div class="empty">불러오는 중…</div></div>
   </section>
 
+  <!-- TV 송출 -->
+  <section class="wrap" id="v-tv" hidden>
+    <div class="tv-top">
+      <span class="badge">S.O.S</span>
+      <div class="tv-brand"><b>김해신문센트럴아이파크</b><span>일일 안전보건 현장관리</span></div>
+      <div class="tv-clock"><b id="tvTime">--:--</b><span id="tvDate"></span></div>
+      <div class="tv-wx" id="tvWx"></div>
+      <div class="tv-kpis">
+        <div class="tv-kpi"><b id="tvK1">0</b><span>오늘 작업</span></div>
+        <div class="tv-kpi hz"><b id="tvK2">0</b><span>고위험 작업</span></div>
+        <div class="tv-kpi"><b><span id="tvK3">0</span><small>명</small></b><span>출역 인원</span></div>
+        <div class="tv-kpi"><b id="tvK4">0</b><span>협력업체</span></div>
+        <div class="tv-kpi dg"><b id="tvK5">0</b><span>부적합 미조치</span></div>
+      </div>
+      <div class="tv-ctl"><button type="button" id="tvFull">전체화면</button><button type="button" id="tvExit">나가기</button></div>
+    </div>
+    <div class="tv-body">
+      <div class="tv-panel tv-map"><h2>전경 배치도 · 작업 구간 <span class="c" id="tvMapC"></span></h2><div class="tv-mapbox" id="tvMap"></div></div>
+      <div class="tv-panel"><h2>오늘 작업 <span class="c" id="tvWC"></span></h2><div class="tv-scroll" id="tvWS"><div class="tv-list" id="tvWorks"></div></div></div>
+      <div class="tv-panel"><h2>부적합 미조치 <span class="c dg" id="tvNC"></span></h2><div class="tv-scroll" id="tvNS"><div class="tv-list" id="tvNcs"></div></div></div>
+    </div>
+  </section>
+
   <!-- 관리 -->
   <section class="wrap" id="v-admin" hidden>
     <div class="sec-head"><h2>관리</h2></div>
@@ -752,6 +833,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
     <button type="button" data-v="reg"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>작업등록</button>
     <button type="button" data-v="dong" hidden><svg viewBox="0 0 24 24"><path d="M4 21V8l5-4 5 4v13M14 21V11h6v10M2 21h20M7 12h4M7 16h4"/></svg>동별보기</button>
     <button type="button" data-v="nc"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>부적합</button>
+    <button type="button" data-v="tv"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>TV송출</button>
     <button type="button" data-v="admin"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>관리</button>
   </div></div>
 </nav>
@@ -867,7 +949,8 @@ function openPwSheet(){
 }
 function show(v){
   if(v==="admin"&&!adminUnlocked){openPwSheet();return}
-  ["home","dash","reg","dong","nc","admin"].forEach(k=>$("#v-"+k).hidden=k!==v);
+  ["home","dash","reg","dong","nc","tv","admin"].forEach(k=>$("#v-"+k).hidden=k!==v);
+  document.body.classList.toggle("tvmode",v==="tv");if(typeof tvStart==="function"){if(v==="tv")tvStart();else tvStop()}
   if(v==="nc"&&typeof ncLoad==="function")ncLoad();
   document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.v===v?"page":"false"));
   window.scrollTo(0,0);
@@ -1148,7 +1231,7 @@ function renderDash(){
 function renderDong(){
   $("#dongGrid").innerHTML=dongStats().map(s=>`<button type="button" class="dong${s.n?" has":""}${s.hr?" hr":""}" data-d="${esc(s.d)}"><span class="d">${esc(s.d)}</span><span class="c">${s.n}</span><span class="s">작업 · ${s.ppl}명</span></button>`).join("");
 }
-function renderAll(){renderHeader();renderDash();renderDong();renderHome()}
+function renderAll(){renderHeader();renderDash();renderDong();renderHome();renderTv()}
 const STC={"예정":"var(--plan)","진행중":"var(--accent)","완료":"var(--ok)","작업취소":"var(--muted)"};
 function hbarsHTML(items,max,colorFn){
   return items.length?`<div class="hbars">${items.map(it=>`<div class="hbar"><span class="k" title="${esc(it.k)}">${colorFn?`<i class="cdot" style="background:${colorFn(it.k)}"></i>`:""}${esc(it.k)}</span><span class="tr"><i style="width:${max?Math.max(4,it.v/max*100):0}%${colorFn?`;background:${colorFn(it.k)}`:""}"></i></span><span class="v">${it.label}</span></div>`).join("")}</div>`:'<div class="h-empty">등록된 작업이 없습니다.</div>';
@@ -1523,7 +1606,7 @@ const md=d=>d?String(d).slice(5).replace("-","."):"";
 function ncDays(it){if(!it.date)return"";const a=new Date(it.date+"T00:00:00"),b=it.status==="조치완료"&&it.afterDate?new Date(it.afterDate+"T00:00:00"):new Date(todayStr()+"T00:00:00");const n=Math.round((b-a)/864e5);return it.status==="조치완료"?(n<=0?"당일 조치":n+"일 만에 조치"):(n<=0?"오늘 발견":"D+"+n)}
 async function ncLoad(force){
   if(!db)return;
-  try{const j=await api("ncList");ncItems=(j.items||[]).sort((a,b)=>String(b.date).localeCompare(String(a.date))||(b.createdAt||0)-(a.createdAt||0));ncLoaded=true;renderNc()}
+  try{const j=await api("ncList");ncItems=(j.items||[]).sort((a,b)=>String(b.date).localeCompare(String(a.date))||(b.createdAt||0)-(a.createdAt||0));ncLoaded=true;renderNc();renderTv()}
   catch(e){if(!ncLoaded)$("#ncList").innerHTML=`<div class="empty">${ICON_EMPTY}<b>부적합 목록을 불러오지 못했습니다</b><span>구글시트 스크립트가 최신 버전인지 확인해 주세요. (${esc(e.message||"")})</span></div>`}
   clearTimeout(ncTimer);if(!$("#v-nc").hidden)ncTimer=setTimeout(ncLoad,60000);
 }
@@ -1646,6 +1729,74 @@ function ncDetail(id){
     r.querySelector("#ndYes").addEventListener("click",async()=>{try{await api("ncRemove",{id:it.id});toast("삭제했습니다");closeSheet();ncLoad()}catch(e){toast("삭제하지 못했습니다")}});
   },true);
 }
+
+/* ---------- TV 송출 ---------- */
+var tvTimers=[],tvRatio=0,tvDay="",tvMouseT=null;
+function tvFit(){const box=$("#tvMap"),w=box&&box.querySelector(".zwrap");if(!w||!tvRatio)return;const W=box.clientWidth-16,H=box.clientHeight-16;if(W<=0||H<=0)return;const ww=Math.min(W,H*tvRatio);w.style.width=ww+"px";w.style.height=(ww/tvRatio)+"px"}
+function tvWxHTML(){
+  const det=($("#wxDetail").textContent||"").split(" · ").filter(s=>/풍속/.test(s));
+  return `<span class="ic">${esc($("#wxIcon").textContent||"")}</span><div><b>${esc($("#wxTemp").textContent||"–")}</b><em>${esc($("#wxDesc").textContent||"")}</em><br>${esc(det.join(" · "))}</div>`;
+}
+function renderTv(){
+  const sec=$("#v-tv");if(!sec||sec.hidden)return;
+  const live=works.filter(w=>w.status!=="작업취소");
+  $("#tvK1").textContent=live.length;$("#tvK2").textContent=live.filter(w=>w.highRisk).length;
+  $("#tvK3").textContent=live.reduce((s,w)=>s+(Number(w.workers)||0),0);$("#tvK4").textContent=new Set(live.map(w=>w.company)).size;
+  const wxOk=/\d/.test($("#wxTemp").textContent||"");$("#tvWx").innerHTML=wxOk?tvWxHTML():"";
+  // 배치도
+  const box=$("#tvMap"),src=mapSrc();
+  if(!src){box.dataset.src="";box.innerHTML=phHTML("전경 배치도 자리","관리 탭에서 배치도를 올리면 여기에 표시됩니다.");tvRatio=0}
+  else if(box.dataset.src!==src){
+    box.dataset.src=src;tvRatio=0;
+    box.innerHTML=`<div class="zwrap"><img src="${esc(src)}" alt="김해신문센트럴아이파크 전경 배치도" id="tvImg"><div class="zlayer view" id="tvLayer"></div></div>`;
+    const im=$("#tvImg");
+    const ok=()=>{if(im.naturalWidth){tvRatio=im.naturalWidth/im.naturalHeight;tvFit()}};
+    im.addEventListener("load",ok);im.addEventListener("error",()=>{if(!im.dataset.alt){im.dataset.alt="1";im.src=mapSrc2()}});
+    if(im.complete)ok();
+    $("#tvLayer").addEventListener("click",e=>{const z=e.target.closest(".zone");if(z)openDetail(z.dataset.id)});
+  }
+  const ly=$("#tvLayer");if(ly)ly.innerHTML=dayZonesHTML(works);
+  const m=workNums(),nz=live.filter(w=>m[w.id]).length;
+  $("#tvMapC").textContent=nz?`구간 표시 ${nz}건`:"";
+  // 작업 목록 (배치도 번호 순 → 번호 없는 작업)
+  const l=live.slice().sort((a,b)=>(m[a.id]||1e6)-(m[b.id]||1e6)||(!!b.highRisk-!!a.highRisk)||String(a.start).localeCompare(String(b.start)));
+  $("#tvWC").textContent=live.length?live.length+"건":"";
+  $("#tvWorks").innerHTML=l.length?l.map(w=>`<div class="tv-w${w.highRisk?" hr":""}">${m[w.id]?znHTML(w,m[w.id]):`<span class="zn" style="background:${compColor(w.company)}">·</span>`}<span class="t">${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span><span class="r">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</span><span class="m">${esc([w.company,(w.dongs||[]).join("·")||w.loc,(Number(w.workers)||0)+"명",w.status,w.highRisk?(w.watch==="배치"?"감시단 배치":"감시단 미배치"):""].filter(Boolean).join(" · "))}</span></div>`).join("")
+    :'<div class="tv-empty">오늘 등록된 작업이 없습니다.</div>';
+  // 부적합 미조치 (오늘까지 조치 예정 + 밀린 것, 오래된 순)
+  const X=todayStr();
+  const nc=ncItems.filter(x=>!ncDone(x)&&ncDue(x)<=X).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  $("#tvK5").textContent=ncLoaded?nc.length:"–";$("#tvNC").textContent=nc.length?nc.length+"건":"";
+  $("#tvNcs").innerHTML=!ncLoaded?'<div class="tv-empty">불러오는 중…</div>':nc.length?nc.map(it=>`<div class="tv-n"><div class="tv-th">${(it.before||[])[0]?phImg(it.before[0],300,"조치 전"):"사진 없음"}</div><div style="min-width:0;display:flex;flex-direction:column;gap:2px"><div class="h"><i class="cdot" style="background:${compColor(it.company)}"></i><b>${esc(it.company)}</b>${Number(it.carry)?`<span class="pill p-carry">이월 ${Number(it.carry)}회</span>`:""}<span class="d">${esc(ncDays(it))}</span></div><div class="i">${esc(it.issue)}</div><div class="s">${esc([it.loc,it.hdcMgr?"현대 "+it.hdcMgr:"",it.coMgr?"협력사 "+it.coMgr:""].filter(Boolean).join(" · "))}</div></div></div>`).join("")
+    :'<div class="tv-empty">미조치 부적합 사항이 없습니다. 👍</div>';
+  tvFit();
+}
+function tvClock(){
+  const n=new Date();$("#tvTime").textContent=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
+  $("#tvDate").textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 (${WD[n.getDay()]})`;
+  const t=todayStr();if(tvDay&&tvDay!==t){tvDay=t;if(viewDate!==t)setDate(t)}
+}
+function tvScrollStep(){
+  ["#tvWS","#tvNS"].forEach(id=>{const el=$(id);if(!el)return;const max=el.scrollHeight-el.clientHeight;
+    if(max<=2){el.scrollTop=0;el._p=0;return}
+    if(el._p>0){el._p--;return}
+    if(el.scrollTop>=max-1){el._p=80;el._r=1;return}
+    if(el._r){el._r=0;el.scrollTop=0;el._p=80;return}
+    el.scrollTop+=1;
+  });
+}
+function tvStart(){
+  tvStop();tvDay=todayStr();if(viewDate!==tvDay)setDate(tvDay);
+  ncLoad();renderTv();tvClock();
+  ["#tvWS","#tvNS"].forEach(id=>{const el=$(id);el.scrollTop=0;el._p=80;el._r=0});
+  tvTimers=[setInterval(tvClock,1000),setInterval(tvScrollStep,50),setInterval(()=>ncLoad(),60000),setInterval(renderTv,15000)];
+}
+function tvStop(){tvTimers.forEach(clearInterval);tvTimers=[];document.body.classList.remove("tv-mouse");if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{})}
+$("#tvFull").addEventListener("click",()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>toast("이 브라우저에서는 F11을 눌러 전체화면으로 바꿔 주세요"))});
+$("#tvExit").addEventListener("click",()=>show("home"));
+window.addEventListener("resize",tvFit);
+document.addEventListener("mousemove",()=>{if(!document.body.classList.contains("tvmode"))return;document.body.classList.add("tv-mouse");clearTimeout(tvMouseT);tvMouseT=setTimeout(()=>document.body.classList.remove("tv-mouse"),3000)});
+if(document.documentElement.classList.contains("tv"))setTimeout(()=>show("tv"),0);
 
 /* ---------- 데이터 ---------- */
 function subscribeWorks(){
