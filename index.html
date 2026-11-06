@@ -861,8 +861,10 @@ function renderMap(){
   renderHomeMap();
 }
 const pct=v=>(v*100).toFixed(3)+"%";
-const PALETTE=["#2F6BFF","#E5484D","#12A594","#8E4EC6","#F76B15","#3E9B4F","#D6409F","#0090FF","#A0644A","#5B5BD6","#00A2C7","#C2410C"];
-function compColor(name){let h=0;for(const ch of String(name||""))h=(h*31+ch.codePointAt(0))>>>0;return PALETTE[h%PALETTE.length]}
+const PALETTE=["#E5484D","#2F6BFF","#12A594","#F76B15","#8E4EC6","#D6409F","#3E9B4F","#A0644A","#0090FF","#475569","#C2410C","#00A2C7"];
+let colorMap={};
+function rebuildColors(list){const set=new Set();(list||[]).forEach(w=>w&&w.company&&set.add(w.company));Object.keys(colorMap).forEach(n=>set.add(n));const names=[...set].sort((a,b)=>a.localeCompare(b,"ko"));colorMap={};names.forEach((n,i)=>colorMap[n]=PALETTE[i%PALETTE.length])}
+function compColor(name){if(!(name in colorMap)){let h=0;for(const ch of String(name||""))h=(h*31+ch.codePointAt(0))>>>0;return PALETTE[h%PALETTE.length]}return colorMap[name]}
 function zoneColorStyle(w){const c=compColor(w.company);
   return w.highRisk?`border:3px solid ${c};background:repeating-linear-gradient(-45deg,rgba(245,180,0,.6) 0 6px,transparent 6px 14px),${c}40;outline:2px solid #F5B400;outline-offset:-1px`
     :`border-color:${c};background:${c}38`}
@@ -1435,7 +1437,7 @@ function subscribeWorks(){
   unsubWorks=db.collection("works").where("date",">=",from).where("date","<=",d).onSnapshot(snap=>{
     if(d!==viewDate)return;
     weekWorks=snap.docs.map(x=>({id:x.id,...x.data()}));
-    works=weekWorks.filter(w=>w.date===d);
+    works=weekWorks.filter(w=>w.date===d);colorMap={};rebuildColors(weekWorks);
     if(!snap.metadata.fromCache){clearTimeout(loadTimer);setConn("구글시트와 연동 중 · 30초마다 자동 갱신","live")}
     const cos=new Set([...document.querySelectorAll("#coList option")].map(o=>o.value));works.forEach(w=>w.company&&cos.add(w.company));
     $("#coList").innerHTML=[...cos].sort((a,b)=>a.localeCompare(b,"ko")).map(c=>`<option value="${esc(c)}">`).join("");
