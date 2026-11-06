@@ -330,6 +330,18 @@ nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent
 .nc-card:hover{border-color:var(--muted)}
 .nc-card.open{border-left:5px solid var(--danger)}
 .nc-card.done{border-left:5px solid var(--ok)}
+.nc-card{cursor:pointer}
+.nc-card.moved{opacity:.6}
+.nc-foot{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nc-foot .sp{flex:1}
+.p-carry{background:var(--warn-soft,#FFF1D6);color:var(--warn,#B4610B)}
+.p-moved{background:var(--surface-2);color:var(--muted)}
+.nc-over{grid-column:1/-1;display:flex;flex-direction:column;gap:10px;background:var(--danger-soft);border:1px solid var(--danger);border-radius:14px;padding:12px}
+.nc-over .hd{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nc-over .hd b{color:var(--danger)}
+.nc-over .hd .sp{flex:1}
+.nc-over .nc-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){.nc-over .nc-list{grid-template-columns:minmax(0,1fr)}}
 .nc-photos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .nc-photos figure{margin:0;position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
 .nc-photos img{width:100%;height:100%;object-fit:cover;display:block}
@@ -657,8 +669,12 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
 
   <!-- 부적합 -->
   <section class="wrap" id="v-nc" hidden>
-    <div class="sec-head"><h2>협력사 부적합 사항</h2><button type="button" class="btn primary sm" id="ncAddBtn">+ 부적합 등록</button></div>
+    <div class="sec-head"><h2 id="ncTitle">협력사 부적합 사항</h2><button type="button" class="btn primary sm" id="ncAddBtn">+ 부적합 등록</button></div>
     <div class="nc-top">
+      <div class="chipset" id="ncScope" role="group" aria-label="기간">
+        <button type="button" class="chip" data-p="day" aria-pressed="true">이 날짜</button>
+        <button type="button" class="chip" data-p="all" aria-pressed="false">전체 기간</button>
+      </div>
       <div class="chipset" id="ncFilter" role="group" aria-label="조치 상태">
         <button type="button" class="chip" data-s="" aria-pressed="true">전체<b class="mono" id="ncCntAll">0</b></button>
         <button type="button" class="chip" data-s="미조치" aria-pressed="false">미조치<b class="mono" id="ncCntOpen">0</b></button>
@@ -1455,7 +1471,7 @@ $("#exportBtn").addEventListener("click",()=>{
 });
 
 /* ---------- 날짜 ---------- */
-function setDate(d){viewDate=d;$("#viewDate").value=d;if(!editingId)$("#r_date").value=d;renderHeader();subscribeWorks()}
+function setDate(d){viewDate=d;$("#viewDate").value=d;if(!editingId)$("#r_date").value=d;renderHeader();subscribeWorks();if(ncLoaded)renderNc()}
 $("#viewDate").addEventListener("change",e=>e.target.value&&setDate(e.target.value));
 $("#prevDay").addEventListener("click",()=>setDate(shift(viewDate,-1)));
 $("#nextDay").addEventListener("click",()=>setDate(shift(viewDate,1)));
@@ -1491,7 +1507,12 @@ function applyPerms(){
 }
 
 /* ---------- 부적합 사항 ---------- */
-let ncItems=[],ncLoaded=false,ncFilterS="",ncFilterCo="",ncTimer=null;
+let ncItems=[],ncLoaded=false,ncFilterS="",ncFilterCo="",ncTimer=null,ncScopeP="day";
+const ncDone=it=>it.status==="조치완료";
+const ncDue=it=>it.due||it.date;
+const ncOnDay=(it,X)=>it.date===X||(!ncDone(it)&&ncDue(it)===X)||(ncDone(it)&&it.afterDate===X);
+const ncOver=(it,X)=>!ncDone(it)&&ncDue(it)<X&&it.date!==X;
+async function ncPostpone(ids,due){if(!ids.length)return;try{await api("ncPostpone",{ids,due});toast(`${ids.length}건을 ${md(due)}로 미뤘습니다`);await ncLoad()}catch(e){toast("미루지 못했습니다: "+(e.message||""))}}
 const phSrc=(id,w)=>"https://lh3.googleusercontent.com/d/"+encodeURIComponent(id)+"=w"+(w||800);
 const phAlt=(id,w)=>"https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(w||800);
 const phImg=(id,w,alt)=>`<img src="${phSrc(id,w)}" alt="${esc(alt||"사진")}" loading="lazy" onerror="if(!this.dataset.a){this.dataset.a=1;this.src='${phAlt(id,w)}'}">`;
@@ -1505,17 +1526,25 @@ async function ncLoad(force){
   clearTimeout(ncTimer);if(!$("#v-nc").hidden)ncTimer=setTimeout(ncLoad,60000);
 }
 function renderNc(){
+  const X=viewDate,dd=new Date(X+"T00:00:00");
+  $("#ncTitle").textContent=ncScopeP==="day"?`${X===todayStr()?"오늘":(dd.getMonth()+1)+"월 "+dd.getDate()+"일"} 부적합 사항`:"협력사 부적합 사항 (전체)";
   const cos=[...new Set(ncItems.map(x=>x.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ko"));
   if(ncFilterCo&&!cos.includes(ncFilterCo))ncFilterCo="";
   $("#ncCompany").innerHTML=`<option value="">전체 업체</option>`+cos.map(c=>`<option${c===ncFilterCo?" selected":""}>${esc(c)}</option>`).join("");
-  const base=ncItems.filter(x=>!ncFilterCo||x.company===ncFilterCo);
-  $("#ncCntAll").textContent=base.length;$("#ncCntOpen").textContent=base.filter(x=>x.status!=="조치완료").length;$("#ncCntDone").textContent=base.filter(x=>x.status==="조치완료").length;
-  const l=base.filter(x=>!ncFilterS||(ncFilterS==="조치완료"?x.status==="조치완료":x.status!=="조치완료"));
-  $("#ncList").innerHTML=l.length?l.map(ncCardHTML).join(""):`<div class="empty" style="grid-column:1/-1">${ICON_EMPTY}<b>${ncItems.length?"조건에 맞는 부적합 사항이 없습니다":"등록된 부적합 사항이 없습니다"}</b><span>‘+ 부적합 등록’을 눌러 조치 전 사진과 내용을 올려 주세요.</span></div>`;
+  const byCo=ncItems.filter(x=>!ncFilterCo||x.company===ncFilterCo);
+  const base=ncScopeP==="day"?byCo.filter(x=>ncOnDay(x,X)):byCo;
+  $("#ncCntAll").textContent=base.length;$("#ncCntOpen").textContent=base.filter(x=>!ncDone(x)).length;$("#ncCntDone").textContent=base.filter(ncDone).length;
+  const l=base.filter(x=>!ncFilterS||(ncFilterS==="조치완료"?ncDone(x):!ncDone(x)));
+  const over=ncScopeP==="day"&&ncFilterS!=="조치완료"?byCo.filter(x=>ncOver(x,X)):[];
+  const overHTML=over.length?`<div class="nc-over"><div class="hd"><b>지난 미조치 ${over.length}건</b><span class="hint">이전 날짜에서 조치되지 않은 항목입니다</span><span class="sp"></span><button type="button" class="btn sm primary" id="ncPullAll">모두 ${esc(md(X))}로 가져오기</button></div><div class="nc-list">${over.map(it=>ncCardHTML(it,"over")).join("")}</div></div>`:"";
+  $("#ncList").innerHTML=overHTML+(l.length?l.map(it=>ncCardHTML(it)).join(""):`<div class="empty" style="grid-column:1/-1">${ICON_EMPTY}<b>${ncScopeP==="day"?"이 날짜의 부적합 사항이 없습니다":ncItems.length?"조건에 맞는 부적합 사항이 없습니다":"등록된 부적합 사항이 없습니다"}</b><span>‘+ 부적합 등록’을 눌러 조치 전 사진과 내용을 올려 주세요.</span></div>`);
+  const pa=$("#ncPullAll");pa&&pa.addEventListener("click",()=>ncPostpone(over.map(x=>x.id),X));
 }
-function ncCardHTML(it){
-  const done=it.status==="조치완료",b=it.before||[],a=it.after||[];
-  return `<button type="button" class="nc-card ${done?"done":"open"}" data-id="${esc(it.id)}">
+function ncCardHTML(it,kind){
+  const done=ncDone(it),b=it.before||[],a=it.after||[],X=viewDate,day=ncScopeP==="day";
+  const moved=day&&!done&&ncDue(it)>X,carry=Number(it.carry)||0;
+  const foot=`<div class="nc-foot">${carry?`<span class="pill p-carry">이월 ${carry}회</span>`:""}${moved?`<span class="pill p-moved">→ ${esc(md(ncDue(it)))}로 미룸</span>`:""}${!day&&!done&&it.due&&it.due!==it.date?`<span class="pill p-moved">조치예정 ${esc(md(it.due))}</span>`:""}<span class="sp"></span>${done||moved?"":kind==="over"?`<button type="button" class="btn sm nc-post" data-to="${X}">${esc(md(X))}로 가져오기</button>`:`<button type="button" class="btn sm nc-post" data-to="${shift(day?X:(ncDue(it)>todayStr()?ncDue(it):todayStr()),1)}">다음날로 미루기 ▸</button>`}</div>`;
+  return `<div role="button" tabindex="0" class="nc-card ${done?"done":"open"}${moved?" moved":""}" data-id="${esc(it.id)}">
     <div class="nc-photos">
       <figure>${b[0]?phImg(b[0],600,"조치 전"):'<div class="wait">사진 없음</div>'}<figcaption>조치 전 ${md(it.date)}</figcaption>${b.length>1?`<span class="cnt">+${b.length-1}</span>`:""}</figure>
       <figure class="after">${a[0]?phImg(a[0],600,"조치 후"):'<div class="wait">조치 대기</div>'}${a[0]?`<figcaption>조치 후 ${md(it.afterDate)}</figcaption>`:""}${a.length>1?`<span class="cnt">+${a.length-1}</span>`:""}</figure>
@@ -1524,11 +1553,13 @@ function ncCardHTML(it){
       <div class="row1"><span class="pill ${done?"p-done":"p-open"}">${done?"조치완료":"미조치"}</span><b><i class="cdot" style="background:${compColor(it.company)};display:inline-block;margin-right:4px"></i>${esc(it.company)}</b>${it.loc?`<span class="hint">${esc(it.loc)}</span>`:""}<span class="sp"></span><span class="hint mono">${esc(ncDays(it))}</span></div>
       <p class="nc-issue">${esc(it.issue)}</p>
       <div class="meta"><span>현대산업개발 <b>${esc(it.hdcMgr||"-")}</b></span><span>협력사 <b>${esc(it.coMgr||"-")}</b></span></div>
-    </div></button>`;
+    </div>${foot}</div>`;
 }
 $("#ncFilter").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;ncFilterS=b.dataset.s;document.querySelectorAll("#ncFilter .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));renderNc()});
 $("#ncCompany").addEventListener("change",e=>{ncFilterCo=e.target.value;renderNc()});
-$("#ncList").addEventListener("click",e=>{const c=e.target.closest(".nc-card");if(c)ncDetail(c.dataset.id)});
+$("#ncList").addEventListener("click",e=>{const p=e.target.closest(".nc-post");const c=e.target.closest(".nc-card");if(p&&c){e.stopPropagation();p.disabled=true;ncPostpone([c.dataset.id],p.dataset.to);return}if(c)ncDetail(c.dataset.id)});
+$("#ncList").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("nc-card")){e.preventDefault();ncDetail(e.target.dataset.id)}});
+$("#ncScope").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;ncScopeP=b.dataset.p;document.querySelectorAll("#ncScope .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));renderNc()});
 $("#ncAddBtn").addEventListener("click",()=>ncForm(null));
 
 async function shrinkPhoto(file){
@@ -1556,7 +1587,7 @@ function ncForm(it,mode){
   openSheet(`<div class="sec-head"><h2 style="flex:1">${act?"조치 결과 등록":edit?"부적합 수정":"부적합 등록"}</h2><button type="button" class="btn sm" data-close>닫기</button></div>
     <form class="reg" id="ncF" novalidate style="gap:12px">
       <div ${act?"hidden":""} style="display:flex;flex-direction:column;gap:12px">
-        <div class="grid2"><div class="f"><label for="nf_date" class="req">발견일 (조치 전)</label><input type="date" id="nf_date" value="${esc(it?it.date:ncToday())}"></div>
+        <div class="grid2"><div class="f"><label for="nf_date" class="req">발견일 (조치 전)</label><input type="date" id="nf_date" value="${esc(it?it.date:viewDate)}"></div>
           <div class="f"><label for="nf_co" class="req">업체명</label><input id="nf_co" list="nf_coList" value="${esc(it?it.company:"")}" placeholder="예: 금강건설" autocomplete="off"><datalist id="nf_coList">${co.map(c=>`<option value="${esc(c)}">`).join("")}</datalist></div></div>
         <div class="f"><label for="nf_loc">위치</label><input id="nf_loc" value="${esc(it?it.loc:"")}" placeholder="예: 108동 부근 인발제 가열 작업구간"></div>
         <div class="f"><label for="nf_issue" class="req">부적합 내용 · 조치 요청사항</label><textarea id="nf_issue" placeholder="예: 인발제 가열 작업구간 1급 이상 방진마스크 착용 철저, 보안경 등 눈보호구 착용">${esc(it?it.issue:"")}</textarea></div>
@@ -1585,7 +1616,7 @@ function ncForm(it,mode){
           if(edit||act){item.after=await uploadList(after,msg);item.action=g("#nf_action");item.afterDate=(item.action||item.after.length)?g("#nf_adate"):"";item.status=(item.action||item.after.length)?"조치완료":"미조치"}
           msg.textContent="저장하는 중…";
           if(edit){await api("ncUpdate",{id:it.id,patch:act?{after:item.after,action:item.action,afterDate:item.afterDate,status:item.status}:item})}
-          else{await api("ncAdd",{item:{...item,status:"미조치"}})}
+          else{await api("ncAdd",{item:{...item,due:item.date,status:"미조치"}})}
           toast(act?"조치 결과를 저장했습니다":edit?"수정했습니다":"부적합 사항을 등록했습니다");closeSheet();ncLoad();
         }catch(err){msg.textContent="저장하지 못했습니다: "+(err.message||"잠시 후 다시 시도하세요")}
         finally{btn.disabled=false}
@@ -1601,11 +1632,12 @@ function ncDetail(id){
       <div class="nc-col"><h3>조치 전 <span class="hint mono">${esc(it.date)}</span></h3>${imgs(it.before)}<div class="txt">${esc(it.issue)}</div></div>
       <div class="nc-col"><h3>조치 후 <span class="hint mono">${esc(it.afterDate||"")}</span></h3>${imgs(it.after)}<div class="txt">${esc(it.action||"아직 조치 결과가 등록되지 않았습니다.")}</div></div>
     </div>
-    <dl class="kv"><dt>현대산업개발 담당자</dt><dd>${esc(it.hdcMgr||"-")}</dd><dt>협력사 담당자</dt><dd>${esc(it.coMgr||"-")}</dd></dl>
-    <div class="formbar">${done?"":`<button type="button" class="btn primary" id="ndAct">조치 결과 등록</button>`}<button type="button" class="btn" id="ndEdit">수정</button><button type="button" class="btn danger" id="ndDel">삭제</button><span style="flex:1"></span><button type="button" class="btn" data-close>닫기</button></div>
+    <dl class="kv">${!done&&it.due&&it.due!==it.date?`<dt>조치 예정일</dt><dd>${esc(it.due)}${Number(it.carry)?` (이월 ${Number(it.carry)}회)`:""}</dd>`:""}<dt>현대산업개발 담당자</dt><dd>${esc(it.hdcMgr||"-")}</dd><dt>협력사 담당자</dt><dd>${esc(it.coMgr||"-")}</dd></dl>
+    <div class="formbar">${done?"":`<button type="button" class="btn primary" id="ndAct">조치 결과 등록</button><button type="button" class="btn" id="ndPost">다음날(${esc(md(shift(ncDue(it)>viewDate?ncDue(it):viewDate,1)))})로 미루기</button>`}<button type="button" class="btn" id="ndEdit">수정</button><button type="button" class="btn danger" id="ndDel">삭제</button><span style="flex:1"></span><button type="button" class="btn" data-close>닫기</button></div>
     <div class="confirm" id="ndConfirm" hidden><b>이 부적합 사항을 삭제할까요?</b><span class="hint">삭제하면 목록에서 사라집니다. 드라이브의 사진은 남습니다.</span><div class="formbar"><button type="button" class="btn danger" id="ndYes">삭제</button><button type="button" class="btn" id="ndNo">취소</button></div></div>`,
   r=>{
     const a=r.querySelector("#ndAct");a&&a.addEventListener("click",()=>{closeSheet();ncForm(it,"action")});
+    const pp=r.querySelector("#ndPost");pp&&pp.addEventListener("click",()=>{closeSheet();ncPostpone([it.id],shift(ncDue(it)>viewDate?ncDue(it):viewDate,1))});
     r.querySelector("#ndEdit").addEventListener("click",()=>{closeSheet();ncForm(it)});
     r.querySelector("#ndDel").addEventListener("click",()=>r.querySelector("#ndConfirm").hidden=false);
     r.querySelector("#ndNo").addEventListener("click",()=>r.querySelector("#ndConfirm").hidden=true);
