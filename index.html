@@ -1090,7 +1090,6 @@ async function loadWeather(force){
     if(sn>=1)R.push(["",`강설량 ${sn}cm/h — 철골작업 중지 (규칙 제383조)`]);
     const gm=(d.wind_gusts_10m_max||[])[0],ps=(d.precipitation_sum||[])[0];
     if(!R.length)R.push(["ok","현재 강풍·강우로 인한 작업중지 기준에 해당하지 않습니다"]);
-    if(gm>10)R.push(["warn",`오늘 최대 순간풍속 예보 ${gm.toFixed(1)}m/s — 스카이·항타기 작업 계획을 미리 확인하세요`]);
     if(ps>=5)R.push(["warn",`오늘 예상 강수량 ${ps.toFixed(1)}mm — 토사·굴착면 관리에 유의하세요`]);
     $("#wxRules").innerHTML=R.map(([k,txt])=>`<div><i class="${k}"></i><span>${esc(txt)}</span></div>`).join("");
   }catch(e){$("#wxSub").textContent="날씨를 불러오지 못했습니다. 잠시 후 다시 시도합니다";$("#wxRules").innerHTML=""}
