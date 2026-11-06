@@ -238,7 +238,7 @@ legend + *{clear:both}
 /* ---- 하단 탭 ---- */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));pointer-events:none}
 nav.tabs .wrap{pointer-events:auto}
-nav.tabs .bar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(20,28,51,.16);padding:6px}
+nav.tabs .bar{display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(20,28,51,.16);padding:6px}
 nav.tabs button{background:none;border:0;border-radius:12px;padding:7px 4px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:600}
 nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
 nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
@@ -321,6 +321,45 @@ nav.tabs button[aria-current="page"]{color:var(--accent);background:var(--accent
 .wlabels{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center;font-size:11px;color:var(--muted)}
 .wlabels b{display:block;color:var(--ink);font-size:12px}
 .wlabels .sel b{color:var(--accent)}
+/* ---- 부적합 ---- */
+.nc-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.nc-top .chip b{margin-left:4px}
+.nc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.nc-list{grid-template-columns:minmax(0,1fr)}}
+.nc-card{display:flex;flex-direction:column;gap:10px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:12px;width:100%;min-width:0}
+.nc-card:hover{border-color:var(--muted)}
+.nc-card.open{border-left:5px solid var(--danger)}
+.nc-card.done{border-left:5px solid var(--ok)}
+.nc-photos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nc-photos figure{margin:0;position:relative;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
+.nc-photos img{width:100%;height:100%;object-fit:cover;display:block}
+.nc-photos figcaption{position:absolute;left:6px;top:6px;font-size:11px;font-weight:700;color:#fff;background:rgba(10,15,30,.65);padding:2px 7px;border-radius:999px}
+.nc-photos figure.after figcaption{background:rgba(23,138,87,.85)}
+.nc-photos .wait{display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px;font-weight:600;border:2px dashed var(--line);border-radius:10px;box-sizing:border-box}
+.nc-photos .cnt{position:absolute;right:6px;bottom:6px;font-size:11px;color:#fff;background:rgba(10,15,30,.65);padding:1px 6px;border-radius:999px}
+.nc-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.nc-body .row1{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nc-body .row1 .sp{flex:1}
+.nc-body .meta{font-size:13px;color:var(--muted);display:flex;gap:4px 12px;flex-wrap:wrap}
+.nc-body .meta b{color:var(--ink)}
+.nc-issue{margin:0;font-weight:600;overflow-wrap:anywhere;word-break:keep-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.p-open{background:var(--danger-soft);color:var(--danger)}
+.p-done{background:var(--ok-soft);color:var(--ok)}
+.nc-detail{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.nc-detail{grid-template-columns:1fr}}
+.nc-col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.nc-col h3{margin:0;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:6px}
+.nc-col .txt{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;min-height:44px}
+.nc-imgs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.nc-imgs a{display:block;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--surface-2)}
+.nc-imgs a:only-child{grid-column:1 / -1}
+.nc-imgs img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-pick{display:flex;gap:8px;flex-wrap:wrap}
+.ph-pick .th{position:relative;width:88px;height:66px;border-radius:8px;overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
+.ph-pick .th img{width:100%;height:100%;object-fit:cover}
+.ph-pick .th button{position:absolute;right:2px;top:2px;width:22px;height:22px;border-radius:50%;border:0;background:#D23B33;color:#fff;font-size:14px;line-height:22px;padding:0}
+.ph-pick label.add{width:88px;height:66px;border-radius:8px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:12px;color:var(--muted);cursor:pointer;gap:2px}
+.ph-pick label.add b{font-size:20px;line-height:1;color:var(--accent)}
 /* ---- 작업 구간 ---- */
 #v-dash .map .frame.has-img{aspect-ratio:auto}
 .map .frame.has-img img{position:static;display:block;width:100%;height:auto;object-fit:fill}
@@ -616,6 +655,20 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
     <div class="dong-grid" id="dongGrid"></div>
   </section>
 
+  <!-- 부적합 -->
+  <section class="wrap" id="v-nc" hidden>
+    <div class="sec-head"><h2>협력사 부적합 사항</h2><button type="button" class="btn primary sm" id="ncAddBtn">+ 부적합 등록</button></div>
+    <div class="nc-top">
+      <div class="chipset" id="ncFilter" role="group" aria-label="조치 상태">
+        <button type="button" class="chip" data-s="" aria-pressed="true">전체<b class="mono" id="ncCntAll">0</b></button>
+        <button type="button" class="chip" data-s="미조치" aria-pressed="false">미조치<b class="mono" id="ncCntOpen">0</b></button>
+        <button type="button" class="chip" data-s="조치완료" aria-pressed="false">조치완료<b class="mono" id="ncCntDone">0</b></button>
+      </div>
+      <select class="select" id="ncCompany" aria-label="업체 필터" style="max-width:220px"><option value="">전체 업체</option></select>
+    </div>
+    <div class="nc-list" id="ncList"><div class="empty">불러오는 중…</div></div>
+  </section>
+
   <!-- 관리 -->
   <section class="wrap" id="v-admin" hidden>
     <div class="sec-head"><h2>관리</h2></div>
@@ -680,6 +733,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
     <button type="button" data-v="dash"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>작업현황</button>
     <button type="button" data-v="reg"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>작업등록</button>
     <button type="button" data-v="dong" hidden><svg viewBox="0 0 24 24"><path d="M4 21V8l5-4 5 4v13M14 21V11h6v10M2 21h20M7 12h4M7 16h4"/></svg>동별보기</button>
+    <button type="button" data-v="nc"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>부적합</button>
     <button type="button" data-v="admin"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>관리</button>
   </div></div>
 </nav>
@@ -795,7 +849,8 @@ function openPwSheet(){
 }
 function show(v){
   if(v==="admin"&&!adminUnlocked){openPwSheet();return}
-  ["home","dash","reg","dong","admin"].forEach(k=>$("#v-"+k).hidden=k!==v);
+  ["home","dash","reg","dong","nc","admin"].forEach(k=>$("#v-"+k).hidden=k!==v);
+  if(v==="nc"&&typeof ncLoad==="function")ncLoad();
   document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.v===v?"page":"false"));
   window.scrollTo(0,0);
 }
@@ -1433,6 +1488,129 @@ function applyPerms(){
   ["#pwNew1","#pwNew2","#pwChange","#c_lat","#c_lon"].forEach(id=>{const el=$(id);if(el)el.disabled=!canAdmin});
   $("#mapRemove").hidden=!cfg.mapId||!canAdmin;
   $("#closeDay").disabled=!canWrite;
+}
+
+/* ---------- 부적합 사항 ---------- */
+let ncItems=[],ncLoaded=false,ncFilterS="",ncFilterCo="",ncTimer=null;
+const phSrc=(id,w)=>"https://lh3.googleusercontent.com/d/"+encodeURIComponent(id)+"=w"+(w||800);
+const phAlt=(id,w)=>"https://drive.google.com/thumbnail?id="+encodeURIComponent(id)+"&sz=w"+(w||800);
+const phImg=(id,w,alt)=>`<img src="${phSrc(id,w)}" alt="${esc(alt||"사진")}" loading="lazy" onerror="if(!this.dataset.a){this.dataset.a=1;this.src='${phAlt(id,w)}'}">`;
+const ncToday=()=>todayStr();
+const md=d=>d?String(d).slice(5).replace("-","."):"";
+function ncDays(it){if(!it.date)return"";const a=new Date(it.date+"T00:00:00"),b=it.status==="조치완료"&&it.afterDate?new Date(it.afterDate+"T00:00:00"):new Date(todayStr()+"T00:00:00");const n=Math.round((b-a)/864e5);return it.status==="조치완료"?(n<=0?"당일 조치":n+"일 만에 조치"):(n<=0?"오늘 발견":"D+"+n)}
+async function ncLoad(force){
+  if(!db)return;
+  try{const j=await api("ncList");ncItems=(j.items||[]).sort((a,b)=>String(b.date).localeCompare(String(a.date))||(b.createdAt||0)-(a.createdAt||0));ncLoaded=true;renderNc()}
+  catch(e){if(!ncLoaded)$("#ncList").innerHTML=`<div class="empty">${ICON_EMPTY}<b>부적합 목록을 불러오지 못했습니다</b><span>구글시트 스크립트가 최신 버전인지 확인해 주세요. (${esc(e.message||"")})</span></div>`}
+  clearTimeout(ncTimer);if(!$("#v-nc").hidden)ncTimer=setTimeout(ncLoad,60000);
+}
+function renderNc(){
+  const cos=[...new Set(ncItems.map(x=>x.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ko"));
+  if(ncFilterCo&&!cos.includes(ncFilterCo))ncFilterCo="";
+  $("#ncCompany").innerHTML=`<option value="">전체 업체</option>`+cos.map(c=>`<option${c===ncFilterCo?" selected":""}>${esc(c)}</option>`).join("");
+  const base=ncItems.filter(x=>!ncFilterCo||x.company===ncFilterCo);
+  $("#ncCntAll").textContent=base.length;$("#ncCntOpen").textContent=base.filter(x=>x.status!=="조치완료").length;$("#ncCntDone").textContent=base.filter(x=>x.status==="조치완료").length;
+  const l=base.filter(x=>!ncFilterS||(ncFilterS==="조치완료"?x.status==="조치완료":x.status!=="조치완료"));
+  $("#ncList").innerHTML=l.length?l.map(ncCardHTML).join(""):`<div class="empty" style="grid-column:1/-1">${ICON_EMPTY}<b>${ncItems.length?"조건에 맞는 부적합 사항이 없습니다":"등록된 부적합 사항이 없습니다"}</b><span>‘+ 부적합 등록’을 눌러 조치 전 사진과 내용을 올려 주세요.</span></div>`;
+}
+function ncCardHTML(it){
+  const done=it.status==="조치완료",b=it.before||[],a=it.after||[];
+  return `<button type="button" class="nc-card ${done?"done":"open"}" data-id="${esc(it.id)}">
+    <div class="nc-photos">
+      <figure>${b[0]?phImg(b[0],600,"조치 전"):'<div class="wait">사진 없음</div>'}<figcaption>조치 전 ${md(it.date)}</figcaption>${b.length>1?`<span class="cnt">+${b.length-1}</span>`:""}</figure>
+      <figure class="after">${a[0]?phImg(a[0],600,"조치 후"):'<div class="wait">조치 대기</div>'}${a[0]?`<figcaption>조치 후 ${md(it.afterDate)}</figcaption>`:""}${a.length>1?`<span class="cnt">+${a.length-1}</span>`:""}</figure>
+    </div>
+    <div class="nc-body">
+      <div class="row1"><span class="pill ${done?"p-done":"p-open"}">${done?"조치완료":"미조치"}</span><b><i class="cdot" style="background:${compColor(it.company)};display:inline-block;margin-right:4px"></i>${esc(it.company)}</b>${it.loc?`<span class="hint">${esc(it.loc)}</span>`:""}<span class="sp"></span><span class="hint mono">${esc(ncDays(it))}</span></div>
+      <p class="nc-issue">${esc(it.issue)}</p>
+      <div class="meta"><span>현대산업개발 <b>${esc(it.hdcMgr||"-")}</b></span><span>협력사 <b>${esc(it.coMgr||"-")}</b></span></div>
+    </div></button>`;
+}
+$("#ncFilter").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;ncFilterS=b.dataset.s;document.querySelectorAll("#ncFilter .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));renderNc()});
+$("#ncCompany").addEventListener("change",e=>{ncFilterCo=e.target.value;renderNc()});
+$("#ncList").addEventListener("click",e=>{const c=e.target.closest(".nc-card");if(c)ncDetail(c.dataset.id)});
+$("#ncAddBtn").addEventListener("click",()=>ncForm(null));
+
+async function shrinkPhoto(file){
+  const url=URL.createObjectURL(file);
+  try{const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=url});
+    const s=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));const c=document.createElement("canvas");c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);return c.toDataURL("image/jpeg",.82).split(",")[1]}
+  finally{URL.revokeObjectURL(url)}
+}
+function photoPicker(box,list,key){
+  const draw=()=>{box.innerHTML=list.map((p,i)=>`<div class="th">${p.id?phImg(p.id,200,""):`<img src="${p.url}" alt="">`}<button type="button" data-i="${i}" aria-label="사진 빼기">×</button></div>`).join("")+(list.length<6?`<label class="add"><input type="file" accept="image/*" multiple hidden data-k="${key}"><b>+</b>사진</label>`:"")};
+  box.addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(!b)return;const p=list.splice(Number(b.dataset.i),1)[0];if(p&&p.url)URL.revokeObjectURL(p.url);draw()});
+  box.addEventListener("change",e=>{const inp=e.target.closest("input[type=file]");if(!inp)return;[...inp.files].slice(0,6-list.length).forEach(f=>list.push({file:f,url:URL.createObjectURL(f)}));draw()});
+  draw();
+}
+async function uploadList(list,msg){
+  const ids=[];let n=0;const total=list.filter(p=>p.file).length;
+  for(const p of list){if(p.id){ids.push(p.id);continue}n++;msg.textContent=`사진 올리는 중… ${n}/${total}`;const b64=await shrinkPhoto(p.file);const j=await api("uploadPhoto",{b64,mime:"image/jpeg",name:"nc_"+Date.now()+".jpg"});ids.push(j.id)}
+  return ids;
+}
+function ncForm(it,mode){
+  const edit=!!it,act=mode==="action";
+  const before=(it&&it.before||[]).map(id=>({id})),after=(it&&it.after||[]).map(id=>({id}));
+  const co=[...new Set([...ncItems.map(x=>x.company),...works.map(w=>w.company)].filter(Boolean))];
+  openSheet(`<div class="sec-head"><h2 style="flex:1">${act?"조치 결과 등록":edit?"부적합 수정":"부적합 등록"}</h2><button type="button" class="btn sm" data-close>닫기</button></div>
+    <form class="reg" id="ncF" novalidate style="gap:12px">
+      <div ${act?"hidden":""} style="display:flex;flex-direction:column;gap:12px">
+        <div class="grid2"><div class="f"><label for="nf_date" class="req">발견일 (조치 전)</label><input type="date" id="nf_date" value="${esc(it?it.date:ncToday())}"></div>
+          <div class="f"><label for="nf_co" class="req">업체명</label><input id="nf_co" list="nf_coList" value="${esc(it?it.company:"")}" placeholder="예: 금강건설" autocomplete="off"><datalist id="nf_coList">${co.map(c=>`<option value="${esc(c)}">`).join("")}</datalist></div></div>
+        <div class="f"><label for="nf_loc">위치</label><input id="nf_loc" value="${esc(it?it.loc:"")}" placeholder="예: 108동 부근 인발제 가열 작업구간"></div>
+        <div class="f"><label for="nf_issue" class="req">부적합 내용 · 조치 요청사항</label><textarea id="nf_issue" placeholder="예: 인발제 가열 작업구간 1급 이상 방진마스크 착용 철저, 보안경 등 눈보호구 착용">${esc(it?it.issue:"")}</textarea></div>
+        <div class="grid2"><div class="f"><label for="nf_hdc">현대산업개발 담당자</label><input id="nf_hdc" value="${esc(it?it.hdcMgr:"")}"></div>
+          <div class="f"><label for="nf_cm">협력사 담당자</label><input id="nf_cm" value="${esc(it?it.coMgr:"")}"></div></div>
+        <div class="f"><span class="lab">조치 전 사진 <span class="hint">최대 6장</span></span><div class="ph-pick" id="nf_before"></div></div>
+      </div>
+      <div ${edit||act?"":"hidden"} style="display:flex;flex-direction:column;gap:12px">
+        ${act?`<div class="note" style="background:var(--surface-2);flex-direction:column;align-items:flex-start;gap:4px"><b>${esc(it.company)} · ${esc(it.loc||"")}</b><span>${esc(it.issue)}</span></div>`:""}
+        <div class="f"><label for="nf_adate">조치일</label><input type="date" id="nf_adate" value="${esc(it&&it.afterDate?it.afterDate:ncToday())}"></div>
+        <div class="f"><label for="nf_action">조치 내용</label><textarea id="nf_action" placeholder="예: 방진마스크, 보안경, 장갑 착용 완료">${esc(it?it.action:"")}</textarea></div>
+        <div class="f"><span class="lab">조치 후 사진 <span class="hint">최대 6장</span></span><div class="ph-pick" id="nf_after"></div></div>
+      </div>
+      <p class="hint" id="nf_msg" role="status" style="margin:0"></p>
+      <button type="submit" class="btn primary" id="nf_save">${act?"조치 완료로 저장":edit?"수정 저장":"부적합 등록"}</button>
+    </form>`,r=>{
+      photoPicker(r.querySelector("#nf_before"),before,"b");
+      photoPicker(r.querySelector("#nf_after"),after,"a");
+      r.querySelector("#ncF").addEventListener("submit",async e=>{e.preventDefault();
+        const g=id=>r.querySelector(id).value.trim(),msg=r.querySelector("#nf_msg"),btn=r.querySelector("#nf_save");
+        const item={date:g("#nf_date"),company:g("#nf_co"),loc:g("#nf_loc"),issue:g("#nf_issue"),hdcMgr:g("#nf_hdc"),coMgr:g("#nf_cm")};
+        if(!act&&(!item.date||!item.company||!item.issue)){msg.textContent="발견일, 업체명, 부적합 내용을 입력해 주세요.";return}
+        btn.disabled=true;
+        try{
+          item.before=await uploadList(before,msg);
+          if(edit||act){item.after=await uploadList(after,msg);item.action=g("#nf_action");item.afterDate=(item.action||item.after.length)?g("#nf_adate"):"";item.status=(item.action||item.after.length)?"조치완료":"미조치"}
+          msg.textContent="저장하는 중…";
+          if(edit){await api("ncUpdate",{id:it.id,patch:act?{after:item.after,action:item.action,afterDate:item.afterDate,status:item.status}:item})}
+          else{await api("ncAdd",{item:{...item,status:"미조치"}})}
+          toast(act?"조치 결과를 저장했습니다":edit?"수정했습니다":"부적합 사항을 등록했습니다");closeSheet();ncLoad();
+        }catch(err){msg.textContent="저장하지 못했습니다: "+(err.message||"잠시 후 다시 시도하세요")}
+        finally{btn.disabled=false}
+      });
+    },true);
+}
+function ncDetail(id){
+  const it=ncItems.find(x=>x.id===id);if(!it)return;const done=it.status==="조치완료";
+  const imgs=l=>(l||[]).length?`<div class="nc-imgs">${l.map(p=>`<a href="https://drive.google.com/file/d/${encodeURIComponent(p)}/view" target="_blank" rel="noopener">${phImg(p,1200,"")}</a>`).join("")}</div>`:`<div class="nc-photos"><figure style="grid-column:1/-1"><div class="wait">${done?"사진 없음":"조치 대기"}</div></figure></div>`;
+  openSheet(`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="pill ${done?"p-done":"p-open"}">${done?"조치완료":"미조치"}</span><span class="hint mono">${esc(ncDays(it))}</span></div>
+    <h2>${esc(it.company)}${it.loc?` · <span style="font-size:17px">${esc(it.loc)}</span>`:""}</h2>
+    <div class="nc-detail">
+      <div class="nc-col"><h3>조치 전 <span class="hint mono">${esc(it.date)}</span></h3>${imgs(it.before)}<div class="txt">${esc(it.issue)}</div></div>
+      <div class="nc-col"><h3>조치 후 <span class="hint mono">${esc(it.afterDate||"")}</span></h3>${imgs(it.after)}<div class="txt">${esc(it.action||"아직 조치 결과가 등록되지 않았습니다.")}</div></div>
+    </div>
+    <dl class="kv"><dt>현대산업개발 담당자</dt><dd>${esc(it.hdcMgr||"-")}</dd><dt>협력사 담당자</dt><dd>${esc(it.coMgr||"-")}</dd></dl>
+    <div class="formbar">${done?"":`<button type="button" class="btn primary" id="ndAct">조치 결과 등록</button>`}<button type="button" class="btn" id="ndEdit">수정</button><button type="button" class="btn danger" id="ndDel">삭제</button><span style="flex:1"></span><button type="button" class="btn" data-close>닫기</button></div>
+    <div class="confirm" id="ndConfirm" hidden><b>이 부적합 사항을 삭제할까요?</b><span class="hint">삭제하면 목록에서 사라집니다. 드라이브의 사진은 남습니다.</span><div class="formbar"><button type="button" class="btn danger" id="ndYes">삭제</button><button type="button" class="btn" id="ndNo">취소</button></div></div>`,
+  r=>{
+    const a=r.querySelector("#ndAct");a&&a.addEventListener("click",()=>{closeSheet();ncForm(it,"action")});
+    r.querySelector("#ndEdit").addEventListener("click",()=>{closeSheet();ncForm(it)});
+    r.querySelector("#ndDel").addEventListener("click",()=>r.querySelector("#ndConfirm").hidden=false);
+    r.querySelector("#ndNo").addEventListener("click",()=>r.querySelector("#ndConfirm").hidden=true);
+    r.querySelector("#ndYes").addEventListener("click",async()=>{try{await api("ncRemove",{id:it.id});toast("삭제했습니다");closeSheet();ncLoad()}catch(e){toast("삭제하지 못했습니다")}});
+  },true);
 }
 
 /* ---------- 데이터 ---------- */
