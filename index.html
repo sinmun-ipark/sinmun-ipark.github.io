@@ -433,6 +433,15 @@ body.tv-mouse .tv-ctl,.tv-ctl:focus-within{opacity:1}
 .tv-n .i{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;word-break:keep-all}
 .tv-n .s{color:var(--muted);font-size:.84em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tv-empty{padding:clamp(12px,1.4vh,24px) clamp(10px,.9vw,18px);color:var(--muted);font-size:clamp(13px,1vw,20px)}
+.tv-w[data-id],.tv-n[data-id]{cursor:pointer}
+.tv-w[data-id]:hover,.tv-n[data-id]:hover{background:var(--accent-soft)}
+.lb{position:fixed;inset:0;z-index:40;background:rgba(5,8,20,.92);display:flex;align-items:center;justify-content:center;cursor:zoom-out}
+.lb img{max-width:96vw;max-height:92vh;object-fit:contain;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.lb-x{position:absolute;top:14px;right:18px;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:30px;line-height:48px;padding:0;cursor:pointer}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:34px;line-height:56px;padding:0;cursor:pointer}
+.lb-nav.p{left:16px}.lb-nav.n{right:16px}
+.lb-cnt{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;background:rgba(0,0,0,.4);padding:2px 10px;border-radius:999px}
+.nc-imgs a{cursor:zoom-in}
 /* ---- 작업 구간 ---- */
 #v-dash .map .frame.has-img{aspect-ratio:auto}
 .map .frame.has-img img{position:static;display:block;width:100%;height:auto;object-fit:fill}
@@ -1714,7 +1723,7 @@ function ncForm(it,mode){
 }
 function ncDetail(id){
   const it=ncItems.find(x=>x.id===id);if(!it)return;const done=it.status==="조치완료";
-  const imgs=l=>(l||[]).length?`<div class="nc-imgs">${l.map(p=>`<a href="https://drive.google.com/file/d/${encodeURIComponent(p)}/view" target="_blank" rel="noopener">${phImg(p,1200,"")}</a>`).join("")}</div>`:`<div class="nc-photos"><figure style="grid-column:1/-1"><div class="wait">${done?"사진 없음":"조치 대기"}</div></figure></div>`;
+  const imgs=l=>(l||[]).length?`<div class="nc-imgs">${l.map(p=>`<a href="https://drive.google.com/file/d/${encodeURIComponent(p)}/view" target="_blank" rel="noopener" data-ph="${esc(p)}">${phImg(p,1200,"")}</a>`).join("")}</div>`:`<div class="nc-photos"><figure style="grid-column:1/-1"><div class="wait">${done?"사진 없음":"조치 대기"}</div></figure></div>`;
   openSheet(`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="pill ${done?"p-done":"p-open"}">${done?"조치완료":"미조치"}</span><span class="hint mono">${esc(ncDays(it))}</span></div>
     <h2>${esc(it.company)}${it.loc?` · <span style="font-size:17px">${esc(it.loc)}</span>`:""}</h2>
     <div class="nc-detail">
@@ -1726,6 +1735,7 @@ function ncDetail(id){
     <div class="confirm" id="ndConfirm" hidden><b>이 부적합 사항을 삭제할까요?</b><span class="hint">삭제하면 목록에서 사라집니다. 드라이브의 사진은 남습니다.</span><div class="formbar"><button type="button" class="btn danger" id="ndYes">삭제</button><button type="button" class="btn" id="ndNo">취소</button></div></div>`,
   r=>{
     const a=r.querySelector("#ndAct");a&&a.addEventListener("click",()=>{closeSheet();ncForm(it,"action")});
+    r.querySelectorAll("a[data-ph]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const all=[...r.querySelectorAll("a[data-ph]")].map(x=>x.dataset.ph);openPhoto(all,all.indexOf(a.dataset.ph))}));
     const pp=r.querySelector("#ndPost");pp&&pp.addEventListener("click",()=>{closeSheet();ncPostpone([it.id],shift(ncDue(it)>viewDate?ncDue(it):viewDate,1))});
     r.querySelector("#ndEdit").addEventListener("click",()=>{closeSheet();ncForm(it)});
     r.querySelector("#ndDel").addEventListener("click",()=>r.querySelector("#ndConfirm").hidden=false);
@@ -1765,13 +1775,13 @@ function renderTv(){
   // 작업 목록 (배치도 번호 순 → 번호 없는 작업)
   const l=live.slice().sort((a,b)=>(m[a.id]||1e6)-(m[b.id]||1e6)||(!!b.highRisk-!!a.highRisk)||String(a.start).localeCompare(String(b.start)));
   $("#tvWC").textContent=live.length?live.length+"건":"";
-  tvSetList("#tvWorks",l.length?l.map(w=>`<div class="tv-w${w.highRisk?" hr":""}">${m[w.id]?znHTML(w,m[w.id]):`<span class="zn" style="background:${compColor(w.company)}">·</span>`}<span class="t">${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span><span class="r">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</span><span class="m">${esc([w.company,(w.dongs||[]).join("·")||w.loc,(Number(w.workers)||0)+"명",w.status,w.highRisk?(w.watch==="배치"?"감시단 배치":"감시단 미배치"):""].filter(Boolean).join(" · "))}</span></div>`).join("")
+  tvSetList("#tvWorks",l.length?l.map(w=>`<div class="tv-w${w.highRisk?" hr":""}" data-id="${esc(w.id)}">${m[w.id]?znHTML(w,m[w.id]):`<span class="zn" style="background:${compColor(w.company)}">·</span>`}<span class="t">${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span><span class="r">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</span><span class="m">${esc([w.company,(w.dongs||[]).join("·")||w.loc,(Number(w.workers)||0)+"명",w.status,w.highRisk?(w.watch==="배치"?"감시단 배치":"감시단 미배치"):""].filter(Boolean).join(" · "))}</span></div>`).join("")
     :'<div class="tv-empty">오늘 등록된 작업이 없습니다.</div>');
   // 부적합 미조치 (오늘까지 조치 예정 + 밀린 것, 오래된 순)
   const X=todayStr();
   const nc=ncItems.filter(x=>!ncDone(x)&&ncDue(x)<=X).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   $("#tvK5").textContent=ncLoaded?nc.length:"–";$("#tvNC").textContent=nc.length?nc.length+"건":"";
-  tvSetList("#tvNcs",!ncLoaded?'<div class="tv-empty">불러오는 중…</div>':nc.length?nc.map(it=>`<div class="tv-n"><div class="tv-th">${(it.before||[])[0]?phImg(it.before[0],300,"조치 전"):"사진 없음"}</div><div style="min-width:0;display:flex;flex-direction:column;gap:2px"><div class="h"><i class="cdot" style="background:${compColor(it.company)}"></i><b>${esc(it.company)}</b>${Number(it.carry)?`<span class="pill p-carry">이월 ${Number(it.carry)}회</span>`:""}<span class="d">${esc(ncDays(it))}</span></div><div class="i">${esc(it.issue)}</div><div class="s">${esc([it.loc,it.hdcMgr?"현대 "+it.hdcMgr:"",it.coMgr?"협력사 "+it.coMgr:""].filter(Boolean).join(" · "))}</div></div></div>`).join("")
+  tvSetList("#tvNcs",!ncLoaded?'<div class="tv-empty">불러오는 중…</div>':nc.length?nc.map(it=>`<div class="tv-n" data-id="${esc(it.id)}"><div class="tv-th">${(it.before||[])[0]?phImg(it.before[0],300,"조치 전"):"사진 없음"}</div><div style="min-width:0;display:flex;flex-direction:column;gap:2px"><div class="h"><i class="cdot" style="background:${compColor(it.company)}"></i><b>${esc(it.company)}</b>${Number(it.carry)?`<span class="pill p-carry">이월 ${Number(it.carry)}회</span>`:""}<span class="d">${esc(ncDays(it))}</span></div><div class="i">${esc(it.issue)}</div><div class="s">${esc([it.loc,it.hdcMgr?"현대 "+it.hdcMgr:"",it.coMgr?"협력사 "+it.coMgr:""].filter(Boolean).join(" · "))}</div></div></div>`).join("")
     :'<div class="tv-empty">미조치 부적합 사항이 없습니다. 👍</div>');
   tvFit();
 }
@@ -1779,6 +1789,7 @@ function tvClock(){
   const n=new Date();$("#tvTime").textContent=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
   $("#tvDate").textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 (${WD[n.getDay()]})`;
   const t=todayStr();if(tvDay&&tvDay!==t){tvDay=t;if(viewDate!==t)setDate(t)}
+  if(Date.now()-tvAct>60000&&($("#sheetBg")||$("#lb"))){closePhoto();closeSheet()}
 }
 function tvSetList(id,html){
   const list=$(id),box=list.parentElement;
@@ -1804,6 +1815,17 @@ function tvStart(){
 function tvStop(){tvTimers.forEach(clearInterval);tvTimers=[];document.body.classList.remove("tv-mouse");if(document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{})}
 $("#tvFull").addEventListener("click",()=>{if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>toast("이 브라우저에서는 F11을 눌러 전체화면으로 바꿔 주세요"))});
 $("#tvExit").addEventListener("click",()=>show("home"));
+$("#tvWorks").addEventListener("click",e=>{const r=e.target.closest(".tv-w");if(r&&r.dataset.id)openDetail(r.dataset.id)});
+$("#tvNcs").addEventListener("click",e=>{const r=e.target.closest(".tv-n");if(r&&r.dataset.id)ncDetail(r.dataset.id)});
+function openPhoto(ids,i){
+  closePhoto();if(!ids.length)return;i=Math.max(0,i);const d=document.createElement("div");d.className="lb";d.id="lb";d.setAttribute("role","dialog");d.setAttribute("aria-label","사진 크게 보기");
+  const draw=()=>{d.innerHTML=`<img src="${phSrc(ids[i],2000)}" alt="사진 크게 보기" onerror="if(!this.dataset.a){this.dataset.a=1;this.src='${phAlt(ids[i],2000)}'}">${ids.length>1?`<button type="button" class="lb-nav p" aria-label="이전 사진">‹</button><button type="button" class="lb-nav n" aria-label="다음 사진">›</button><span class="lb-cnt">${i+1} / ${ids.length}</span>`:""}<button type="button" class="lb-x" aria-label="닫기">×</button>`};
+  d.addEventListener("click",e=>{const nv=e.target.closest(".lb-nav");if(nv){i=(i+(nv.classList.contains("p")?-1:1)+ids.length)%ids.length;draw();return}closePhoto()});
+  draw();document.body.appendChild(d);
+}
+function closePhoto(){const d=$("#lb");d&&d.remove()}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closePhoto()});
+var tvAct=Date.now();["mousemove","click","keydown","touchstart"].forEach(ev=>document.addEventListener(ev,()=>{tvAct=Date.now()},{passive:true}));
 window.addEventListener("resize",()=>{["#tvWorks","#tvNcs"].forEach(i=>{const l=$(i);if(l)l._dirty=true});renderTv()});
 document.addEventListener("mousemove",()=>{if(!document.body.classList.contains("tvmode"))return;document.body.classList.add("tv-mouse");clearTimeout(tvMouseT);tvMouseT=setTimeout(()=>document.body.classList.remove("tv-mouse"),3000)});
 if(document.documentElement.classList.contains("tv"))setTimeout(()=>show("tv"),0);
