@@ -442,7 +442,7 @@ body.tv-mouse .tv-ctl,.tv-ctl:focus-within{opacity:1}
 .zlayer.edit{touch-action:none;cursor:crosshair}
 .zlayer.view{cursor:zoom-in}
 .zone{position:absolute;box-sizing:border-box;border:2px solid #2F6BFF;background:rgba(47,107,255,.22);border-radius:4px}
-.zone.hr{border:3px solid #F5B400;background:repeating-linear-gradient(-45deg,rgba(245,180,0,.42) 0 8px,rgba(20,20,20,.18) 8px 16px)}
+.zone.hr{border:3px dashed #E11D2E;background:repeating-linear-gradient(-45deg,rgba(225,29,46,.42) 0 6px,transparent 6px 14px)}
 .zone.pend{border:2px dashed #E8780C;background:rgba(232,120,12,.16)}
 .zone.done{border-color:#1F9D60;background:rgba(31,157,96,.18)}
 .zlayer.view .zone{cursor:pointer}
@@ -454,7 +454,7 @@ body.tv-mouse .tv-ctl,.tv-ctl:focus-within{opacity:1}
 .zl.tag.right{left:auto;right:-2px}
 .zone:hover{z-index:3}
 .zn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);min-width:12px;height:12px;padding:0 2px;border-radius:6px;color:#fff;font:700 8px/10px var(--f-mono);text-align:center;border:1px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.45);box-sizing:border-box;cursor:pointer;z-index:2;pointer-events:auto}
-.zn.hr{border-color:#F5B400;box-shadow:0 0 0 1.5px #1A1A1A,0 1px 4px rgba(0,0,0,.45)}
+.zn.hr{border-color:#fff;box-shadow:0 0 0 2px #E11D2E,0 0 0 3px #fff,0 1px 4px rgba(0,0,0,.45)}
 .zlegend{gap:6px!important}
 .zlegend .zi{display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 3px;font-size:12px;max-width:100%;color:var(--ink)}
 .zlegend .zi:hover{border-color:var(--accent)}
@@ -1028,15 +1028,18 @@ function renderMap(){
 const pct=v=>(v*100).toFixed(3)+"%";
 const PALETTE=["#E5484D","#2F6BFF","#12A594","#F76B15","#8E4EC6","#D6409F","#3E9B4F","#A0644A","#0090FF","#475569","#C2410C","#00A2C7"];
 let colorMap={};
-function rebuildColors(list){const set=new Set();(list||[]).forEach(w=>w&&w.company&&set.add(w.company));Object.keys(colorMap).forEach(n=>set.add(n));const names=[...set].sort((a,b)=>a.localeCompare(b,"ko"));colorMap={};names.forEach((n,i)=>colorMap[n]=PALETTE[i%PALETTE.length])}
-function compColor(name){if(!(name in colorMap)){let h=0;for(const ch of String(name||""))h=(h*31+ch.codePointAt(0))>>>0;return PALETTE[h%PALETTE.length]}return colorMap[name]}
+const FIXED_CO=[["금강","#EAB308"],["성우","#2F6BFF"],["케이티","#16A34A"]];
+const fixedColor=n=>{const f=FIXED_CO.find(([k])=>String(n||"").includes(k));return f?f[1]:""};
+const PALETTE2=PALETTE.filter(c=>!["#E5484D","#2F6BFF","#12A594","#3E9B4F","#0090FF","#00A2C7"].includes(c));
+function rebuildColors(list){const set=new Set();(list||[]).forEach(w=>w&&w.company&&set.add(w.company));Object.keys(colorMap).forEach(n=>set.add(n));const names=[...set].sort((a,b)=>a.localeCompare(b,"ko"));colorMap={};let i=0;names.forEach(n=>{colorMap[n]=fixedColor(n)||PALETTE2[i++%PALETTE2.length]})}
+function compColor(name){const fx=fixedColor(name);if(fx)return fx;if(!(name in colorMap)){let h=0;for(const ch of String(name||""))h=(h*31+ch.codePointAt(0))>>>0;return PALETTE2[h%PALETTE2.length]}return colorMap[name]}
 function zoneColorStyle(w){const c=compColor(w.company);
-  return w.highRisk?`border:2px dashed ${c};background:repeating-linear-gradient(-45deg,rgba(245,180,0,.28) 0 5px,transparent 5px 12px),${c}1a`
+  return w.highRisk?`border:2px dashed #E11D2E;background:repeating-linear-gradient(-45deg,rgba(225,29,46,.38) 0 4px,transparent 4px 10px),${c}26`
     :`border:2px solid ${c};background:${c}1f`}
 function workNums(){const l=works.filter(w=>w.status!=="작업취소"&&(w.zones||[]).length).sort((a,b)=>String(a.company).localeCompare(String(b.company),"ko")||(a.createdAt||0)-(b.createdAt||0));const m={};l.forEach((w,i)=>m[w.id]=i+1);return m}
-function znHTML(w,n){return `<span class="zn${w.highRisk?" hr":""}" style="background:${compColor(w.company)}">${n}</span>`}
+function znHTML(w,n){const c=compColor(w.company);return `<span class="zn${w.highRisk?" hr":""}" style="background:${c}${c==="#EAB308"?";color:#1A1A1A":""}">${n}</span>`}
 function zLegendHTML(list){const m=workNums();const l=list.filter(w=>m[w.id]).sort((a,b)=>m[a.id]-m[b.id]);
-  return l.map(w=>`<button type="button" class="zi" data-id="${esc(w.id)}" title="${esc(w.company+" · "+w.title)}">${znHTML(w,m[w.id])}<span class="zt">${esc(w.title)}</span><span class="hint">${esc(w.company)}</span></button>`).join("")+(l.some(w=>w.highRisk)?'<span class="hint zhint">노란 테두리 번호·점선 = 고위험</span>':"")}
+  return l.map(w=>`<button type="button" class="zi" data-id="${esc(w.id)}" title="${esc(w.company+" · "+w.title)}">${znHTML(w,m[w.id])}<span class="zt">${esc(w.title)}</span><span class="hint">${esc(w.company)}</span></button>`).join("")+(l.some(w=>w.highRisk)?'<span class="hint zhint">빨간 동그라미 번호·빨간 빗금 = 고위험</span>':"")}
 const zStyle=z=>`left:${pct(z.x)};top:${pct(z.y)};width:${pct(z.w)};height:${pct(z.h)}`;
 function dayZonesHTML(src){
   const m=workNums();
