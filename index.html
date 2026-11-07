@@ -13,7 +13,7 @@
   --band:#132050; --band-2:#1B2C6B; --band-ink:#F2F5FF; --band-muted:#A9B5DC; --grid-line:rgba(255,255,255,.06); --band-tile:rgba(255,255,255,.07); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
   --bg:#EEF1F7; --surface:#FFFFFF; --surface-2:#F6F8FC; --ink:#141C33; --muted:#5E6984; --line:#DDE2EC;
   --accent:#2756E8; --accent-soft:#E7EDFD; --on-accent:#FFFFFF;
-  --hazard:#E11D2E; --hazard-ink:#FFFFFF; --hazard-soft:#FDECEC; --hazard-text:#B4141F;
+  --hazard:#F5B400; --hazard-ink:#1A1A1A; --hazard-soft:#FFF5D9; --hazard-text:#8A6400;
   --danger:#D23B33; --danger-soft:#FCE9E7; --ok:#178A57; --ok-soft:#E1F4EA; --plan:#6E55D9; --plan-soft:#EEEAFC;
   --shadow:0 1px 2px rgba(20,28,51,.06),0 4px 14px rgba(20,28,51,.06);
   --f-display:"Do Hyeon","IBM Plex Sans KR","Apple SD Gothic Neo",sans-serif;
@@ -24,14 +24,14 @@
   --band:#0C1433; --band-2:#14205A; --band-ink:#EEF2FF; --band-muted:#8E9AC4; --grid-line:rgba(255,255,255,.05); --band-tile:rgba(255,255,255,.07); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
   --bg:#0A0F1F; --surface:#141B32; --surface-2:#1A2340; --ink:#E8ECF7; --muted:#97A2BE; --line:#26304F;
   --accent:#86A6FF; --accent-soft:#1D2A55; --on-accent:#0A0F1F;
-  --hazard:#F04452; --hazard-ink:#FFFFFF; --hazard-soft:#3A1519; --hazard-text:#FF8A93;
+  --hazard:#F7C23A; --hazard-ink:#1A1A1A; --hazard-soft:#352B10; --hazard-text:#F7C23A;
   --danger:#FF7D74; --danger-soft:#3B1E22; --ok:#5ED59E; --ok-soft:#14321F; --plan:#AD9CFF; --plan-soft:#28224B;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}}
 :root[data-theme="dark"]{
   --band:#0C1433; --band-2:#14205A; --band-ink:#EEF2FF; --band-muted:#8E9AC4; --grid-line:rgba(255,255,255,.05); --band-tile:rgba(255,255,255,.07); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
   --bg:#0A0F1F; --surface:#141B32; --surface-2:#1A2340; --ink:#E8ECF7; --muted:#97A2BE; --line:#26304F;
   --accent:#86A6FF; --accent-soft:#1D2A55; --on-accent:#0A0F1F;
-  --hazard:#F04452; --hazard-ink:#FFFFFF; --hazard-soft:#3A1519; --hazard-text:#FF8A93;
+  --hazard:#F7C23A; --hazard-ink:#1A1A1A; --hazard-soft:#352B10; --hazard-text:#F7C23A;
   --danger:#FF7D74; --danger-soft:#3B1E22; --ok:#5ED59E; --ok-soft:#14321F; --plan:#AD9CFF; --plan-soft:#28224B;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}
 
@@ -41,7 +41,7 @@
   --band-tile:rgba(255,255,255,.7); --band-tile-line:#BCD0F3; --band-btn:#FFFFFF;
   --bg:#EEF4FE; --surface:#FFFFFF; --surface-2:#F3F7FE; --ink:#141C33; --muted:#566484; --line:#D6E1F3;
   --accent:#2756E8; --accent-soft:#E7EDFD; --on-accent:#FFFFFF;
-  --hazard:#E11D2E; --hazard-ink:#FFFFFF; --hazard-soft:#FDECEC; --hazard-text:#B4141F;
+  --hazard:#F5B400; --hazard-ink:#1A1A1A; --hazard-soft:#FFF5D9; --hazard-text:#8A6400;
   --danger:#D23B33; --danger-soft:#FCE9E7; --ok:#178A57; --ok-soft:#E1F4EA; --plan:#6E55D9; --plan-soft:#EEEAFC;
   --shadow:0 1px 2px rgba(20,28,51,.05),0 6px 18px rgba(20,28,51,.06); color-scheme:light}
 :root[data-skin="bright"] header.band{border-bottom:1px solid var(--line)}
@@ -52,7 +52,7 @@
   --band-tile:rgba(255,255,255,.06); --band-tile-line:rgba(255,255,255,.12); --band-btn:rgba(255,255,255,.12);
   --bg:#070C1E; --surface:#0F1630; --surface-2:#16203F; --ink:#E8ECF7; --muted:#97A2BE; --line:#223056;
   --accent:#86A6FF; --accent-soft:#1A2754; --on-accent:#0A0F1F;
-  --hazard:#F04452; --hazard-ink:#FFFFFF; --hazard-soft:#381418; --hazard-text:#FF8A93;
+  --hazard:#F7C23A; --hazard-ink:#1A1A1A; --hazard-soft:#33290F; --hazard-text:#F7C23A;
   --danger:#FF7D74; --danger-soft:#3B1E22; --ok:#5ED59E; --ok-soft:#14321F; --plan:#AD9CFF; --plan-soft:#28224B;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35); color-scheme:dark}
 .skin{margin-left:auto;display:flex;gap:2px;background:var(--band-tile);border:1px solid var(--band-tile-line);border-radius:999px;padding:3px}
@@ -81,7 +81,7 @@ button{cursor:pointer}
   color:var(--band-ink)}
 .band .wrap{padding-block:18px 20px;display:flex;flex-direction:column;gap:14px}
 .brandrow{display:flex;align-items:center;gap:12px}
-.badge{font-family:var(--f-mono);font-weight:700;font-size:12px;letter-spacing:.12em;background:#F5B400;color:#1A1A1A;padding:4px 8px;border-radius:6px}
+.badge{font-family:var(--f-mono);font-weight:700;font-size:12px;letter-spacing:.12em;background:var(--hazard);color:var(--hazard-ink);padding:4px 8px;border-radius:6px}
 .brandrow .sub{font-size:12px;color:var(--band-muted);letter-spacing:.02em}
 .sitename{font-family:var(--f-display);font-size:30px;line-height:1.1;margin:0;font-weight:400;letter-spacing:-.01em;text-wrap:balance}
 .conn{font-size:12px;color:var(--band-muted);display:flex;align-items:center;gap:6px}
@@ -235,7 +235,7 @@ legend + *{clear:both}
 .stickybar{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:var(--shadow);display:flex;gap:8px;flex-wrap:wrap}
 .stickybar .btn.primary{flex:1;min-height:46px;font-size:15px}
 .note{border-radius:12px;padding:12px 14px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-.note.warn{background:#FFF5D9;color:#8A6400;border:1px solid #F5B400}
+.note.warn{background:var(--hazard-soft);color:var(--hazard-text);border:1px solid var(--hazard)}
 
 /* ---- 하단 탭 ---- */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));pointer-events:none}
