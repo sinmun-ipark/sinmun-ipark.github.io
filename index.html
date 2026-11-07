@@ -442,6 +442,9 @@ body.tv-mouse .tv-ctl,.tv-ctl:focus-within{opacity:1}
 .lb-nav.p{left:16px}.lb-nav.n{right:16px}
 .lb-cnt{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;background:rgba(0,0,0,.4);padding:2px 10px;border-radius:999px}
 .nc-imgs a{cursor:zoom-in}
+.lb-dl{position:absolute;top:14px;right:78px;height:48px;padding:0 18px;border-radius:999px;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.nd-dl{margin-left:auto}
+body.tvmode .sheet .formbar>:not([data-close]):not(span),body.tvmode .sheet div:has(>#stBtns),body.tvmode .sheet .confirm,body.tvmode .nd-dl,body.tvmode .lb-dl{display:none!important}
 /* ---- 작업 구간 ---- */
 #v-dash .map .frame.has-img{aspect-ratio:auto}
 .map .frame.has-img img{position:static;display:block;width:100%;height:auto;object-fit:fill}
@@ -1726,15 +1729,16 @@ function ncDetail(id){
   openSheet(`<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="pill ${done?"p-done":"p-open"}">${done?"조치완료":"미조치"}</span><span class="hint mono">${esc(ncDays(it))}</span></div>
     <h2>${esc(it.company)}${it.loc?` · <span style="font-size:17px">${esc(it.loc)}</span>`:""}</h2>
     <div class="nc-detail">
-      <div class="nc-col"><h3>조치 전 <span class="hint mono">${esc(it.date)}</span></h3>${imgs(it.before)}<div class="txt">${esc(it.issue)}</div></div>
-      <div class="nc-col"><h3>조치 후 <span class="hint mono">${esc(it.afterDate||"")}</span></h3>${imgs(it.after)}<div class="txt">${esc(it.action||"아직 조치 결과가 등록되지 않았습니다.")}</div></div>
+      <div class="nc-col"><h3>조치 전 <span class="hint mono">${esc(it.date)}</span>${(it.before||[]).length?`<button type="button" class="btn sm nd-dl" data-k="before">⬇ 사진 저장</button>`:""}</h3>${imgs(it.before)}<div class="txt">${esc(it.issue)}</div></div>
+      <div class="nc-col"><h3>조치 후 <span class="hint mono">${esc(it.afterDate||"")}</span>${(it.after||[]).length?`<button type="button" class="btn sm nd-dl" data-k="after">⬇ 사진 저장</button>`:""}</h3>${imgs(it.after)}<div class="txt">${esc(it.action||"아직 조치 결과가 등록되지 않았습니다.")}</div></div>
     </div>
     <dl class="kv">${!done&&it.due&&it.due!==it.date?`<dt>조치 예정일</dt><dd>${esc(it.due)}${Number(it.carry)?` (이월 ${Number(it.carry)}회)`:""}</dd>`:""}<dt>현대산업개발 담당자</dt><dd>${esc(it.hdcMgr||"-")}</dd><dt>협력사 담당자</dt><dd>${esc(it.coMgr||"-")}</dd></dl>
     <div class="formbar">${done?"":`<button type="button" class="btn primary" id="ndAct">조치 결과 등록</button><button type="button" class="btn" id="ndPost">다음날(${esc(md(shift(ncDue(it)>viewDate?ncDue(it):viewDate,1)))})로 미루기</button>`}<button type="button" class="btn" id="ndEdit">수정</button><button type="button" class="btn danger" id="ndDel">삭제</button><span style="flex:1"></span><button type="button" class="btn" data-close>닫기</button></div>
     <div class="confirm" id="ndConfirm" hidden><b>이 부적합 사항을 삭제할까요?</b><span class="hint">삭제하면 목록에서 사라집니다. 드라이브의 사진은 남습니다.</span><div class="formbar"><button type="button" class="btn danger" id="ndYes">삭제</button><button type="button" class="btn" id="ndNo">취소</button></div></div>`,
   r=>{
     const a=r.querySelector("#ndAct");a&&a.addEventListener("click",()=>{closeSheet();ncForm(it,"action")});
-    r.querySelectorAll("a[data-ph]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const all=[...r.querySelectorAll("a[data-ph]")].map(x=>x.dataset.ph);openPhoto(all,all.indexOf(a.dataset.ph))}));
+    r.querySelectorAll("a[data-ph]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();const all=[...r.querySelectorAll("a[data-ph]")].map(x=>x.dataset.ph);openPhoto(all,all.indexOf(a.dataset.ph),`${it.company}_${it.date}`)}));
+    r.querySelectorAll(".nd-dl").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.k;dlPhotos(it[k]||[],`${it.company}_${(k==="before"?it.date:it.afterDate)||""}_${k==="before"?"조치전":"조치후"}`,b)}));
     const pp=r.querySelector("#ndPost");pp&&pp.addEventListener("click",()=>{closeSheet();ncPostpone([it.id],shift(ncDue(it)>viewDate?ncDue(it):viewDate,1))});
     r.querySelector("#ndEdit").addEventListener("click",()=>{closeSheet();ncForm(it)});
     r.querySelector("#ndDel").addEventListener("click",()=>r.querySelector("#ndConfirm").hidden=false);
@@ -1816,10 +1820,26 @@ $("#tvFull").addEventListener("click",()=>{if(document.fullscreenElement)documen
 $("#tvExit").addEventListener("click",()=>show("home"));
 $("#tvWorks").addEventListener("click",e=>{const r=e.target.closest(".tv-w");if(r&&r.dataset.id)openDetail(r.dataset.id)});
 $("#tvNcs").addEventListener("click",e=>{const r=e.target.closest(".tv-n");if(r&&r.dataset.id)ncDetail(r.dataset.id)});
-function openPhoto(ids,i){
+async function dlPhotos(list,base,btn){
+  if(!list||!list.length)return;const t=btn&&btn.textContent;if(btn)btn.disabled=true;
+  base=String(base||"사진").replace(/[\\/:*?"<>|]/g,"").replace(/\s+/g,"_");
+  try{
+    for(let k=0;k<list.length;k++){
+      if(btn)btn.textContent=`받는 중… ${k+1}/${list.length}`;
+      const j=await api("getPhoto",{id:list[k]});
+      const bin=atob(j.b64),u=new Uint8Array(bin.length);for(let x=0;x<bin.length;x++)u[x]=bin.charCodeAt(x);
+      const url=URL.createObjectURL(new Blob([u],{type:j.mime||"image/jpeg"}));
+      const a=document.createElement("a");a.href=url;a.download=`${base}${list.length>1?"_"+(k+1):""}.jpg`;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),5000);await new Promise(r=>setTimeout(r,400));
+    }
+    toast(`사진 ${list.length}장을 내려받았습니다`);
+  }catch(e){toast("사진을 내려받지 못했습니다: "+(e.message||"잠시 후 다시 시도하세요"))}
+  finally{if(btn){btn.textContent=t;btn.disabled=false}}
+}
+function openPhoto(ids,i,base){
   closePhoto();if(!ids.length)return;i=Math.max(0,i);const d=document.createElement("div");d.className="lb";d.id="lb";d.setAttribute("role","dialog");d.setAttribute("aria-label","사진 크게 보기");
-  const draw=()=>{d.innerHTML=`<img src="${phSrc(ids[i],2000)}" alt="사진 크게 보기" onerror="if(!this.dataset.a){this.dataset.a=1;this.src='${phAlt(ids[i],2000)}'}">${ids.length>1?`<button type="button" class="lb-nav p" aria-label="이전 사진">‹</button><button type="button" class="lb-nav n" aria-label="다음 사진">›</button><span class="lb-cnt">${i+1} / ${ids.length}</span>`:""}<button type="button" class="lb-x" aria-label="닫기">×</button>`};
-  d.addEventListener("click",e=>{const nv=e.target.closest(".lb-nav");if(nv){i=(i+(nv.classList.contains("p")?-1:1)+ids.length)%ids.length;draw();return}closePhoto()});
+  const draw=()=>{d.innerHTML=`<img src="${phSrc(ids[i],2000)}" alt="사진 크게 보기" onerror="if(!this.dataset.a){this.dataset.a=1;this.src='${phAlt(ids[i],2000)}'}">${ids.length>1?`<button type="button" class="lb-nav p" aria-label="이전 사진">‹</button><button type="button" class="lb-nav n" aria-label="다음 사진">›</button><span class="lb-cnt">${i+1} / ${ids.length}</span>`:""}<button type="button" class="lb-dl">⬇ 다운로드</button><button type="button" class="lb-x" aria-label="닫기">×</button>`};
+  d.addEventListener("click",e=>{const dl=e.target.closest(".lb-dl");if(dl){dlPhotos([ids[i]],`${base||"부적합사진"}_${i+1}`,dl);return}const nv=e.target.closest(".lb-nav");if(nv){i=(i+(nv.classList.contains("p")?-1:1)+ids.length)%ids.length;draw();return}closePhoto()});
   draw();document.body.appendChild(d);
 }
 function closePhoto(){const d=$("#lb");d&&d.remove()}
