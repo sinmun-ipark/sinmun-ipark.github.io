@@ -609,8 +609,8 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
       <div class="sec-head"><h2>주요 작업 목록</h2><span class="count" id="listCount"></span></div>
       <div class="toolbar">
         <select class="select" id="fCompany" aria-label="협력업체 필터"><option value="">전체 협력업체</option></select>
-        <button type="button" class="btn primary" id="sheetBtn">구글시트에 올리기</button>
-        <a class="btn" id="sheetOpen" target="_blank" rel="noopener" hidden>구글시트 열기 ↗</a>
+        <button type="button" class="btn primary" id="sheetBtn" hidden>구글시트에 올리기</button>
+        <a class="btn" id="sheetOpen" target="_blank" rel="noopener" hidden style="display:none">구글시트 열기 ↗</a>
         <button type="button" class="btn" id="exportBtn">카톡용 텍스트</button>
       </div>
       <div class="chipset" id="fStatus" role="group" aria-label="상태 필터">
@@ -803,9 +803,8 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
         <div class="f"><label for="c_trades">공종 목록 <span class="hint">쉼표로 구분</span></label><input id="c_trades"></div>
       </fieldset>
       <fieldset>
-        <legend>구글시트 연결</legend>
-        <div class="f"><label for="c_sheet">작업 현황 구글시트 주소</label><input id="c_sheet" type="url" placeholder="https://docs.google.com/spreadsheets/d/…"></div>
-        <p class="hint" style="margin:0">작업현황 탭에 이 시트를 바로 여는 버튼이 생깁니다.</p>
+        <legend>날씨 기준 위치</legend>
+        <div class="f" hidden><label for="c_sheet">작업 현황 구글시트 주소</label><input id="c_sheet" type="url" placeholder="https://docs.google.com/spreadsheets/d/…"></div>
         <div class="grid2">
           <div class="f"><label for="c_lat">날씨 기준 위도</label><input id="c_lat" type="number" step="0.0001" inputmode="decimal"></div>
           <div class="f"><label for="c_lon">날씨 기준 경도</label><input id="c_lon" type="number" step="0.0001" inputmode="decimal"></div>
