@@ -496,6 +496,15 @@ button.chk:hover{box-shadow:inset 0 0 0 2px var(--accent)}
 body.meetfull header.band,body.meetfull nav.tabs{display:none}
 body.meetfull{padding-bottom:0}
 body.meetfull #v-meet{max-width:none;padding-left:24px;padding-right:24px}
+@media (max-width:760px){nav.tabs button[data-v=meet]{display:none}nav.tabs .bar{grid-template-columns:repeat(6,1fr)}}
+.mt-mapcard{grid-column:1/-1}
+.mt-map{display:flex;justify-content:center}
+.mt-map .zwrap{width:100%;max-width:1100px}
+#v-meet .zlayer .zn{min-width:22px;height:22px;border-radius:11px;font-size:12px;line-height:18px;border-width:2px}
+.mt-map>.ph{width:100%;min-height:220px}
+.mt-w .zn{position:static;transform:none;flex:none;min-width:20px;height:20px;border-radius:10px;font-size:11px;line-height:16px;border-width:2px}
+.mt-w .loc{color:var(--ink);font-weight:600}
+.mt-tbl .zn{position:static;transform:none;display:inline-block;vertical-align:middle;min-width:18px;height:18px;border-radius:9px;font-size:10px;line-height:14px;border-width:2px;margin-right:4px}
 /* ---- 작업 구간 ---- */
 #v-dash .map .frame.has-img{aspect-ratio:auto}
 .map .frame.has-img img{position:static;display:block;width:100%;height:auto;object-fit:fill}
@@ -814,6 +823,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
     <div class="sec-head"><h2 id="mtTitle" style="flex:1">일일 공정·안전 회의</h2><button type="button" class="btn sm" id="mtFull">전체화면</button></div>
     <div class="mt-kpis" id="mtKpis"></div>
     <div class="mt-grid">
+      <section class="mt-card mt-mapcard"><h3><span class="n">📍</span>작업 위치<span class="c" id="mtMapC"></span></h3><div class="mt-map" id="mtMap"></div></section>
       <section class="mt-card"><h3><span class="n">1</span>업체별 작업·인원<span class="c" id="mtCoC"></span></h3><div id="mtCo"></div></section>
       <section class="mt-card"><h3><span class="n">2</span>고위험·PTW 작업<span class="c" id="mtHrC"></span></h3><div class="mt-scroll" id="mtHr"></div></section>
       <section class="mt-card"><h3><span class="n">3</span>부적합 현황<span class="c" id="mtNcC"></span></h3><div id="mtNc"></div></section>
@@ -1832,9 +1842,11 @@ async function mtLoadTom(force){
   renderMeet();
 }
 function meetEnter(){ncLoad();mtLoadTom(true);renderMeet();clearInterval(mtTimer);mtTimer=setInterval(()=>{if($("#v-meet").hidden){clearInterval(mtTimer);return}mtLoadTom(true);ncLoad()},60000)}
+var mtNums={};
 function mtWorkRow(w){
+  const zn=mtNums[w.id]?znHTML(w,mtNums[w.id]):"";
   const tags=[w.highRisk?'<span class="pill p-hr">고위험</span>':"",String(w.ptw).startsWith("해당")?'<span class="pill p-up">PTW</span>':""].join("");
-  return `<button type="button" class="mt-w" data-id="${esc(w.id)}"><span class="t">${tags}${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span><span class="r">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</span><span class="m">${esc([(w.dongs||[]).join("·")||w.loc,(Number(w.workers)||0)+"명",w.status,w.leader?"관리감독자 "+w.leader:""].filter(Boolean).join(" · "))}</span></button>`;
+  return `<button type="button" class="mt-w" data-id="${esc(w.id)}"><span class="t">${zn}${tags}${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span><span class="r">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</span><span class="m"><span class="loc">📍 ${esc([(w.dongs||[]).join("·"),w.loc].filter(Boolean).join(" ")||"위치 미입력")}</span> · ${esc([(Number(w.workers)||0)+"명",w.status,w.leader?"관리감독자 "+w.leader:""].filter(Boolean).join(" · "))}</span></button>`;
 }
 function mtByCompany(list){
   const g={};list.forEach(w=>{(g[w.company]=g[w.company]||[]).push(w)});
@@ -1856,13 +1868,21 @@ function renderMeet(){
     <button type="button" class="mt-kpi" data-q="ppl"><b>${ppl}<small>명</small></b><span>출역 인원</span></button>
     <button type="button" class="mt-kpi hz" data-q="hr"><b>${live.filter(w=>w.highRisk).length}</b><span>고위험 작업</span></button>
     <button type="button" class="mt-kpi dg" data-q="nc"><b>${ncLoaded?ncOpen.length:"–"}</b><span>부적합 미조치</span></button>`;
+  // 작업 위치
+  mtNums=workNums();
+  const mb=$("#mtMap"),src=mapSrc();
+  if(!src){mb.dataset.src="";mb.innerHTML=phHTML("전경 배치도 자리","관리 탭에서 배치도를 올리면 여기에 표시됩니다.")}
+  else if(mb.dataset.src!==src){mb.dataset.src=src;mb.innerHTML=`<div class="zwrap"><img src="${esc(src)}" alt="김해신문센트럴아이파크 전경 배치도" onerror="if(!this.dataset.a){this.dataset.a=1;this.src=mapSrc2()}"><div class="zlayer view" id="mtLayer"></div></div>`}
+  const ml=$("#mtLayer");if(ml)ml.innerHTML=dayZonesHTML(works);
+  const nz=live.filter(w=>mtNums[w.id]).length;
+  $("#mtMapC").textContent=live.length?`구간 표시 ${nz}건${live.length-nz?` · 위치만 입력 ${live.length-nz}건`:""}`:"";
   // 1 업체별
   const cg=mtByCompany(live);
   $("#mtCoC").textContent=live.length?`${cg.length}개 업체 · ${ppl}명`:"";
   $("#mtCo").innerHTML=cg.length?mtCoHTML(cg):'<div class="mt-empty">이 날짜에 등록된 작업이 없습니다.</div>';
   // 2 고위험·PTW
   $("#mtHrC").textContent=hrList.length?`${hrList.length}건 · 감시단 미배치 ${hrList.filter(w=>w.highRisk&&w.watch!=="배치").length}건`:"";
-  $("#mtHr").innerHTML=hrList.length?`<table class="mt-tbl"><thead><tr><th>업체</th><th>작업</th><th>PTW 종류</th><th>위험성평가</th><th>감시단</th></tr></thead><tbody>${hrList.map(w=>`<tr data-id="${esc(w.id)}"><td><i class="cdot" style="background:${compColor(w.company)};display:inline-block;margin-right:6px"></i>${esc(w.company)}</td><td>${w.highRisk?'<span class="pill p-hr">고위험</span> ':""}${esc(w.title)}<div class="hint">${esc([w.trade,(w.dongs||[]).join("·")||w.loc,(Number(w.workers)||0)+"명"].filter(Boolean).join(" · "))}</div></td><td>${esc((w.ptwTypes||[]).join(", ")||(String(w.ptw).startsWith("해당")?"해당":"-"))}</td><td>${w.riskUp?'<span class="bad">상등급</span>':"-"}</td><td>${w.highRisk?(w.watch==="배치"?'<span class="good">배치</span>':'<span class="bad">미배치</span>'):"-"}</td></tr>`).join("")}</tbody></table>`:'<div class="mt-empty">고위험·PTW 대상 작업이 없습니다.</div>';
+  $("#mtHr").innerHTML=hrList.length?`<table class="mt-tbl"><thead><tr><th>업체</th><th>작업</th><th>PTW 종류</th><th>위험성평가</th><th>감시단</th></tr></thead><tbody>${hrList.map(w=>`<tr data-id="${esc(w.id)}"><td><i class="cdot" style="background:${compColor(w.company)};display:inline-block;margin-right:6px"></i>${esc(w.company)}</td><td>${w.highRisk?'<span class="pill p-hr">고위험</span> ':""}${esc(w.title)}<div class="hint">${mtNums[w.id]?znHTML(w,mtNums[w.id]):""}📍 ${esc([(w.dongs||[]).join("·"),w.loc].filter(Boolean).join(" ")||"위치 미입력")} · ${esc([w.trade,(Number(w.workers)||0)+"명"].filter(Boolean).join(" · "))}</div></td><td>${esc((w.ptwTypes||[]).join(", ")||(String(w.ptw).startsWith("해당")?"해당":"-"))}</td><td>${w.riskUp?'<span class="bad">상등급</span>':"-"}</td><td>${w.highRisk?(w.watch==="배치"?'<span class="good">배치</span>':'<span class="bad">미배치</span>'):"-"}</td></tr>`).join("")}</tbody></table>`:'<div class="mt-empty">고위험·PTW 대상 작업이 없습니다.</div>';
   // 3 부적합
   if(!ncLoaded){$("#mtNc").innerHTML='<div class="mt-empty">불러오는 중…</div>';$("#mtNcC").textContent=""}
   else{
@@ -1882,6 +1902,7 @@ function renderMeet(){
   $("#mtTom").innerHTML=mtTom.d!==td||mtTom.busy?'<div class="mt-empty">불러오는 중…</div>':mtTom.err?`<div class="mt-empty">내일 작업을 불러오지 못했습니다 (${esc(mtTom.err)})</div>`:tg.length?mtCoHTML(tg):'<div class="mt-empty">내일 등록된 작업이 아직 없습니다.</div>';
 }
 $("#v-meet").addEventListener("click",e=>{
+  const z=e.target.closest("#mtMap .zone");if(z&&z.dataset.id){openDetail(z.dataset.id);return}
   const k=e.target.closest(".mt-kpi");
   if(k){const q=k.dataset.q;if(q==="nc"){show("nc");return}if(q==="co"||q==="ppl"){openList(q==="co"?"협력업체별 작업":"출역 인원 (인원 많은 순)",q==="co"?liveWorks().sort((a,b)=>String(a.company).localeCompare(String(b.company),"ko")):liveWorks().sort((a,b)=>(Number(b.workers)||0)-(Number(a.workers)||0)));return}openQuery(q);return}
   const r=e.target.closest("[data-id]");
