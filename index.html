@@ -484,6 +484,11 @@ button.chk:hover{box-shadow:inset 0 0 0 2px var(--accent)}
 .mt-card>h3{margin:0;padding:10px 14px;font-size:18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);flex:none}
 .mt-card>h3 .c{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600;font-family:var(--f-mono);white-space:nowrap}
 .mt-map{padding:10px;position:relative}
+.mt-map .zwrap{cursor:zoom-in}
+.mt-mv{display:inline-flex;background:var(--surface-2);border-radius:999px;padding:2px;flex:none}
+.mt-mv button{border:0;background:none;font:inherit;font-size:12px;font-weight:700;color:var(--muted);padding:4px 10px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.mt-mv button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.mt-card>h3 #mtZoom{flex:none}
 .mt-map .zwrap{width:100%}
 .mt-map>.ph{width:100%;min-height:180px}
 #v-meet .zlayer .zn{min-width:18px;height:18px;border-radius:9px;font-size:10px;line-height:14px;border-width:2px}
@@ -846,7 +851,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
     <div class="mt-tabs" id="mtTabs" role="group" aria-label="업체 선택"></div>
     <div class="mt-body">
       <div class="mt-left">
-        <section class="mt-card"><h3>작업 위치<span class="c" id="mtMapC"></span></h3><div class="mt-map" id="mtMap"></div></section>
+        <section class="mt-card"><h3>작업 위치<span class="c" id="mtMapC"></span><span class="mt-mv" id="mtMv" role="group" aria-label="배치도 표시"><button type="button" data-v="z" aria-pressed="true">작업 구간</button><button type="button" data-v="p" aria-pressed="false">전경만</button></span><button type="button" class="btn sm" id="mtZoom">크게 보기</button></h3><div class="mt-map" id="mtMap"></div></section>
         <section class="mt-card"><h3>부적합 미조치<span class="c" id="mtNcC"></span></h3><div class="mt-scroll" id="mtNc"></div></section>
       </div>
       <section class="mt-card"><h3 id="mtListT">명일 작업</h3><div class="mt-scroll" id="mtList"></div></section>
@@ -1259,25 +1264,28 @@ function confirmPending(){if(pending){zones.push({x:r4(pending.x),y:r4(pending.y
 $("#zConfirm").addEventListener("click",()=>{if(!pending){toast("먼저 배치도 위를 드래그해서 구간을 지정하세요");return}confirmPending();drawZones();toast("작업구간을 확정했습니다")});
 $("#zReset").addEventListener("click",()=>{zones.length=0;pending=null;drawZones()});
 function phHTML(t,s,btn){return `<div class="ph">${ICON_MAP}<b>${esc(t)}</b><span>${esc(s)}</span>${btn?'<button type="button" class="btn sm primary" id="phUpload">배치도 올리러 가기</button>':""}</div>`}
-function openZoom(){
-  const d=new Date(viewDate+"T00:00:00");
-  openSheet(`<div class="sec-head"><h2 style="flex:1">전경 배치도 <span class="hint">${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})</span></h2>
-      <div class="zctl" role="group" aria-label="확대 배율">${[100,150,200,300].map(z=>`<button type="button" class="chip" data-z="${z}" aria-pressed="${z===100}">${z===100?"전체":z+"%"}</button>`).join("")}</div>
+function openZoom(o){
+  o=o&&o.zoomOpts?o:{};
+  const d=new Date((o.date||viewDate)+"T00:00:00");
+  openSheet(`<div class="sec-head"><h2 style="flex:1">전경 배치도 <span class="hint">${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})${o.sub?" · "+esc(o.sub):""}</span></h2>
+      <div class="zctl zview" role="group" aria-label="표시 내용"><button type="button" class="chip" data-v="z" aria-pressed="${!o.plain}">작업 구간</button><button type="button" class="chip" data-v="p" aria-pressed="${!!o.plain}">전경만</button></div>
+      <div class="zctl zrate" role="group" aria-label="확대 배율">${[100,150,200,300].map(z=>`<button type="button" class="chip" data-z="${z}" aria-pressed="${z===100}">${z===100?"전체":z+"%"}</button>`).join("")}</div>
       <button type="button" class="btn sm" data-close>닫기</button></div>
-    <div class="zoom" id="zoomBox"><div class="zoomin" id="zoomIn"><img src="${esc(mapSrc())}" alt="전경 배치도 확대" draggable="false"><div class="zlayer" id="zoomLayer">${dayZonesHTML()}</div></div></div>
+    <div class="zoom" id="zoomBox"><div class="zoomin" id="zoomIn"><img src="${esc(mapSrc())}" alt="전경 배치도 확대" draggable="false"><div class="zlayer" id="zoomLayer"${o.plain?" hidden":""}>${o.html!=null?o.html:dayZonesHTML()}</div></div></div>
     <p class="hint" style="margin:0">배율을 고르고 끌어서 이동하세요. 작업명이나 구간을 누르면 작업 상세가 열립니다.</p>`,
   r=>{
     const box=r.querySelector("#zoomBox"),inn=r.querySelector("#zoomIn");
-    r.querySelector(".zctl").addEventListener("click",e=>{const b=e.target.closest("[data-z]");if(!b)return;
+    r.querySelector(".zview").addEventListener("click",e=>{const b=e.target.closest("[data-v]");if(!b)return;r.querySelector("#zoomLayer").hidden=b.dataset.v==="p";r.querySelectorAll(".zview .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));if(o.onView)o.onView(b.dataset.v==="p")});
+    r.querySelector(".zrate").addEventListener("click",e=>{const b=e.target.closest("[data-z]");if(!b)return;
       const cx=(box.scrollLeft+box.clientWidth/2)/box.scrollWidth,cy=(box.scrollTop+box.clientHeight/2)/box.scrollHeight;
-      inn.style.width=b.dataset.z+"%";r.querySelectorAll(".zctl .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));
+      inn.style.width=b.dataset.z+"%";r.querySelectorAll(".zrate .chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));
       requestAnimationFrame(()=>setTimeout(()=>{box.scrollLeft=cx*box.scrollWidth-box.clientWidth/2;box.scrollTop=cy*box.scrollHeight-box.clientHeight/2},170));
     });
     let pan=null,moved=false;
     box.addEventListener("pointerdown",e=>{if(e.pointerType!=="mouse")return;pan={x:e.clientX,y:e.clientY,l:box.scrollLeft,t:box.scrollTop};moved=false;box.classList.add("dragging")});
     window.addEventListener("pointermove",e=>{if(!pan)return;const dx=e.clientX-pan.x,dy=e.clientY-pan.y;if(Math.abs(dx)+Math.abs(dy)>4)moved=true;box.scrollLeft=pan.l-dx;box.scrollTop=pan.t-dy});
     window.addEventListener("pointerup",()=>{pan=null;box.classList.remove("dragging")});
-    r.querySelector("#zoomLayer").addEventListener("click",e=>{if(moved){moved=false;return}const z=e.target.closest(".zone");if(z)openDetail(z.dataset.id)});
+    r.querySelector("#zoomLayer").addEventListener("click",e=>{if(moved){moved=false;return}const z=e.target.closest(".zone");if(z)(o.open||openDetail)(z.dataset.id)});
   },"full");
 }
 $("#mapZoom").addEventListener("click",openZoom);
@@ -1859,7 +1867,9 @@ function ncDetail(id){
 }
 
 /* ---------- 회의 ---------- */
-var mtTom={d:"",works:[],busy:false,err:""},mtTimer=null,mtDay="tom",mtCo="";
+var mtTom={d:"",works:[],busy:false,err:""},mtTimer=null,mtDay="tom",mtCo="",mtPlain=false,mtZoneHTML="";
+function mtOpenWork(id){if(works.some(w=>w.id===id)){openDetail(id);return}const w=mtTom.works.find(x=>x.id===id);if(w){works.push(w);openDetail(id);works.splice(works.indexOf(w),1)}}
+function mtZoomOpen(){if(!mapSrc())return;openZoom({zoomOpts:1,date:mtDay==="tom"?shift(viewDate,1):viewDate,sub:(mtDay==="tom"?"명일 작업":"금일 작업")+(mtCo?" · "+mtCo:""),html:mtZoneHTML,plain:mtPlain,open:mtOpenWork,onView:p=>{mtPlain=p;renderMeet()}})}
 const mdw=d=>{const t=new Date(d+"T00:00:00");return `${t.getMonth()+1}/${t.getDate()}(${WD[t.getDay()]})`};
 async function mtLoadTom(force){
   const d=shift(viewDate,1);if(!db||mtTom.busy)return;if(!force&&mtTom.d===d)return;
@@ -1900,8 +1910,10 @@ function renderMeet(){
   const mb=$("#mtMap"),src=mapSrc();
   if(!src){mb.dataset.src="";mb.innerHTML=phHTML("전경 배치도 자리","관리 탭에서 배치도를 올리면 여기에 표시됩니다.")}
   else if(mb.dataset.src!==src){mb.dataset.src=src;mb.innerHTML=`<div class="zwrap"><img src="${esc(src)}" alt="김해신문센트럴아이파크 전경 배치도" onerror="if(!this.dataset.a){this.dataset.a=1;this.src=mapSrc2()}"><div class="zlayer view" id="mtLayer"></div></div>`}
-  const ml=$("#mtLayer");
-  if(ml)ml.innerHTML=sortWorks(list).reverse().flatMap(w=>(w.zones||[]).map(z=>`<div class="zone" data-id="${esc(w.id)}" style="${zStyle(z)};${zoneColorStyle(w)}" title="${esc((m[w.id]?m[w.id]+". ":"")+w.company+" · "+w.title)}">${m[w.id]?znHTML(w,m[w.id]):""}</div>`)).join("");
+  $("#mtMv").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.v==="p")===mtPlain?"true":"false"));$("#mtZoom").hidden=!src;
+  const ml=$("#mtLayer");if(ml)ml.hidden=mtPlain;
+  mtZoneHTML=sortWorks(list).reverse().flatMap(w=>(w.zones||[]).map(z=>`<div class="zone" data-id="${esc(w.id)}" style="${zStyle(z)};${zoneColorStyle(w)}" title="${esc((m[w.id]?m[w.id]+". ":"")+w.company+" · "+w.title)}">${m[w.id]?znHTML(w,m[w.id]):""}</div>`)).join("");
+  if(ml)ml.innerHTML=mtZoneHTML;
   const nz=list.filter(w=>m[w.id]).length;
   $("#mtMapC").textContent=(mtDay==="tom"?"명일 ":"금일 ")+(list.length?`구간 ${nz}건${list.length-nz?` · 글자 위치 ${list.length-nz}건`:""}`:"");
   // 작업 목록
@@ -1921,10 +1933,13 @@ function renderMeet(){
 $("#v-meet").addEventListener("click",e=>{
   const s=e.target.closest("#mtSeg button");if(s){mtDay=s.dataset.d;renderMeet();return}
   const t=e.target.closest(".mt-tab");if(t){mtCo=t.dataset.co;renderMeet();return}
+  const mv=e.target.closest("#mtMv button");if(mv){mtPlain=mv.dataset.v==="p";renderMeet();return}
+  if(e.target.closest("#mtZoom")){mtZoomOpen();return}
+  if(e.target.closest("#mtMap .zwrap")&&!e.target.closest(".zone")){mtZoomOpen();return}
   if(e.target.closest("#mtPrev")){setDate(shift(viewDate,-1));mtLoadTom(true);return}
   if(e.target.closest("#mtNext")){setDate(shift(viewDate,1));mtLoadTom(true);return}
   const r=e.target.closest("[data-id]");
-  if(r){const id=r.dataset.id;if(works.some(w=>w.id===id))openDetail(id);else{const w=mtTom.works.find(x=>x.id===id);if(w){works.push(w);openDetail(id);works.splice(works.indexOf(w),1)}}return}
+  if(r){mtOpenWork(r.dataset.id);return}
   const n=e.target.closest("[data-nc]");if(n)ncDetail(n.dataset.nc);
 });
 $("#mtFull").addEventListener("click",()=>{const on=!document.body.classList.contains("meetfull");document.body.classList.toggle("meetfull",on);$("#mtFull").textContent=on?"전체화면 끄기":"전체화면";if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});if(!on&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})});
