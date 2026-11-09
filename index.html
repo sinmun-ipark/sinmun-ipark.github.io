@@ -96,6 +96,11 @@ button{cursor:pointer}
 .datebar .dlabel b{font-family:var(--f-display);font-weight:400;font-size:20px;display:block;line-height:1.1}
 .datebar .dlabel small{font-size:12px;color:var(--band-muted)}
 .datebar .dlabel input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.datebar .dlabel b::after{content:"📅";font-size:.7em;margin-left:6px;vertical-align:.15em}
+.mt-date label{position:relative;display:inline-flex;align-items:center;cursor:pointer;border-radius:999px;padding:0 4px}
+.mt-date label:hover{background:var(--surface-2)}
+.mt-date label input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.mt-date b::after{content:"📅";font-size:.8em;margin-left:5px}
 .datebar .today{width:auto;padding:0 12px;font-size:13px;font-weight:600;background:var(--band-btn)}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -478,7 +483,7 @@ button.chk:hover{box-shadow:inset 0 0 0 2px var(--accent)}
 .mt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
 .mt-card>h3{margin:0;padding:10px 14px;font-size:16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);flex:none}
 .mt-card>h3 .c{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600;font-family:var(--f-mono);white-space:nowrap}
-.mt-map{padding:10px}
+.mt-map{padding:10px;position:relative}
 .mt-map .zwrap{width:100%}
 .mt-map>.ph{width:100%;min-height:180px}
 #v-meet .zlayer .zn{min-width:18px;height:18px;border-radius:9px;font-size:10px;line-height:14px;border-width:2px}
@@ -829,7 +834,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
   <section class="wrap" id="v-meet" hidden>
     <div class="mt-top">
       <h2>일일 공정·안전 회의</h2>
-      <div class="mt-date"><button type="button" id="mtPrev" aria-label="이전 날짜">‹</button><b id="mtDate"></b><button type="button" id="mtNext" aria-label="다음 날짜">›</button></div>
+      <div class="mt-date"><button type="button" id="mtPrev" aria-label="이전 날짜">‹</button><label title="날짜 선택"><b id="mtDate"></b><input type="date" id="mtPick" aria-label="회의 날짜 선택"></label><button type="button" id="mtNext" aria-label="다음 날짜">›</button></div>
       <div class="mt-seg" id="mtSeg" role="group" aria-label="작업일"><button type="button" data-d="tom" aria-pressed="true">명일 작업</button><button type="button" data-d="today" aria-pressed="false">금일 작업</button></div>
       <div class="mt-kpis" id="mtKpis"></div>
       <button type="button" class="btn sm" id="mtFull">전체화면</button>
@@ -1671,6 +1676,10 @@ $("#exportBtn").addEventListener("click",()=>{
 /* ---------- 날짜 ---------- */
 function setDate(d){viewDate=d;$("#viewDate").value=d;if(!editingId)$("#r_date").value=d;renderHeader();subscribeWorks();if(ncLoaded)renderNc()}
 $("#viewDate").addEventListener("change",e=>e.target.value&&setDate(e.target.value));
+function openPicker(inp){inp.value=viewDate;try{inp.showPicker()}catch(_){}}
+$("#viewDate").addEventListener("click",e=>openPicker(e.target));
+$("#mtPick").addEventListener("click",e=>openPicker(e.target));
+$("#mtPick").addEventListener("change",e=>{if(e.target.value&&e.target.value!==viewDate){setDate(e.target.value);mtLoadTom(true)}});
 $("#prevDay").addEventListener("click",()=>setDate(shift(viewDate,-1)));
 $("#nextDay").addEventListener("click",()=>setDate(shift(viewDate,1)));
 $("#goToday").addEventListener("click",()=>setDate(todayStr()));
