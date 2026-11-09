@@ -490,7 +490,9 @@ button.chk:hover{box-shadow:inset 0 0 0 2px var(--accent)}
 .mt-scroll{flex:1;min-height:0;overflow:auto}
 .mt-tbl{width:100%;border-collapse:collapse;font-size:clamp(15px,1.1vw,19px)}
 .mt-tbl th{position:sticky;top:0;z-index:1;background:var(--surface);text-align:left;font-size:13px;color:var(--muted);font-weight:600;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-.mt-tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.mt-tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.mt-tbl td.el{max-width:0;overflow:hidden;text-overflow:ellipsis}
+.mt-tbl td.el>div{overflow:hidden;text-overflow:ellipsis}
 .mt-tbl tr[data-id],.mt-tbl tr[data-nc]{cursor:pointer}
 .mt-tbl tr[data-id]:hover td,.mt-tbl tr[data-nc]:hover td{background:var(--accent-soft)}
 .mt-tbl tr.co td{background:var(--surface-2);font-weight:700;font-size:.92em;padding:7px 8px}
@@ -1871,7 +1873,7 @@ const mtLoc=w=>[(w.dongs||[]).join("·"),w.loc].filter(Boolean).join(" ")||"위�
 function mtRow(w,m,showCo){
   const ptw=String(w.ptw).startsWith("해당");
   const note=[ptw?"PTW"+((w.ptwTypes||[]).length?" "+w.ptwTypes.join("·"):""):"",w.riskUp?"상등급":"",String(w.hazmat).startsWith("반입")?"유해물질":"",w.highRisk&&w.watch!=="배치"?"__nw":""].filter(Boolean);
-  return `<tr data-id="${esc(w.id)}"${w.highRisk?' class="hr"':""}><td class="nw">${m[w.id]?znHTML(w,m[w.id]):""}</td>${showCo?`<td class="nw"><i class="cdot" style="background:${compColor(w.company)};display:inline-block;margin-right:5px"></i>${esc(w.company)}</td>`:""}<td>${w.highRisk?'<span class="pill p-hr">고위험</span>':""}<span class="t">${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span></td><td>📍 ${esc(mtLoc(w))}</td><td class="nw">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</td><td class="num">${Number(w.workers)||0}명</td><td>${note.map(n=>n==="__nw"?'<span class="bad">감시단 미배치</span>':esc(n)).join(" · ")||"-"}</td></tr>`;
+  return `<tr data-id="${esc(w.id)}"${w.highRisk?' class="hr"':""}><td class="nw">${m[w.id]?znHTML(w,m[w.id]):""}</td>${showCo?`<td class="nw"><i class="cdot" style="background:${compColor(w.company)};display:inline-block;margin-right:5px"></i>${esc(w.company)}</td>`:""}<td class="el" title="${esc((w.trade?w.trade+" · ":"")+w.title)}">${w.highRisk?'<span class="pill p-hr">고위험</span>':""}<span class="t">${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span></td><td class="el" title="${esc(mtLoc(w))}">📍 ${esc(mtLoc(w))}</td><td class="nw">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</td><td class="num">${Number(w.workers)||0}명</td><td class="el" title="${esc(note.map(n=>n==="__nw"?"감시단 미배치":n).join(" · "))}">${note.map(n=>n==="__nw"?'<span class="bad">감시단 미배치</span>':esc(n)).join(" · ")||"-"}</td></tr>`;
 }
 function renderMeet(){
   const sec=$("#v-meet");if(!sec||sec.hidden)return;
@@ -1902,7 +1904,7 @@ function renderMeet(){
   $("#mtMapC").textContent=(mtDay==="tom"?"명일 ":"금일 ")+(list.length?`구간 ${nz}건${list.length-nz?` · 글자 위치 ${list.length-nz}건`:""}`:"");
   // 작업 목록
   $("#mtListT").innerHTML=`${mtDay==="tom"?"명일 작업":"금일 작업"} <span class="hint" style="font-weight:600">${esc(mdw(D))}${mtCo?" · "+esc(mtCo):""}</span><span class="c">${list.length}건 · ${list.reduce((s,w)=>s+(Number(w.workers)||0),0)}명</span>`;
-  const head=`<thead><tr><th>번호</th><th>작업</th><th>위치</th><th>시간</th><th class="num">인원</th><th>PTW·특이사항</th></tr></thead>`;
+  const head=`<thead><tr><th style="width:3.2em">번호</th><th style="width:36%">작업</th><th style="width:18%">위치</th><th style="width:1%">시간</th><th class="num" style="width:1%">인원</th><th>PTW·특이사항</th></tr></thead>`;
   const sorted=list.slice().sort((a,b)=>(m[a.id]||1e6)-(m[b.id]||1e6)||String(a.company).localeCompare(String(b.company),"ko")||String(a.start).localeCompare(String(b.start)));
   let body="";
   if(mtCo)body=sorted.map(w=>mtRow(w,m,false)).join("");
@@ -1912,7 +1914,7 @@ function renderMeet(){
   // 부적합 미조치
   $("#mtNcC").textContent=ncLoaded?`${ncOpen.length}건`:"";
   const ns=ncOpen.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  $("#mtNc").innerHTML=!ncLoaded?'<div class="mt-empty">불러오는 중…</div>':ns.length?`<table class="mt-tbl"><tbody>${ns.map(it=>`<tr data-nc="${esc(it.id)}">${mtCo?"":`<td class="nw"><i class="cdot" style="background:${compColor(it.company)};display:inline-block;margin-right:5px"></i>${esc(it.company)}</td>`}<td><span class="t">${esc(it.issue)}</span><div class="hint">📍 ${esc(it.loc||"위치 미입력")}${it.coMgr?" · 협력사 "+esc(it.coMgr):""}</div></td><td class="num bad">${esc(ncDays(it))}</td></tr>`).join("")}</tbody></table>`:`<div class="mt-empty">미조치 부적합 사항이 없습니다. 👍</div>`;
+  $("#mtNc").innerHTML=!ncLoaded?'<div class="mt-empty">불러오는 중…</div>':ns.length?`<table class="mt-tbl"><tbody>${ns.map(it=>`<tr data-nc="${esc(it.id)}">${mtCo?"":`<td class="nw"><i class="cdot" style="background:${compColor(it.company)};display:inline-block;margin-right:5px"></i>${esc(it.company)}</td>`}<td class="el" style="width:100%" title="${esc(it.issue)}"><div class="t">${esc(it.issue)}</div><div class="hint">📍 ${esc(it.loc||"위치 미입력")}${it.coMgr?" · 협력사 "+esc(it.coMgr):""}</div></td><td class="num bad">${esc(ncDays(it))}</td></tr>`).join("")}</tbody></table>`:`<div class="mt-empty">미조치 부적합 사항이 없습니다. 👍</div>`;
 }
 $("#v-meet").addEventListener("click",e=>{
   const s=e.target.closest("#mtSeg button");if(s){mtDay=s.dataset.d;renderMeet();return}
