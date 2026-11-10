@@ -1909,11 +1909,11 @@ function mtCsEdit(co){
   const st=(cfg.coStats||{})[co]||{};
   openSheet(`<div class="sec-head"><h2 style="flex:1">${esc(co)} · 공정률·공수</h2><button type="button" class="btn sm" data-close>닫기</button></div>
     <form class="reg" id="csF" novalidate style="gap:12px">
-      <div class="f"><label for="cs_rate">공정률 (%)</label><input id="cs_rate" inputmode="decimal" value="${esc(st.rate||"")}" placeholder="예: 52"></div>
-      <div class="grid2"><div class="f"><label for="cs_total">전체 공수</label><input id="cs_total" inputmode="numeric" value="${esc(st.total||"")}" placeholder="예: 2146"></div>
-        <div class="f"><label for="cs_done">현재 공수 (누적)</label><input id="cs_done" inputmode="numeric" value="${esc(st.done||"")}" placeholder="예: 1124"></div></div>
-      <div class="f"><label for="cs_month">${mtCsMon()}월 공수</label><input id="cs_month" inputmode="numeric" value="${esc(st.month||"")}" placeholder="예: 103"></div>
-      <p class="hint" style="margin:0">회의 화면에는 "전체 공수 : 전체 / 현재" 순서로 나옵니다. 월은 보고 있는 작업일 기준입니다.</p>
+      <div class="f"><label for="cs_rate">공정률 (%)</label><input id="cs_rate" inputmode="decimal" value="${esc(st.rate||"")}" placeholder="예: 52"><span class="hint">해당 협력사 공사 진척률입니다. 숫자만 적어 주세요 (% 빼고).</span></div>
+      <div class="grid2"><div class="f"><label for="cs_total">전체 공수</label><input id="cs_total" inputmode="numeric" value="${esc(st.total||"")}" placeholder="예: 2146"><span class="hint">계약(계획) 기준으로 공사 끝날 때까지 들어갈 총 공수입니다.</span></div>
+        <div class="f"><label for="cs_done">현재 공수 (누적)</label><input id="cs_done" inputmode="numeric" value="${esc(st.done||"")}" placeholder="예: 1124"><span class="hint">공사 시작부터 지금까지 실제로 투입된 공수 합계입니다.</span></div></div>
+      <div class="f"><label for="cs_month">${mtCsMon()}월 공수</label><input id="cs_month" inputmode="numeric" value="${esc(st.month||"")}" placeholder="예: 103"><span class="hint">이번 달 1일부터 지금까지 투입된 공수입니다.</span></div>
+      <p class="hint" style="margin:0">공수는 1명이 하루 일하면 1공으로 셉니다. 현재 공수 ÷ 전체 공수가 공정률과 비슷하면 맞게 적은 것입니다. 회의 화면에는 "전체 공수 : 전체 / 현재" 순서로 나옵니다.</p>
       ${canAdmin&&adminPw?"":`<div class="f"><label for="cs_pw">관리 비밀번호</label><input type="password" id="cs_pw" autocomplete="current-password"><span class="hint">관리 비밀번호를 아는 사람만 수정할 수 있습니다.</span></div>`}
       <p class="hint" id="cs_msg" role="status" style="margin:0"></p>
       <button type="submit" class="btn primary" id="cs_save">저장</button>
