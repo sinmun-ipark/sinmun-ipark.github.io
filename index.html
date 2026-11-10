@@ -1916,17 +1916,15 @@ function mtCsEdit(co){
         <div class="cs-row"><input id="cs_l2" value="${esc(st.l2||"")}" placeholder="예: 계획 공수 (비우면 숫자만)" aria-label="두 번째 항목 이름"><input id="cs_done" value="${esc(st.done||"")}" placeholder="예: 1124공" aria-label="두 번째 항목 공수"></div>
         <div class="cs-row"><input id="cs_l3" value="${esc(st.l3||"")}" placeholder="${mtCsMon()}월 공수" aria-label="세 번째 항목 이름"><input id="cs_month" value="${esc(st.month||"")}" placeholder="예: 103공" aria-label="세 번째 항목 공수"></div>
         <span class="hint">회의 화면에는 "● 첫 번째 이름 : 값 / (두 번째 이름) 값", "● 세 번째 이름 : 값"으로 적은 그대로 나옵니다. 세 번째 이름을 비우면 "${mtCsMon()}월 공수"로 나옵니다.</span></div>
-      ${canAdmin&&adminPw?"":`<div class="f"><label for="cs_pw">관리 비밀번호</label><input type="password" id="cs_pw" autocomplete="current-password"><span class="hint">관리 비밀번호를 아는 사람만 수정할 수 있습니다.</span></div>`}
       <p class="hint" id="cs_msg" role="status" style="margin:0"></p>
       <button type="submit" class="btn primary" id="cs_save">저장</button>
     </form>`,r=>{
     r.querySelector("#csF").addEventListener("submit",async e=>{e.preventDefault();
       const g=id=>r.querySelector(id).value.trim(),msg=r.querySelector("#cs_msg"),btn=r.querySelector("#cs_save");
-      const pw=r.querySelector("#cs_pw")?g("#cs_pw"):adminPw;if(!pw){msg.textContent="관리 비밀번호를 입력해 주세요.";return}
       const next={...(cfg.coStats||{})};next[co]={rate:g("#cs_rate").replace(/%/g,""),l1:g("#cs_l1"),total:g("#cs_total"),l2:g("#cs_l2"),done:g("#cs_done"),l3:g("#cs_l3"),month:g("#cs_month"),ym:viewDate.slice(0,7)};
       btn.disabled=true;msg.textContent="저장하는 중…";
-      try{const j=await api("setSettings",{pw,settings:{coStats:next}});cfg.coStats=(j.settings&&j.settings.coStats)||next;if(!adminPw){adminPw=pw;try{sessionStorage.setItem("sos-admin-pw",pw)}catch(_){}}closeSheet();renderMeet();toast("저장했습니다")}
-      catch(err){msg.textContent="저장하지 못했습니다: "+(err.message||"비밀번호를 확인하세요")}finally{btn.disabled=false}
+      try{const j=await api("setCoStats",{co,stat:next[co]});cfg.coStats=(j.settings&&j.settings.coStats)||next;closeSheet();renderMeet();toast("저장했습니다")}
+      catch(err){msg.textContent="저장하지 못했습니다: "+(err.message||"잠시 후 다시 시도하세요")}finally{btn.disabled=false}
     });
   },true);
 }
