@@ -1903,7 +1903,7 @@ function mtRenderCs(){
   const cs=$("#mtCs");if(!mtCo){cs.hidden=true;return}
   const st=(cfg.coStats||{})[mtCo],has=st&&(st.rate||st.total||st.done||st.month);
   cs.hidden=false;cs.classList.toggle("none",!has);
-  cs.innerHTML=has?`<span>공정률 : <b>${esc(st.rate||"-")}%</b></span><span>${esc(st.l1||"전체 공수")} : <b>${esc(st.total||"-")}공 / ${st.l2?esc(st.l2)+" ":""}${esc(st.done||"-")}공</b></span><span>${esc(st.l3||mtCsMon()+"월 공수")} : <b>${esc(st.month||"-")}공</b></span><button type="button" class="ed" title="공정률·공수 수정">✎ 수정</button>`
+  cs.innerHTML=has?`<span>공정률 : <b>${esc(st.rate||"-")}%</b></span><span>${esc(st.l1||"전체 공수")} : <b>${esc(st.total||"-")} / ${st.l2?esc(st.l2)+" ":""}${esc(st.done||"-")}</b></span><span>${esc(st.l3||mtCsMon()+"월 공수")} : <b>${esc(st.month||"-")}</b></span><button type="button" class="ed" title="공정률·공수 수정">✎ 수정</button>`
     :`<span style="color:inherit">공정률·공수 미입력</span><button type="button" class="ed">+ 입력</button>`;
 }
 function mtCsEdit(co){
@@ -1911,12 +1911,11 @@ function mtCsEdit(co){
   openSheet(`<div class="sec-head"><h2 style="flex:1">${esc(co)} · 공정률·공수</h2><button type="button" class="btn sm" data-close>닫기</button></div>
     <form class="reg" id="csF" novalidate style="gap:12px">
       <div class="f"><label for="cs_rate">공정률 (%)</label><input id="cs_rate" inputmode="decimal" value="${esc(st.rate||"")}" placeholder="예: 52"><span class="hint">해당 협력사 공사 진척률입니다. 숫자만 적어 주세요 (% 빼고).</span></div>
-      <div class="f"><span class="lab">공수 항목 <span class="hint">왼쪽에 항목 이름, 오른쪽에 숫자를 적어 주세요. 이름은 바꿔도 됩니다.</span></span>
-        <div class="cs-row"><input id="cs_l1" value="${esc(st.l1||"전체 공수")}" aria-label="첫 번째 항목 이름"><input id="cs_total" inputmode="numeric" value="${esc(st.total||"")}" placeholder="예: 2146" aria-label="첫 번째 항목 공수"></div>
-        <div class="cs-row"><input id="cs_l2" value="${esc(st.l2||"")}" placeholder="예: 계획 공수 (비우면 숫자만)" aria-label="두 번째 항목 이름"><input id="cs_done" inputmode="numeric" value="${esc(st.done||"")}" placeholder="예: 1124" aria-label="두 번째 항목 공수"></div>
-        <div class="cs-row"><input id="cs_l3" value="${esc(st.l3||"")}" placeholder="${mtCsMon()}월 공수" aria-label="세 번째 항목 이름"><input id="cs_month" inputmode="numeric" value="${esc(st.month||"")}" placeholder="예: 103" aria-label="세 번째 항목 공수"></div>
-        <span class="hint">회의 화면에는 "● 첫 번째 이름 : 숫자공 / (두 번째 이름) 숫자공", "● 세 번째 이름 : 숫자공"으로 나옵니다. 세 번째 이름을 비우면 "${mtCsMon()}월 공수"로 나옵니다.</span></div>
-      <p class="hint" style="margin:0">공수는 1명이 하루 일하면 1공으로 셉니다.</p>
+      <div class="f"><span class="lab">공수 항목 <span class="hint">왼쪽에 항목 이름, 오른쪽에 숫자와 단위를 적어 주세요 (예: 2146공, 350명). 이름은 바꿔도 됩니다.</span></span>
+        <div class="cs-row"><input id="cs_l1" value="${esc(st.l1||"전체 공수")}" aria-label="첫 번째 항목 이름"><input id="cs_total" value="${esc(st.total||"")}" placeholder="예: 2146공" aria-label="첫 번째 항목 공수"></div>
+        <div class="cs-row"><input id="cs_l2" value="${esc(st.l2||"")}" placeholder="예: 계획 공수 (비우면 숫자만)" aria-label="두 번째 항목 이름"><input id="cs_done" value="${esc(st.done||"")}" placeholder="예: 1124공" aria-label="두 번째 항목 공수"></div>
+        <div class="cs-row"><input id="cs_l3" value="${esc(st.l3||"")}" placeholder="${mtCsMon()}월 공수" aria-label="세 번째 항목 이름"><input id="cs_month" value="${esc(st.month||"")}" placeholder="예: 103공" aria-label="세 번째 항목 공수"></div>
+        <span class="hint">회의 화면에는 "● 첫 번째 이름 : 값 / (두 번째 이름) 값", "● 세 번째 이름 : 값"으로 적은 그대로 나옵니다. 세 번째 이름을 비우면 "${mtCsMon()}월 공수"로 나옵니다.</span></div>
       ${canAdmin&&adminPw?"":`<div class="f"><label for="cs_pw">관리 비밀번호</label><input type="password" id="cs_pw" autocomplete="current-password"><span class="hint">관리 비밀번호를 아는 사람만 수정할 수 있습니다.</span></div>`}
       <p class="hint" id="cs_msg" role="status" style="margin:0"></p>
       <button type="submit" class="btn primary" id="cs_save">저장</button>
