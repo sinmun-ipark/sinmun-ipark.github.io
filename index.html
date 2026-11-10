@@ -474,7 +474,17 @@ button.chk:hover{box-shadow:inset 0 0 0 2px var(--accent)}
 .mt-kpi span{font-size:12px;color:var(--muted)}
 .mt-kpi.hz{background:var(--hazard);border-color:var(--hazard);color:var(--hazard-ink)}.mt-kpi.hz span{color:inherit;opacity:.8}
 .mt-kpi.dg b{color:var(--danger)}
-.mt-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.mt-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin;min-width:0;flex:0 1 auto}
+.mt-row2{display:flex;align-items:center;gap:12px;min-width:0}
+.mt-cs{margin-left:auto;flex:none;display:flex;align-items:center;gap:6px 18px;flex-wrap:wrap;background:#111827;color:#fff;border:1px solid #374151;border-radius:12px;padding:7px 10px 7px 16px;font-size:16px}
+.mt-cs span{white-space:nowrap}
+.mt-cs span::before{content:"●";font-size:.8em;margin-right:6px;color:#9CA3AF}
+.mt-cs b{font-family:var(--f-mono);font-size:1.08em}
+.mt-cs .ed{border:1px solid #4B5563;background:#1F2937;color:#fff;border-radius:8px;font:inherit;font-size:13px;font-weight:700;padding:4px 10px;cursor:pointer;white-space:nowrap}
+.mt-cs .ed:hover{background:#374151}
+.mt-cs.empty{background:var(--surface);color:var(--muted);border-style:dashed;border-color:var(--line)}
+.mt-cs.empty .ed{background:var(--accent);border-color:var(--accent)}
+@media (max-width:999px){.mt-row2{flex-wrap:wrap}.mt-cs{margin-left:0}}
 .mt-tab{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-weight:700;font-size:15px;display:inline-flex;gap:8px;align-items:center;cursor:pointer;white-space:nowrap}
 .mt-tab .c{font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--muted)}
 .mt-tab[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);background:var(--accent-soft)}
@@ -848,7 +858,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
       <div class="mt-kpis" id="mtKpis"></div>
       <button type="button" class="btn sm" id="mtFull">전체화면</button>
     </div>
-    <div class="mt-tabs" id="mtTabs" role="group" aria-label="업체 선택"></div>
+    <div class="mt-row2"><div class="mt-tabs" id="mtTabs" role="group" aria-label="업체 선택"></div><div class="mt-cs" id="mtCs" hidden></div></div>
     <div class="mt-body">
       <div class="mt-left">
         <section class="mt-card"><h3>작업 위치<span class="c" id="mtMapC"></span><span class="mt-mv" id="mtMv" role="group" aria-label="배치도 표시"><button type="button" data-v="z" aria-pressed="true">작업 구간</button><button type="button" data-v="p" aria-pressed="false">전경만</button></span><button type="button" class="btn sm" id="mtZoom">크게 보기</button></h3><div class="mt-map" id="mtMap"></div></section>
@@ -1887,6 +1897,36 @@ function mtRow(w,m,showCo){
   const note=[ptw?"PTW"+((w.ptwTypes||[]).length?" "+w.ptwTypes.join("·"):""):"",w.riskUp?"상등급":"",String(w.hazmat).startsWith("반입")?"유해물질":"",w.highRisk&&w.watch!=="배치"?"__nw":""].filter(Boolean);
   return `<tr data-id="${esc(w.id)}"${w.highRisk?' class="hr"':""}><td class="nw">${m[w.id]?znHTML(w,m[w.id]):""}</td>${showCo?`<td class="nw"><i class="cdot" style="background:${compColor(w.company)};display:inline-block;margin-right:5px"></i>${esc(w.company)}</td>`:""}<td class="el" title="${esc((w.trade?w.trade+" · ":"")+w.title)}">${w.highRisk?'<span class="pill p-hr">고위험</span>':""}<span class="t">${esc(w.trade?w.trade+" · ":"")}${esc(w.title)}</span></td><td class="el" title="${esc(mtLoc(w))}">📍 ${esc(mtLoc(w))}</td><td class="nw">${esc(w.start||"")}${w.end?"~"+esc(w.end):""}</td><td class="num">${Number(w.workers)||0}명</td><td class="el" title="${esc(note.map(n=>n==="__nw"?"감시단 미배치":n).join(" · "))}">${note.map(n=>n==="__nw"?'<span class="bad">감시단 미배치</span>':esc(n)).join(" · ")||"-"}</td></tr>`;
 }
+function mtCsMon(st){const ym=(st&&st.ym)||todayStr().slice(0,7);return Number(ym.slice(5,7))}
+function mtRenderCs(){
+  const cs=$("#mtCs");if(!mtCo){cs.hidden=true;return}
+  const st=(cfg.coStats||{})[mtCo],has=st&&(st.rate||st.total||st.done||st.month);
+  cs.hidden=false;cs.classList.toggle("empty",!has);
+  cs.innerHTML=has?`<span>공정률 : <b>${esc(st.rate||"-")}%</b></span><span>전체 공수 : <b>${esc(st.total||"-")}공 / ${esc(st.done||"-")}공</b></span><span>${mtCsMon(st)}월 공수 : <b>${esc(st.month||"-")}공</b></span><button type="button" class="ed" title="공정률·공수 수정">✎ 수정</button>`
+    :`<span style="color:inherit">${esc(mtCo)} 공정률·공수 정보가 없습니다</span><button type="button" class="ed">+ 입력</button>`;
+}
+function mtCsEdit(co){
+  const st=(cfg.coStats||{})[co]||{},ym=st.ym||todayStr().slice(0,7);
+  openSheet(`<div class="sec-head"><h2 style="flex:1">${esc(co)} · 공정률·공수</h2><button type="button" class="btn sm" data-close>닫기</button></div>
+    <form class="reg" id="csF" novalidate style="gap:12px">
+      <div class="grid2"><div class="f"><label for="cs_rate">공정률 (%)</label><input id="cs_rate" inputmode="decimal" value="${esc(st.rate||"")}" placeholder="예: 52"></div>
+        <div class="f"><label for="cs_ym">기준 월</label><input type="month" id="cs_ym" value="${esc(ym)}"></div></div>
+      <div class="f"><span class="lab">전체 공수</span><div style="display:flex;align-items:center;gap:8px"><input id="cs_total" inputmode="numeric" value="${esc(st.total||"")}" placeholder="예: 3288" aria-label="전체 공수 앞 숫자"><b>/</b><input id="cs_done" inputmode="numeric" value="${esc(st.done||"")}" placeholder="예: 1731" aria-label="전체 공수 뒤 숫자"></div></div>
+      <div class="f"><label for="cs_month">월 공수</label><input id="cs_month" inputmode="numeric" value="${esc(st.month||"")}" placeholder="예: 63"></div>
+      ${canAdmin&&adminPw?"":`<div class="f"><label for="cs_pw">관리 비밀번호</label><input type="password" id="cs_pw" autocomplete="current-password"><span class="hint">관리 비밀번호를 아는 사람만 수정할 수 있습니다.</span></div>`}
+      <p class="hint" id="cs_msg" role="status" style="margin:0"></p>
+      <button type="submit" class="btn primary" id="cs_save">저장</button>
+    </form>`,r=>{
+    r.querySelector("#csF").addEventListener("submit",async e=>{e.preventDefault();
+      const g=id=>r.querySelector(id).value.trim(),msg=r.querySelector("#cs_msg"),btn=r.querySelector("#cs_save");
+      const pw=r.querySelector("#cs_pw")?g("#cs_pw"):adminPw;if(!pw){msg.textContent="관리 비밀번호를 입력해 주세요.";return}
+      const next={...(cfg.coStats||{})};next[co]={rate:g("#cs_rate").replace(/%/g,""),total:g("#cs_total"),done:g("#cs_done"),month:g("#cs_month"),ym:g("#cs_ym")||todayStr().slice(0,7)};
+      btn.disabled=true;msg.textContent="저장하는 중…";
+      try{const j=await api("setSettings",{pw,settings:{coStats:next}});cfg.coStats=(j.settings&&j.settings.coStats)||next;if(!adminPw){adminPw=pw;try{sessionStorage.setItem("sos-admin-pw",pw)}catch(_){}}closeSheet();renderMeet();toast("저장했습니다")}
+      catch(err){msg.textContent="저장하지 못했습니다: "+(err.message||"비밀번호를 확인하세요")}finally{btn.disabled=false}
+    });
+  },true);
+}
 function renderMeet(){
   const sec=$("#v-meet");if(!sec||sec.hidden)return;
   const X=viewDate,td=shift(X,1),D=mtDay==="tom"?td:X;
@@ -1903,6 +1943,7 @@ function renderMeet(){
   $("#mtTabs").innerHTML=`<button type="button" class="mt-tab" data-co="" aria-pressed="${!mtCo}">전체<span class="c">${all.length}건 · ${all.reduce((s,w)=>s+(Number(w.workers)||0),0)}명</span></button>`+cos.map(c=>`<button type="button" class="mt-tab" data-co="${esc(c)}" aria-pressed="${mtCo===c}"><i class="cdot" style="background:${compColor(c)}"></i>${esc(c)}<span class="c">${cg[c].n}건 · ${cg[c].p}명</span></button>`).join("");
   const list=all.filter(w=>!mtCo||w.company===mtCo);
   const m=mtNumsFor(all);
+  mtRenderCs();
   // KPI
   const ncOpen=ncItems.filter(x=>!ncDone(x)&&ncDue(x)<=X&&(!mtCo||x.company===mtCo));
   $("#mtKpis").innerHTML=`<div class="mt-kpi"><b>${list.length}</b><span>작업</span></div><div class="mt-kpi"><b>${list.reduce((s,w)=>s+(Number(w.workers)||0),0)}</b><span>명</span></div><div class="mt-kpi hz"><b>${list.filter(w=>w.highRisk).length}</b><span>고위험</span></div><div class="mt-kpi"><b>${list.filter(w=>String(w.ptw).startsWith("해당")).length}</b><span>PTW</span></div><div class="mt-kpi dg"><b>${ncLoaded?ncOpen.length:"–"}</b><span>부적합 미조치</span></div>`;
@@ -1933,6 +1974,7 @@ function renderMeet(){
 $("#v-meet").addEventListener("click",e=>{
   const s=e.target.closest("#mtSeg button");if(s){mtDay=s.dataset.d;renderMeet();return}
   const t=e.target.closest(".mt-tab");if(t){mtCo=t.dataset.co;renderMeet();return}
+  if(e.target.closest("#mtCs .ed")){mtCsEdit(mtCo);return}
   const mv=e.target.closest("#mtMv button");if(mv){mtPlain=mv.dataset.v==="p";renderMeet();return}
   if(e.target.closest("#mtZoom")){mtZoomOpen();return}
   if(e.target.closest("#mtMap .zwrap")&&!e.target.closest(".zone")){mtZoomOpen();return}
