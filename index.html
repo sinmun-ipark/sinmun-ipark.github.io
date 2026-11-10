@@ -476,7 +476,7 @@ button.chk:hover{box-shadow:inset 0 0 0 2px var(--accent)}
 .mt-kpi.dg b{color:var(--danger)}
 .mt-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin;min-width:0;flex:0 1 auto}
 .mt-row2{display:flex;align-items:center;gap:12px;min-width:0}
-.mt-cs{margin-left:auto;flex:none;display:flex;align-items:center;gap:6px 18px;flex-wrap:wrap;background:#111827;color:#fff;border:1px solid #374151;border-radius:12px;padding:7px 10px 7px 16px;font-size:16px}
+.mt-cs{margin-left:auto;flex:none;display:flex;align-items:center;gap:6px 18px;flex-wrap:nowrap;background:#111827;color:#fff;border:1px solid #374151;border-radius:12px;padding:7px 10px 7px 16px;font-size:16px}
 .mt-cs span{white-space:nowrap}
 .mt-cs span::before{content:"●";font-size:.8em;margin-right:6px;color:#9CA3AF}
 .mt-cs b{font-family:var(--f-mono);font-size:1.08em}
@@ -1903,7 +1903,7 @@ function mtRenderCs(){
   const st=(cfg.coStats||{})[mtCo],has=st&&(st.rate||st.total||st.done||st.month);
   cs.hidden=false;cs.classList.toggle("empty",!has);
   cs.innerHTML=has?`<span>공정률 : <b>${esc(st.rate||"-")}%</b></span><span>전체 공수 : <b>${esc(st.total||"-")}공 / ${esc(st.done||"-")}공</b></span><span>${mtCsMon(st)}월 공수 : <b>${esc(st.month||"-")}공</b></span><button type="button" class="ed" title="공정률·공수 수정">✎ 수정</button>`
-    :`<span style="color:inherit">${esc(mtCo)} 공정률·공수 정보가 없습니다</span><button type="button" class="ed">+ 입력</button>`;
+    :`<span style="color:inherit">공정률·공수 미입력</span><button type="button" class="ed">+ 입력</button>`;
 }
 function mtCsEdit(co){
   const st=(cfg.coStats||{})[co]||{},ym=st.ym||todayStr().slice(0,7);
