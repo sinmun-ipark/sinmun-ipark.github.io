@@ -1359,10 +1359,14 @@ function dongStats(){
   const live=works.filter(w=>w.status!=="작업취소");
   return [...cfg.dongs,"기타"].map(d=>{const ws=live.filter(w=>(w.dongs||[]).includes(d));return{d,n:ws.length,hr:ws.some(w=>w.highRisk),ppl:ws.reduce((s,w)=>s+(Number(w.workers)||0),0)}});
 }
-function eqParse(str){const out=[];String(str||"").split(/[,，、\n\/+;]|\s및\s/).forEach(p=>{p=p.trim().replace(/^[-·•]\s*/,"");if(!p||/^(없음|해당\s*없음|미사용|-|x|X)$/.test(p))return;
-  let m=p.match(/^(.+?)\s*[x×*]?\s*(\d+)\s*(대|ea|EA|식|기)?\s*$/),name,n=1;
-  if(m&&/\D/.test(m[1])){name=m[1];n=+m[2]}else{m=p.match(/^(\d+)\s*대\s+(.+)$/);if(m){name=m[2];n=+m[1]}else name=p.replace(/\s*\d*\s*대$/,"")}
-  name=name.replace(/\s*[(（][^)）]*[)）]\s*/g," ").replace(/[\s:：]+$/,"").trim();if(name&&n>0)out.push([name,n])});return out}
+const EQ_ALIAS={"덤프":"덤프트럭","굴삭기":"굴착기","포크레인":"굴착기","포클레인":"굴착기"};
+function eqParse(str){const out=[];const add=(k,n)=>{k=k.replace(/\s*[(（][^)）]*[)）]\s*/g," ").replace(/[\s:：.]+$/,"").replace(/^[\s.]+/,"").trim();k=EQ_ALIAS[k]||k;if(k&&n>0)out.push([k,n])};
+  const s=String(str||"").replace(/(\D)\.\s*(?=\d)/g,"$1").replace(/([가-힣A-Za-z)])\s*\.\s*(?=[가-힣A-Za-z])/g,"$1,");
+  s.split(/[,，、\n\/+;]|\s및\s/).forEach(p=>{p=p.trim().replace(/^[-·•]\s*/,"");if(!p||/^(없음|해당\s*없음|미사용|-|x|X)$/.test(p))return;
+  const pr=[...p.matchAll(/([^\d\s][^\d]*?)\s*(\d+)\s*(?:대|ea|EA|식)?(?=\s|$)/g)];
+  if(pr.length>=2&&pr.map(m=>m[0]).join("").replace(/\s/g,"")===p.replace(/\s/g,"")){pr.forEach(m=>add(m[1],+m[2]));return}
+  let m=p.match(/^(.+?)\s*[x×*]?\s*(\d+)\s*(대|ea|EA|식|기)?\s*$/);
+  if(m&&/\D/.test(m[1]))add(m[1],+m[2]);else{m=p.match(/^(\d+)\s*대\s+(.+)$/);if(m)add(m[2],+m[1]);else add(p.replace(/\s*\d*\s*대$/,""),1)}});return out}
 function eqTally(ws){const by={},tot={};let total=0;ws.forEach(w=>eqParse(w.equip).forEach(([k,n])=>{const c=w.company||"미지정";(by[c]=by[c]||{})[k]=(by[c][k]||0)+n;tot[k]=(tot[k]||0)+n;total+=n}));
   const names=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]||a.localeCompare(b,"ko"));return{by,tot,total,names}}
 const eqSum=o=>Object.values(o||{}).reduce((a,b)=>a+b,0);
