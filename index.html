@@ -103,7 +103,7 @@ button{cursor:pointer}
 .mt-date b::after{content:"📅";font-size:.8em;margin-left:5px}
 .datebar .today{width:auto;padding:0 12px;font-size:13px;font-weight:600;background:var(--band-btn)}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .stat{background:var(--band-tile);border:1px solid var(--band-tile-line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column}
 .stat .n{font-family:var(--f-display);font-size:30px;line-height:1.05}
 .stat .n small{font-size:14px;margin-left:2px;color:var(--band-muted)}
@@ -490,7 +490,23 @@ button.chk:hover{box-shadow:inset 0 0 0 2px var(--accent)}
 .mt-tab .c{font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--muted)}
 .mt-tab[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);background:var(--accent-soft)}
 .mt-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:12px;min-height:0}
-.mt-left{display:grid;grid-template-rows:auto minmax(0,1fr);gap:12px;min-height:0}
+.mt-left{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:12px;min-height:0}
+.eq-rows{display:flex;flex-direction:column}
+.eq-r{display:grid;grid-template-columns:minmax(80px,auto) minmax(0,1fr) auto;align-items:center;gap:8px;padding:6px 14px;border-top:1px solid var(--line);font-size:15px;background:none;border-left:0;border-right:0;border-bottom:0;font-family:inherit;color:inherit;text-align:left;width:100%;cursor:pointer}
+.eq-r:first-child{border-top:0}
+.eq-r:hover{background:var(--surface-2)}
+.eq-r .co{display:flex;align-items:center;gap:6px;font-weight:700;white-space:nowrap}
+.eq-chips{display:flex;flex-wrap:wrap;gap:4px}
+.eq-chip{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:13px;white-space:nowrap}.eq-chip b{font-family:var(--f-mono);margin-left:4px}
+.eq-r .t{text-align:right;font-family:var(--f-mono);font-weight:700;white-space:nowrap}
+.eq-r.sum{background:#111827;color:#fff;cursor:default}.eq-r.sum .eq-chip{background:#1F2937;border-color:#374151;color:#fff}
+.eq-big{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px}.eq-big .eq-chip{font-size:17px;padding:6px 14px}
+.eq-none{padding:10px 14px;color:var(--muted);font-size:14px}
+.eq-tbl{width:100%;border-collapse:collapse;font-size:14px}.eq-tbl th,.eq-tbl td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.eq-tbl th:first-child,.eq-tbl td:first-child{text-align:left}.eq-tbl thead th{color:var(--muted);font-weight:600;font-size:13px}
+.eq-tbl tbody tr{cursor:pointer}.eq-tbl tbody tr:hover td{background:var(--surface-2)}
+.eq-tbl tfoot td{font-weight:800;border-top:2px solid var(--ink);border-bottom:0}.eq-tbl td.z{color:var(--muted);opacity:.5}
+.eq-scroll{overflow-x:auto}
 .mt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
 .mt-card>h3{margin:0;padding:10px 14px;font-size:18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line);flex:none}
 .mt-card>h3 .c{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600;font-family:var(--f-mono);white-space:nowrap}
@@ -641,6 +657,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
       <div class="stat hz"><span class="n" id="sHr">–</span><span class="l">고위험 작업</span></div>
       <div class="stat"><span class="n"><span id="sWorkers">–</span><small>명</small></span><span class="l">출역 인원</span></div>
       <div class="stat"><span class="n" id="sCo">–</span><span class="l">협력업체</span></div>
+      <div class="stat"><span class="n"><span id="sEq">–</span><small>대</small></span><span class="l">장비 투입</span></div>
     </div>
     <div class="conn" id="conn"><i></i><span>연결 중…</span></div>
   </div>
@@ -676,6 +693,10 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
       <div class="panel h-card">
         <div class="h-head"><h2>업체별 출역 인원</h2></div>
         <div id="hComp"></div>
+      </div>
+      <div class="panel h-card h-wide">
+        <div class="h-head"><h2>장비 투입현황</h2><span class="hint" id="hEqSum"></span></div>
+        <div class="eq-scroll" id="hEq"></div>
       </div>
       <div class="panel h-card h-wide">
         <div class="h-head"><h2>안전 점검 현황</h2></div>
@@ -768,7 +789,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
           <div class="f"><label for="r_end" class="req">작업 종료</label><input id="r_end" type="time" value="17:00" required></div>
         </div>
         <div class="f"><label for="r_point">안전중점포인트 <span class="hint">작업내용 상세</span></label><textarea id="r_point" placeholder="예: 개구부 덮개 확인, 안전대 걸이시설 설치 후 작업"></textarea></div>
-        <div class="f"><label for="r_equip">사용 장비</label><input id="r_equip" placeholder="예: 항타기, 굴착기 2대 (없으면 비움)"></div>
+        <div class="f"><label for="r_equip">사용 장비</label><input id="r_equip" placeholder="예: 굴착기 2대, 덤프트럭 6대 (없으면 비움)"><span class="hint">장비마다 쉼표로 나누고 이름 뒤에 대수를 쓰면 장비 투입현황에 자동으로 더해집니다. 대수가 없으면 1대로 셉니다.</span></div>
       </fieldset>
       </div>
       <div class="fcol">
@@ -863,6 +884,7 @@ textarea.out{width:100%;min-height:220px;box-sizing:border-box;border:1px solid 
     <div class="mt-body">
       <div class="mt-left">
         <section class="mt-card"><h3>작업 위치<span class="c" id="mtMapC"></span><span class="mt-mv" id="mtMv" role="group" aria-label="배치도 표시"><button type="button" data-v="z" aria-pressed="true">작업 구간</button><button type="button" data-v="p" aria-pressed="false">전경만</button></span><button type="button" class="btn sm" id="mtZoom">크게 보기</button></h3><div class="mt-map" id="mtMap"></div></section>
+        <section class="mt-card"><h3>장비 투입현황<span class="c" id="mtEqC"></span></h3><div id="mtEq"></div></section>
         <section class="mt-card"><h3>부적합 미조치<span class="c" id="mtNcC"></span></h3><div class="mt-scroll" id="mtNc"></div></section>
       </div>
       <section class="mt-card"><h3 id="mtListT">명일 작업</h3><div class="mt-scroll" id="mtList"></div></section>
@@ -1337,6 +1359,14 @@ function dongStats(){
   const live=works.filter(w=>w.status!=="작업취소");
   return [...cfg.dongs,"기타"].map(d=>{const ws=live.filter(w=>(w.dongs||[]).includes(d));return{d,n:ws.length,hr:ws.some(w=>w.highRisk),ppl:ws.reduce((s,w)=>s+(Number(w.workers)||0),0)}});
 }
+function eqParse(str){const out=[];String(str||"").split(/[,，、\n\/+;]|\s및\s/).forEach(p=>{p=p.trim().replace(/^[-·•]\s*/,"");if(!p||/^(없음|해당\s*없음|미사용|-|x|X)$/.test(p))return;
+  let m=p.match(/^(.+?)\s*[x×*]?\s*(\d+)\s*(대|ea|EA|식|기)?\s*$/),name,n=1;
+  if(m&&/\D/.test(m[1])){name=m[1];n=+m[2]}else{m=p.match(/^(\d+)\s*대\s+(.+)$/);if(m){name=m[2];n=+m[1]}else name=p.replace(/\s*\d*\s*대$/,"")}
+  name=name.replace(/\s*[(（][^)）]*[)）]\s*/g," ").replace(/[\s:：]+$/,"").trim();if(name&&n>0)out.push([name,n])});return out}
+function eqTally(ws){const by={},tot={};let total=0;ws.forEach(w=>eqParse(w.equip).forEach(([k,n])=>{const c=w.company||"미지정";(by[c]=by[c]||{})[k]=(by[c][k]||0)+n;tot[k]=(tot[k]||0)+n;total+=n}));
+  const names=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]||a.localeCompare(b,"ko"));return{by,tot,total,names}}
+const eqSum=o=>Object.values(o||{}).reduce((a,b)=>a+b,0);
+const eqChips=(o,names)=>(names||Object.keys(o).sort((a,b)=>o[b]-o[a]||a.localeCompare(b,"ko"))).filter(k=>o[k]).map(k=>`<span class="eq-chip">${esc(k)}<b>${o[k]}</b></span>`).join("");
 function renderHeader(){
   const d=new Date(viewDate+"T00:00:00");
   $("#dMain").textContent=`${d.getMonth()+1}월 ${d.getDate()}일 (${WD[d.getDay()]})`;
@@ -1347,6 +1377,7 @@ function renderHeader(){
   $("#sHr").textContent=live.filter(w=>w.highRisk).length;
   $("#sWorkers").textContent=live.reduce((s,w)=>s+(Number(w.workers)||0),0);
   $("#sCo").textContent=new Set(live.map(w=>w.company)).size;
+  $("#sEq").textContent=eqTally(live).total;
 }
 function renderDash(){
   renderMapZones();
@@ -1424,6 +1455,10 @@ function renderHome(){
   const cg={};live.forEach(w=>{cg[w.company]=(cg[w.company]||0)+(Number(w.workers)||0)});
   const ci=Object.entries(cg).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({k,v,label:`<b>${v}</b>명`}));
   $("#hComp").innerHTML=hbarsHTML(ci,Math.max(0,...ci.map(x=>x.v)),compColor);
+  // 장비 투입
+  const eq=eqTally(live),ecos=Object.keys(eq.by).sort((a,b)=>a.localeCompare(b,"ko"));
+  $("#hEqSum").textContent=eq.total?`총 ${eq.total}대 · 작업등록 '사용 장비' 자동 집계`:"";
+  $("#hEq").innerHTML=eq.total?`<table class="eq-tbl"><thead><tr><th>업체</th>${eq.names.map(n=>`<th>${esc(n)}</th>`).join("")}<th>합계</th></tr></thead><tbody>${ecos.map(c=>`<tr data-co="${esc(c)}" tabindex="0"><td><i class="cdot" style="background:${compColor(c)};display:inline-block;margin-right:6px"></i><b>${esc(c)}</b></td>${eq.names.map(n=>eq.by[c][n]?`<td>${eq.by[c][n]}</td>`:'<td class="z">·</td>').join("")}<td><b>${eqSum(eq.by[c])}</b></td></tr>`).join("")}</tbody><tfoot><tr><td>총계</td>${eq.names.map(n=>`<td>${eq.tot[n]}</td>`).join("")}<td>${eq.total}</td></tr></tfoot></table>`:'<div class="h-empty">이 날짜에 등록된 장비가 없습니다. 작업등록의 \'사용 장비\'에 적으면 자동으로 집계됩니다.</div>';
   // 7일 추이
   const days=[];for(let i=6;i>=0;i--)days.push(shift(viewDate,-i));
   const stat=days.map(d=>{const ws=weekWorks.filter(w=>w.date===d&&w.status!=="작업취소");return{d,n:ws.length,h:ws.filter(w=>w.highRisk).length,p:ws.reduce((s,w)=>s+(Number(w.workers)||0),0)}});
@@ -1441,6 +1476,8 @@ const QF={ptw:["작업계획서 / PTW 해당",w=>String(w.ptw).startsWith("해�
 function openQuery(q){const f=QF[q];if(f)openList(f[0],sortWorks(liveWorks().filter(f[1])))}
 $("#hCheck").addEventListener("click",e=>{const b=e.target.closest(".chk[data-q]");if(b)openQuery(b.dataset.q)});
 $("#hTrade").addEventListener("click",e=>{const b=e.target.closest(".hbar[data-k]");if(b){const k=b.dataset.k;openList("공종 · "+k,sortWorks(liveWorks().filter(w=>(w.trade||"미지정")===k)))}});
+$("#hEq").addEventListener("click",e=>{const r=e.target.closest("tr[data-co]");if(r){const k=r.dataset.co;openList(k+" · 장비",sortWorks(liveWorks().filter(w=>w.company===k&&eqParse(w.equip).length)))}});
+$("#hEq").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("tr[data-co]")){e.preventDefault();e.target.click()}});
 $("#hComp").addEventListener("click",e=>{const b=e.target.closest(".hbar[data-k]");if(b){const k=b.dataset.k;openList(k,sortWorks(liveWorks().filter(w=>w.company===k)))}});
 ["#hTrade","#hComp"].forEach(id=>$(id).addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches(".hbar[data-k]")){e.preventDefault();e.target.click()}}));
 document.querySelectorAll(".stats .stat").forEach((s,i)=>{s.setAttribute("role","button");s.tabIndex=0;const go=()=>{if(i===0)openQuery("all");else if(i===1)openQuery("hr");else if(i===2)openList("출역 인원 (인원 많은 순)",liveWorks().sort((a,b)=>(Number(b.workers)||0)-(Number(a.workers)||0)));else openList("협력업체별 작업",liveWorks().sort((a,b)=>String(a.company).localeCompare(String(b.company),"ko")||String(a.start).localeCompare(String(b.start))))};s.addEventListener("click",go);s.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}})});
@@ -1947,7 +1984,7 @@ function renderMeet(){
   mtRenderCs();
   // KPI
   const ncOpen=ncItems.filter(x=>!ncDone(x)&&ncDue(x)<=X&&(!mtCo||x.company===mtCo));
-  $("#mtKpis").innerHTML=`<div class="mt-kpi"><b>${list.length}</b><span>작업</span></div><div class="mt-kpi"><b>${list.reduce((s,w)=>s+(Number(w.workers)||0),0)}</b><span>명</span></div><div class="mt-kpi hz"><b>${list.filter(w=>w.highRisk).length}</b><span>고위험</span></div><div class="mt-kpi"><b>${list.filter(w=>String(w.ptw).startsWith("해당")).length}</b><span>PTW</span></div><div class="mt-kpi dg"><b>${ncLoaded?ncOpen.length:"–"}</b><span>부적합 미조치</span></div>`;
+  $("#mtKpis").innerHTML=`<div class="mt-kpi"><b>${list.length}</b><span>작업</span></div><div class="mt-kpi"><b>${list.reduce((s,w)=>s+(Number(w.workers)||0),0)}</b><span>명</span></div><div class="mt-kpi hz"><b>${list.filter(w=>w.highRisk).length}</b><span>고위험</span></div><div class="mt-kpi"><b>${list.filter(w=>String(w.ptw).startsWith("해당")).length}</b><span>PTW</span></div><div class="mt-kpi"><b>${eqTally(list).total}</b><span>장비</span></div><div class="mt-kpi dg"><b>${ncLoaded?ncOpen.length:"–"}</b><span>부적합 미조치</span></div>`;
   // 배치도
   const mb=$("#mtMap"),src=mapSrc();
   if(!src){mb.dataset.src="";mb.innerHTML=phHTML("전경 배치도 자리","관리 탭에서 배치도를 올리면 여기에 표시됩니다.")}
@@ -1965,8 +2002,13 @@ function renderMeet(){
   let body="";
   if(mtCo)body=sorted.map(w=>mtRow(w,m,false)).join("");
   else{const byCo={};sorted.forEach(w=>(byCo[w.company]=byCo[w.company]||[]).push(w));
-    body=Object.keys(byCo).sort((a,b)=>a.localeCompare(b,"ko")).map(c=>`<tr class="co"><td colspan="6"><i class="cdot" style="background:${compColor(c)};display:inline-block;margin-right:6px"></i>${esc(c)}<span class="v">${cg[c].n}건 · ${cg[c].p}명</span></td></tr>`+byCo[c].map(w=>mtRow(w,m,false)).join("")).join("")}
+    body=Object.keys(byCo).sort((a,b)=>a.localeCompare(b,"ko")).map(c=>`<tr class="co"><td colspan="6"><i class="cdot" style="background:${compColor(c)};display:inline-block;margin-right:6px"></i>${esc(c)}<span class="v">${cg[c].n}건 · ${cg[c].p}명${eqTally(byCo[c]).total?` · 장비 ${eqTally(byCo[c]).total}대`:""}</span></td></tr>`+byCo[c].map(w=>mtRow(w,m,false)).join("")).join("")}
   $("#mtList").innerHTML=loading?'<div class="mt-empty">불러오는 중…</div>':(mtDay==="tom"&&mtTom.err)?`<div class="mt-empty">명일 작업을 불러오지 못했습니다 (${esc(mtTom.err)})</div>`:list.length?`<table class="mt-tbl">${head}<tbody>${body}</tbody></table>`:`<div class="mt-empty">${mtDay==="tom"?"명일":"금일"} 등록된 작업이 ${mtCo?esc(mtCo)+"에 ":""}없습니다.</div>`;
+  // 장비 투입
+  const eq=eqTally(list),dn=mtDay==="tom"?"명일":"금일";
+  $("#mtEqC").textContent=eq.total?`${dn}${mtCo?" · "+mtCo:""} · 총 ${eq.total}대`:"";
+  $("#mtEq").innerHTML=loading?'<div class="eq-none">불러오는 중…</div>':!eq.total?`<div class="eq-none">${dn} 등록된 장비가 없습니다.</div>`:mtCo?`<div class="eq-big">${eqChips(eq.tot,eq.names)}</div>`
+    :`<div class="eq-rows">${Object.keys(eq.by).sort((a,b)=>a.localeCompare(b,"ko")).map(c=>`<button type="button" class="eq-r" data-eqco="${esc(c)}"><span class="co"><i class="cdot" style="background:${compColor(c)}"></i>${esc(c)}</span><span class="eq-chips">${eqChips(eq.by[c])}</span><span class="t">${eqSum(eq.by[c])}대</span></button>`).join("")}<div class="eq-r sum"><span class="co">총계</span><span class="eq-chips">${eqChips(eq.tot,eq.names)}</span><span class="t">${eq.total}대</span></div></div>`;
   // 부적합 미조치
   $("#mtNcC").textContent=ncLoaded?`${ncOpen.length}건`:"";
   const ns=ncOpen.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date)));
@@ -1975,6 +2017,7 @@ function renderMeet(){
 $("#v-meet").addEventListener("click",e=>{
   const s=e.target.closest("#mtSeg button");if(s){mtDay=s.dataset.d;renderMeet();return}
   const t=e.target.closest(".mt-tab");if(t){mtCo=t.dataset.co;renderMeet();return}
+  const eqc=e.target.closest("[data-eqco]");if(eqc){mtCo=eqc.dataset.eqco;renderMeet();return}
   if(e.target.closest("#mtCs .ed")){mtCsEdit(mtCo);return}
   const mv=e.target.closest("#mtMv button");if(mv){mtPlain=mv.dataset.v==="p";renderMeet();return}
   if(e.target.closest("#mtZoom")){mtZoomOpen();return}
